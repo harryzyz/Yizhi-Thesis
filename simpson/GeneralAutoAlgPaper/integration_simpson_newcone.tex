@@ -1,0 +1,89 @@
+\documentclass[]{elsarticle}
+%\setlength{\marginparwidth}{0.5in}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+\input FJHDef.tex
+
+%Requires ApproxUnivariate_k.tex, univariate_integration_k.tex, ConesPaperSpikyquad.eps, ConesPaperFlukyquad.eps
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\INT}{INT}
+\DeclareMathOperator{\APP}{APP}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\up}{up}
+\DeclareMathOperator{\lo}{lo}
+\DeclareMathOperator{\fix}{fix}
+\DeclareMathOperator{\err}{err}
+\DeclareMathOperator{\maxcost}{maxcost}
+\DeclareMathOperator{\mincost}{mincost}
+\newcommand{\herr}{\widehat{\err}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+\theoremstyle{definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{condit}{Condition}
+%\newtheorem{assump}{Assumption}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+\newcommand{\Fnorm}[1]{\abs{#1}_{\cf}}
+\newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
+\newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
+\newcommand{\flin}{f_{\text{\rm{lin}}}}
+
+\journal{Journal of Complexity}
+
+\begin{document}
+
+The algorithms used in this section on integration and the next section on function recovery are all based on quadratic splines on $[a,b]$.  The node set and the quadratic spline algorithm using $n+1$ function values are defined for $n \in \mathcal{I}:=\{4,6,8, \ldots\}$ as follows:
+\begin{subequations} \label{linearspline}
+\begin{equation}
+t_i=\frac{(i-1)(b-a)}{n}, \qquad i=1, \ldots, n+1,
+\end{equation}
+\begin{multline}
+A_{n}(f)(t):=\frac{n^2}{2(b-a)^2} \left[ f(t_{i})(t-t_{i+1})(t-t_{i+2})\right. \\\left.- 2f(t_{i+1})(t-t_{i})(t-t_{i+2}) +f(t_{i+2})(t-t_i)(t-t_{i+1}) \right] \\ \text{for }t_i \leq x \leq t_{i+2}.
+\end{multline}
+\end{subequations}
+
+The problem to be solved is univariate integration on the unit interval, $\INT(f):=\int_{a}^{b}f(t) \, \dif t \in \reals$.  The fixed cost building blocks to construct the adaptive integration algorithm are the composite Simpson's rules based on $n$ intervals:
+\begin{multline}
+    S_{n}(f) := \int_a^b A_n(f) \, \dif t \\
+    =\frac{(b-a)}{3n}[f(t_1)+4f(t_2)+2f(t_3)+4f(t_4)+2f(t_5)\cdots+4f(t_{n-1})+f(t_n)].
+\end{multline}
+
+Given any partition, define an approximation to $\Var(f''')$ as:
+$$\widehat{V}(f''',\{x_i\}_{i=0}^{n})=\sum_{i=2}^{n-1}|f'''(x_i)-f'''(x_{i-1})|\leq\Var(f''').$$
+
+%Approximation of $\Var(f''')$ using only function values:
+If we consider:
+\begin{align*}
+\widetilde{V}_n(f)&=\sum_{i=1}^{n-3}\left|f'''(x_{i})-f'''(x_{i-1})\right|,\\
+&=\frac{n^3}{(b-a)^3}\sum_{i=1}^{n-3}\left|f(t_{3i-3})-3f(t_{3i-2})+3f(t_{3i-1})-2f(t_{3i})+3f(t_{3i+1})-3f(t_{3i+2})+f(t_{3i+3})\right|.
+\end{align*}
+Since $$\frac{n^3}{(b-a)^3}\left|f(t_{3i-3})-3f(t_{3i-2})+3f(t_{3i-1})-f(t_{3i})\right|=f'''(x_{i-1}),$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
+then $$\widetilde{V}_n(f)=\sum_{i=1}^{n-3}\left|f'''(x_{i})-f'''(x_{i-1})\right|=\widehat{V}(f'''),$$ for some $x_i \in [t_{3i},t_{3i+3}]$ and for some $x_{i-1} \in [t_{3i-3},t_{3i}].$ Then we can use $\widetilde{V}_n(f)$ to approximate $\Var(f''')$ by just using function values.
+
+Define the cone:
+\begin{equation}\label{coneinteg}
+\cc_{\tau}:=\left\{f\in \cv^{3}, \Var(f''')\leq \textrm{C}(\text{size}\{x_i\}_{i=0}^{n})\widehat{V}(f''',\{x_i\}_{i=0}^{n})\right\}.
+\end{equation}
+%
+%Approximation of $\Var(f''')$ using only function values:
+%\begin{align*}
+%\widetilde{V}_n(f)&=\sum_{i=1}^{n-3}\left|f'''(x_{i})-f'''(x_{i-1})\right|,\\
+%&=\frac{n^3}{(b-a)^3}\sum_{i=1}^{n-3}\left|f(t_{3i-3})-3f(t_{3i-2})+3f(t_{3i-1})-2f(t_{3i})+3f(t_{3i+1})-3f(t_{3i+2})+f(t_{3i+3})\right|.
+%\end{align*}
+
+Similar Lemma: $\widetilde{V}_n(f)\leq \Var(f''') \leq \textrm{C}(2(b-a)/n)\widetilde{V}_n(f)$, then the error bound:
+
+$$\text{err}(f,n)\leq\frac{(b-a)^4}{36n^4}\Var(f''')\leq\frac{(b-a)^4}{36n^4}\textrm{C}(2(b-a)/n)\widetilde{V}_n(f).$$
+
+
+Upper bound of computational cost:
+
+Denote $N(f,\varepsilon)$ as the computational cost, which is the number of points used for Simpson's rule:
+$$(b-a)\left(\frac{\Var(f''')}{36\varepsilon}\right)^{1/4}\leq N(f,\varepsilon) \leq (b-a)\left(\frac{\textrm{C}(2(b-a)/n)\widetilde{V}_n(f)}{36\varepsilon}\right)^{1/4}+1.$$
+
+\end{document}
+
