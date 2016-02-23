@@ -1,0 +1,126 @@
+\documentclass[]{elsarticle}
+%\setlength{\marginparwidth}{0.5in}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+\input FJHDef.tex
+
+%Requires ApproxUnivariate_k.tex, univariate_integration_k.tex, ConesPaperSpikyquad.eps, ConesPaperFlukyquad.eps
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\INT}{INT}
+\DeclareMathOperator{\APP}{APP}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\up}{up}
+\DeclareMathOperator{\lo}{lo}
+\DeclareMathOperator{\fix}{fix}
+\DeclareMathOperator{\err}{err}
+\DeclareMathOperator{\maxcost}{maxcost}
+\DeclareMathOperator{\mincost}{mincost}
+\newcommand{\herr}{\widehat{\err}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+\theoremstyle{definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{condit}{Condition}
+%\newtheorem{assump}{Assumption}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+\newcommand{\Fnorm}[1]{\abs{#1}_{\cf}}
+\newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
+\newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
+\newcommand{\flin}{f_{\text{\rm{lin}}}}
+
+\journal{Journal of Complexity}
+
+\begin{document}
+
+What we have known:
+
+The stronger semi-norm is $\Fnorm{f}:=\Var(f''')$.
+
+The weaker semi-norm is
+\[
+\Ftnorm{f}:=\norm[1]{f''-4[f(1)-2f(1/2)+f(0)]}.
+\]
+
+The cone of integrands is
+\begin{equation}\label{coneinteg}
+\cc_{\tau}:=\left\{f\in \cv^{3}:\begin{cases}
+\displaystyle \Var(f''')\leq\tau\Var(f'')\\[2ex]
+\displaystyle \Var(f'')\leq\tau\|f''-4[f(1)-2f(1/2)+f(0)]\|_1
+\end{cases}\right\}.
+\end{equation}
+
+The algorithm for approximating $\norm[1]{f''-4[f(1)-2f(1/2)+f(0)]}$ is:
+\begin{align}
+\nonumber
+\tF_n(f)&:=\Ftnorm{A_n(f)}=\bignorm[1]{A_n(f)''-A_3(f)''} \\
+\label{1direst} \nonumber
+&=\sum_{j=1}^{(n-1)/2}\left|2(n-1)(f(x_{2j+1})-2f(x_{2j})+f(x_{2j-1})) - \frac{8}{n-1}[f(1)-2f(1/2)+f(0)]\right|.
+\end{align}
+And,
+\begin{equation} \label{Fnormalg}
+F_n(f) :=\Var(A_n(f)''') = (n-1)^2\sum_{j=1}^{(n-3)/2} \bigabs{f(x_{2j+3}) - 2 f(x_{2j+2})+2f(x_{2j})-f(x_{2j-1})}.
+\end{equation}
+
+What we want to prove:
+\begin{align*}
+&\Ftnorm{f} \ge \tF_n(f),\\
+&\Ftnorm{f} - \tF_n(f)  \ge 0.
+\end{align*}
+And
+\begin{align*}
+\Ftnorm{f} - \tF_{n}(f) & \le \bignorm[1]{f'' -A_n(f)''}\\
+& \le \frac{\Var(f'')}{4(n-1)},\\
+& \le \frac{\tau}{2(n-1)}\Ftnorm{f}.
+\end{align*}
+So
+\begin{align*}
+  \Ftnorm{f} \le \frac{2n-2}{2n-2-\tau}\tF_n(f).
+\end{align*}
+
+We also know that the error of the Simpson's rule in terms of the variation of the first derivative of the integrand is:
+%\begin{subequations} \label{integhhtilde}
+\begin{gather*}
+\abs{\int_0^1 f(x) \, dx - P_n(f)} \le \frac{1}{72(n-1)^4} \Var(f''').\\
+\end{gather*}
+%\end{subequations}
+
+So the approximation error of Simpson's rule should be:
+\begin{align*}
+&\abs{\int_0^1 f(x) \, dx - P_n(f)},\\
+ \le &\frac{1}{72(n-1)^4} \Var(f'''),\\
+ \le &\frac{1}{72(n-1)^4} \tau\Var(f''),\\
+ \le &\frac{1}{72(n-1)^4} \tau^2\Ftnorm{f},\\
+ \le &\frac{1}{72(n-1)^4} \tau^2\frac{2n-2}{2n-2-\tau}\tF_n(f),\\
+ = & \frac{\tau^2 \tF_n(f)}{36(n-1)^3(2n-2-\tau)}.
+\end{align*}
+
+Consider this example: let $g(x)=f-A_n(f)$. Suppose
+\begin{align*}
+  g''(x)= \begin{cases} \displaystyle a_{-}, & 0 \le x < \xi,\\[1ex]
+\displaystyle  a_{+}, & \xi \le x \le 1,
+\end{cases}
+\end{align*}
+Then
+\begin{align*}
+  g'(x)= \begin{cases} \displaystyle a_{-}(x-\xi)+b, & 0 \le x < \xi,\\[1ex]
+\displaystyle  a_{+}(x-\xi)+b, & \xi \le x \le 1,
+\end{cases}
+\end{align*}
+\begin{align*}
+  g(x)&= \begin{cases} \displaystyle \frac{1}{2}a_{-}[(x-\xi)^2-\xi^2]+bx, & 0 \le x < \xi,\\[1ex]
+\displaystyle  \frac{1}{2}a_{+}[(x-\xi)^2-(1-\xi)^2]-b(1-x), & \xi \le x \le 1,
+\end{cases}\\
+&=\begin{cases} \displaystyle \frac{1}{2}a_{-}[x(x-2\xi)]+bx, & 0 \le x < \xi,\\[1ex]
+\displaystyle  \frac{1}{2}a_{+}[(x-1)(x+1-2\xi)]-b(1-x), & \xi \le x \le 1,
+\end{cases}
+\end{align*}
+
+
+
+
+\end{document}
+

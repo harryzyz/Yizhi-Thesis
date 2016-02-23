@@ -1,0 +1,346 @@
+\documentclass[mathserif]{beamer}
+\usepackage{amsfonts}
+\usepackage{amsfonts}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb,amsthm,delarray,natbib,graphicx}
+\usepackage{amsmath,amssymb,amsthm,natbib,mathtools,graphicx}
+\usetheme{Madrid}
+\usepackage{beamerthemesplit}
+\input FJHDef.tex
+\setlength{\parskip}{2ex}
+\setlength{\arraycolsep}{0.5ex}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+\usepackage{amsmath,amssymb,amsthm,delarray,natbib,graphicx,pifont,xmpmulti,rotating}
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\INT}{INT}
+\DeclareMathOperator{\APP}{APP}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\up}{up}
+\DeclareMathOperator{\lo}{lo}
+\DeclareMathOperator{\fix}{fix}
+\DeclareMathOperator{\err}{err}
+\DeclareMathOperator{\maxcost}{maxcost}
+\DeclareMathOperator{\mincost}{mincost}
+\newcommand{\herr}{\widehat{\err}}
+\newcommand{\Fnorm}[1]{\abs{#1}_{\cf}}
+\newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
+\newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
+\newcommand{\flin}{f_{\text{\rm{lin}}}}
+
+\begin{document}
+
+\newcommand{\R}{\mathbb{R}}
+\newtheorem{theo}{Theorem}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{lem}{Lemma}
+\theoremstyle{definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{condit}{Condition}
+%\newtheorem{assump}{Assumption}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+
+\newcommand{\sphere}{\mathbb{S}}
+%\newcommand{\cc}{\mathcal{C}}
+\newcommand{\cq}{\mathcal{Q}}
+\newcommand{\bbW}{\mathbb{W}}
+%\newcommand{\tP}{\widetilde{P}}
+\newcommand{\bg}{{\bf g}}
+\newcommand{\bu}{{\bf u}}
+\newcommand{\bbu}{\bar{\bf u}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\bbv}{\bar{\bf v}}
+\newcommand{\bw}{{\bf w}}
+\newcommand{\bbw}{\bar{\bf w}}
+%\newcommand{\hv}{\hat{v}}
+
+
+
+\setlength{\parskip}{2ex}
+
+\beamersetuncovermixins{\opaqueness<1->{0}}{\opaqueness<1->{60}}
+
+\title{Constructing Guaranteed Automatic Numerical Algorithms for Univariate Integration}
+\author{Yizhi Zhang}
+\institute{Department of Applied Mathematics, Illinois Institute of
+Technology }%\\ Chicago, Illinois, USA\\}
+\date{ \today}
+
+
+\frame{\titlepage}
+
+\frame{\frametitle{Contents}
+
+
+\begin{itemize}
+
+\item Problem Description
+
+\item Demo
+
+\item Future Work
+
+\end{itemize}
+}
+
+\section{Problem Description}
+
+\frame{\frametitle{Expanding from $[0,1]$ to $[a,b]$}
+
+\begin{itemize}
+
+%  \item Widely used in practice.
+
+%  \item Many of automatic algorithms lack rigorous guarantees, i.e., sufficient conditions on the input function that ensure that the algorithm is successful.
+
+  \item It is not as straight forward as one may think of. Previously we use the input ninit as the initial number of points.
+
+  \item The algorithm could fail.
+
+  \item The algorithm may not be efficient.
+\end{itemize}
+
+ }
+
+\frame{\frametitle{Our Solution} \vspace*{-4ex}
+\begin{align*}
+\text{initial number of point} &=
+\text{ninit}\uncover<2->{ =
+\text{n}_{\text{ninit,min}}+\left(\frac{\text{n}_{\text{ninit,max}}}{\text{n}_{\text{ninit,min}}}\right)^{\frac{1}{1+1/(b-a)}}}
+\end{align*}
+
+}
+
+\frame{\frametitle{Assumptions}
+The node set and the linear spline algorithm using $n$ function values are defined for $n \in \mathcal{I}:=\{2,3,\ldots\}$ as follows:
+\begin{subequations} \label{linearspline}
+\begin{equation*}
+x_i=a+\frac{i-1}{n-1}(b-a), \qquad i=1, \ldots, n,
+\end{equation*}
+\begin{multline*}
+A_{n}(f)(x):=\frac{(n-1)}{b-a} \left[ f(x_{i})(x_{i+1}-x) +f(x_{i+1})(x-x_i) \right] \\ \text{for }x_i \leq x \leq x_{i+1}.
+\end{multline*}
+\end{subequations}
+
+}
+
+\frame{\frametitle{Assumptions, continued}
+
+ The problem to be solved is univariate integration on the unit interval, $S(f):=\INT(f):=\int_{a}^{b}f(x) \, \dif x \in \cg := \reals$.  The fixed cost building blocks to construct the adaptive integration algorithm are the composite trapezoidal rules based on $n-1$ trapezoids:
+\begin{equation*}
+    T_{n}(f) := \int_a^b A_n(f) \, \dif x
+    =\frac{b-a}{2n-2}[f(x_1)+2f(x_2)+\cdots+2f(x_{n-1})+f(x_n)].
+\end{equation*}
+}
+
+\frame{\frametitle{Assumptions, continued}
+The space of input functions is $\mathcal{V}$, the space of functions whose first derivatives have finite variation:
+  $$\cv^{1}[a,b]=\{f\in C^1[a,b]: \Var(f')<\infty\},$$
+The space of outputs is the real space $\R$.
+%  $$\cf=W^{2,1}=W^{2,1}[0,1]=\{f\in C^1[0,1]: \|f''\|_1<\infty\},$$
+The stronger semi-norm is $|f|_{\cf}=\Var(f')$, while the weaker semi-norm is
+\[
+\Ftnorm{f}:=\norm[1]{f'-A_2(f)'}=\norm[1]{f'-\frac{f(b)-f(a)}{b-a}}=\Var(f-A_2(f)),
+\]
+The cone of the integrand is defined as
+\begin{equation*}
+\cc_{\tau_{a,b}}:=\left\{f\in \cv^{1}:\Var(f')\leq\tau_{a,b}\left\|f'-\frac{f(b)-f(a)}{b-a}\right\|_1\right\}.
+\end{equation*}
+For simplicity, I will denote $\tau_{a,b}$ as $\tau$ for the rest of the context.
+}
+
+\frame{\frametitle{Multi-step Automatic Algorithms}
+\small
+\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgo}
+Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, $\{\tF_n\}_{n\in \mathcal{I}}$, and $\{F_n\}_{n\in \mathcal{I}}$ be as described above.
+Choose integer $n_{\text{lo}},n_{\text{hi}}$, such that $n_{\text{lo}}\leq n_{\text{hi}}$. Set $i=1$. Let $n_1=\max\left\{\lceil n_{\text{hi}}\left(\frac{n_{\text{lo}}}{n_{\text{hi}}}\right)^{\frac{1}{1+b-a}}\rceil,3\right\}$. Let $\tau_{a,b}=2n_1-3$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
+\small
+\begin{description}
+\item[Stage 1.\ Estimate {$\|f'-f(b)+f(a)\|_{1}$} and bound {$\Var(f')$}.] Compute $F_{n_i}(f)$ and $\tilde{F}_{n_i}(f)$.
+
+\item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
+    \begin{align*}
+     \tau_{\min,n_i} =  \frac{(b-a)F_{n_i}(f)}{\tF_{n_i}(f)+(b-a)F_{n_i}(f)/(2n_i-2)}.
+    \end{align*}
+If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
+$$
+n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil. \text{ Go to Stage 1.}
+$$
+\end{description}
+\end{algo}
+}
+
+
+
+
+\frame{\frametitle{Multi-step Automatic Algorithms, continued}
+\begin{algo}
+\begin{description}
+
+\item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
+    \begin{equation*}
+     \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{(b-a)^2\tau}.
+    \end{equation*}
+If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
+$$
+n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{b-a}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
+$$
+Go to Stage 1.
+\end{description}
+\end{algo}
+}
+
+
+%
+%
+%\frame{\frametitle{Numerical Example}
+% Consider the family of bump test functions defined by
+%\begin{multline}\label{testfun}
+%f(x)= \\
+%\begin{cases}
+%\displaystyle  b[4a^2 + (x-z)^2-(x-z-a)|x-z-a|\\
+%\qquad \qquad -(x-z+a)|x-z+a|], & z-2a\leq x\leq z+2a,\\[2ex]
+%\displaystyle  0, & \text{otherwise}.
+%\end{cases}
+%\end{multline}
+%with  $\log_{10}(a) \sim \cu[-4,-1]$, $z \sim \cu[2a,1-2a]$, and $b=1/(4a^3)$ chosen to make $\int_0^1 f(x) \, \dif x = 1$.  It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
+%}
+%
+%\frame{\frametitle{Experiment Setup}
+%
+%
+%As an experiment, we chose $10000$ random test functions and applied Algorithm \ref{multistageintegalgo} with an error tolerance of  $\varepsilon = 10^{-8}$ and initial $\tau$ values of $10, 100, 1000$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals agree to within $\varepsilon$. The success and failure rates are given in Table \ref{integresultstable}. Our algorithm imposes a cost budget of $N_{\max}=10^7$. The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$, for which there was no warning.  It was also successful for a small percentage of functions lying outside the cone.
+%}
+%
+%\frame{\frametitle{Results}
+%\begin{table}[h]\label{integresultstable}
+%\centering
+%\begin{tabular}{cccccc}
+%&&&Success & Success & Failure \\
+%& $\tau$ &  $\Prob(f \in \cc_{\tau}) $ & No Warning & Warning & No Warning \\
+%\toprule
+%&$10$ & $0\% \rightarrow  25\% $ & $25\%$ & $<1\%$ & $75\%$  \\
+%Algorithm \ref{multistageintegalgo}
+% &$100$ & $23 \% \rightarrow 58\% $ & $56\%$ & $2\%$ & $42\%$ \\
+%&$1000$ & $57\% \rightarrow 88\% $& $68\%$ & $20\%$ &$12\%$ \\
+%\midrule
+%{\tt quad} & & & 8\% & & $92\%$\\
+%{\tt integral} & & & 19\% & & $81\%$\\
+%{\tt chebfun} & & &29\% & & $71\%$\\
+%\end{tabular}
+%\caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistageintegalgo} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
+%\end{table}
+%}
+%
+%\frame{\frametitle{Guaranteed Automatic Integration Library (GAIL)}
+%
+%The ideas presented here are being implemented in MATLAB code (code.google.com$\backslash$p$\backslash$gail), which also include:
+% \begin{itemize}
+%
+%   \item Automatic univariate function recovery via linear splines.
+%
+%   \item Guaranteed automatic Monte Carlo algorithm for multidimensional integration.
+%
+%   \item Hopefully, extensions to quasi-Monte Carlo methods, multivariate function recovery, (P)DEs, and optimization
+%
+% \end{itemize}
+%}
+%
+%\frame{\frametitle{Summary}
+% \begin{itemize}
+%   \item  Most popular algorithms are not automatic. Those that are automatic are not guaranteed. We need to request them or build them.
+%
+%
+%   \item Think cones, not balls.
+% \end{itemize}
+%
+%}
+\section{Demo}
+\frame{\frametitle{Demo}
+\center\Large{Demo}
+}
+\section{Future Work}
+\frame{\frametitle{Future Work}
+ \begin{itemize}
+
+   \item Verify my theoretic proof of this case.
+
+   \item Double check the MATLAB code.
+
+   \item Polishing and debugging.
+
+ \end{itemize}
+}
+
+
+\frame{\frametitle{References 1}
+
+Clancy N, Ding Y, Hamilton C, Hickernell FJ, Zhang Y (2013) The complexity of guaranteed automatic algorithms: Cones, not balls. Submitted for publication, arXiv.org:1303.2412 [math.NA]
+}
+
+%
+%\frame{\frametitle{Lower Bound of Computational Cost}
+% Now we compute the lower bound by constructing fooling functions. We choose  the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
+%\begin{gather*}
+%\Ftnorm{f_0}=\norm[1]{f'_0-f_0(1)+f_0(0)}=\int_0^1 \abs{\sign(1/2-x)} \, \dif x = 1, \\ \Fnorm{f_0}=\Var(f'_0)=2= \tau_{\min}.
+%\end{gather*}
+%
+%}
+%
+%\frame{\frametitle{Lower Bound of Computational Cost, continued}
+% For any $n \in \cj:=\natzero$, suppose that the one has the data $L_i(f)=f(\xi_i)$, $i=1, \ldots, n$ for arbitrary $\xi_i$, where $0=\xi_0 \le \xi_1 < \cdots < \xi_n \le \xi_{n+1} = 1$.  There must be some $j=0, \ldots, n$ such that $\xi_{j+1} - \xi_j \ge 1/(n+1)$.  The function $f_{1}$ is defined as a triangle function on the interval $[\xi_j, \xi_{j+1}]$:
+%$$
+%f_{1}(x):=\begin{cases} \displaystyle
+%\frac{\xi_{j+1}-\xi_{j}-\abs{\xi_{j+1}+\xi_{j}-2x}}{8} & \xi_{j} \le x \leq \xi_{j+1},\\
+%0 & \text{otherwise}.
+%\end{cases}
+%$$
+%}
+%
+%\frame{\frametitle{Lower Bound of Computational Cost, continued}
+%This is a piecewise linear function whose derivative changes from $0$ to $1/4$ to $-1/4$ to $0$ provided $0 < \xi_j < \xi_{j+1} < 1$, and so $\Fnorm{f_1}=\Var(f'_1)\le 1$. Moreover,
+%\begin{gather*}
+%\INT(f)=\int_0^1 f_1(x) \, \dif x = \frac{(\xi_{j+1} - \xi_j)^2}{16} \ge \frac{1}{16(n+1)^2} =: g(n),\\
+%g^{-1}(\varepsilon)=\left \lceil \sqrt{\frac{1}{16 \varepsilon}} \right \rceil - 1.
+%\end{gather*}
+%Using these choices of $f_0$ and $f_1$, along with the corresponding $g$ above, we can have that the complexity of the integration problem over the cone of functions $\cc_{\tau}$ is bounded below as
+%\begin{equation*}
+%\comp(\varepsilon,\ca(\cc_{\tau},\reals,\INT,\Lambda^{\std}),\cb_{s}) \ge \left \lceil \sqrt{\frac{(\tau-2)s}{32 \tau \varepsilon}} \right \rceil -1 .
+%\end{equation*}
+%
+%}
+
+
+\end{document}
+(code.google.com$\backslash$p$\backslash$gail)
+\frame{\frametitle{Estimate the First Derivative}
+ Define the estimation of the first derivative of the function as $G_{n}(f)$. Suppose that the data sites $x_0,x_1,\cdots, x_{n-1}$ and the corresponding function values. One may estimate $\|f'\|_1$ in the following way: $$G_n(f)=\sum_{i=0}^{n-1}\left|f(x_{i+1})-f(x_{i})\right|.$$
+
+}
+
+
+\frame{\frametitle{Estimate the First Derivative}
+Any nonadaptive algorithm $G_n$ with cost $n=\cost(G_n)$ yields an approximation to the $\cg$-semi-norm of functions in the cone $\mathcal{C}_{\tau}$ with the following upper and lower error bounds:
+\begin{equation*}
+\frac{G_n(f)}{\mathfrak{c}_n} \le \|f\|_{\cg} \le \mathfrak{C}_n G_n(f) \qquad \forall f \in \mathcal{C}_{\tau}.
+\end{equation*}
+In this case, the deflation factor, $\mathfrak{c}_n$, and the inflation factor, $\mathfrak{C}_n$ are defined as follows:
+\begin{gather*}
+\mathfrak{c}_n =1 \\%+ \tau \text{err}_{-}(G_n,\cf,\R_+,\|\cdot\|_{\cg})  \ge 1 \\
+\mathfrak{C}_n =\frac{1}{1 - \tau (n-1)} \ge 1.
+\end{gather*}
+
+ }
+
+\frame{\frametitle{Estimate the Error}
+ The upper bound implies that $\tau < n-1.$ Thus it is shown that in the specific case, the worst error in $W^{2,1}$ will be always smaller than the one in $W^{1,1}$, namely, $\tau \tildeh(n)\leq h(n)$. Then we obtain $$\left|\int_{0}^{1}f(x)dx-A_n(f)\right|\leq \frac{\tau\|f'\|_{1}}{8(n-1)^2}\leq \frac{\tau\mathfrak{C}_n G_n(f)}{8(n-1)^2}\leq\varepsilon.$$
+}
+
+\frame{\frametitle{Estimate the Error}
+ \begin{theo}
+   Let $\varepsilon$, $\mathfrak{C}_n$, and $\tau$ be given. Let $\mathcal{C}_{\tau}$ be the cone of functions defined above. The cost of the algorithm is bounded above in terms of $\|f'\|_{1}$ of the input function as follows:
+   $$\text{cost}(A,\varepsilon,\sigma)\leq\min\left\{n\in\mathcal{I}:n\geq\left(\frac{\sigma\tau}{8\varepsilon(1-\tau/(n-1))}\right)\right\}.$$
+   where $\sigma=\|f'\|_{1}.$
+ \end{theo}
+}

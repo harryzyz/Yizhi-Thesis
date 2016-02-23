@@ -1,0 +1,68 @@
+\documentclass[]{elsarticle}
+%\setlength{\marginparwidth}{0.5in}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+\input FJHDef.tex
+
+%Requires ApproxUnivariate_k.tex, univariate_integration_k.tex, ConesPaperSpikyquad.eps, ConesPaperFlukyquad.eps
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\INT}{INT}
+\DeclareMathOperator{\APP}{APP}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\up}{up}
+\DeclareMathOperator{\lo}{lo}
+\DeclareMathOperator{\fix}{fix}
+\DeclareMathOperator{\err}{err}
+\DeclareMathOperator{\maxcost}{maxcost}
+\DeclareMathOperator{\mincost}{mincost}
+\newcommand{\herr}{\widehat{\err}}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{lem}{Lemma}
+\newtheorem{cor}{Corollary}
+\theoremstyle{definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{condit}{Condition}
+%\newtheorem{assump}{Assumption}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+\newcommand{\Fnorm}[1]{\abs{#1}_{\cf}}
+\newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
+\newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
+\newcommand{\flin}{f_{\text{\rm{lin}}}}
+
+\journal{Journal of Complexity}
+
+\begin{document}
+
+The error of the trapezoidal rule in terms of the variation of the first derivative of the integrand is:
+%\begin{subequations} \label{integhhtilde}
+\begin{gather*}
+\abs{\int_0^1 f(x) \, dx - T_n(f)} \le h(n) \Var(f') \\
+h(n):= \frac{1}{8(n-1)^2}, \qquad h^{-1}(\varepsilon) = \left \lceil \sqrt{\frac{1}{8\varepsilon}} \right \rceil +1.
+\end{gather*}
+
+The cone of integrands is defined as
+\begin{equation*}
+\cc_{\tau}:=\{f\in \cv^{1}:\Var(f')\leq\tau\|f'-f(1)+f(0)\|_1\}.
+\end{equation*}
+
+By derivation,
+\begin{align*}
+\bignorm[1]{f'-f(1)+f(0)} - \tF_n(f) &= \Ftnorm{f} - \tF_{n}(f)\\
+ & \le \bignorm[1]{f' -A_n(f)'}\\
+&\le \frac{1}{2n-2} \sum_{i=1}^{n-1} \left[ \sup_{x_i \le x \le x_{i+1}} f'(x) - \inf_{x_i \le x \le x_{i+1}} f'(x) \right] \\
+& \le \frac{\Var(f')}{2n-2} = \frac{\Fnorm{f}}{2n-2},
+\end{align*}
+
+Then $$\Ftnorm{f}\leq\frac{2\tF_n(f)}{2-\tau/(n-1)}$$
+
+So $$ 
+\left|\int_0^1 f(x) dx - T_n(f)\right| \le \frac{\tau}{4(n-1)(2n-2-\tau)}\tF_n(f)
+$$
+
+
+
+\end{document}
+
