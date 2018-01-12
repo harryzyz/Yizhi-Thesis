@@ -1,0 +1,24 @@
+\begin{thebibliography}{1}
+
+\bibitem{Boney96}
+L.~Boney, A.~H. Tewfik, and K.~N. Hamdy.
+\newblock Digital watermarks for audio signals.
+\newblock In {\em Proceedings of the Third IEEE International Conference on
+  Multimedia}, pages 473--480, June 1996.
+
+\bibitem{MG}
+M.~Goossens, F.~Mittelbach, and A.~Samarin.
+\newblock {\em A LaTeX Companion}.
+\newblock Addison-Wesley, Reading, MA, 1994.
+
+\bibitem{HK}
+H.~Kopka and P.~W. Daly.
+\newblock {\em A Guide to LaTeX}.
+\newblock Addison-Wesley, Reading, MA, 1999.
+
+\bibitem{Pan}
+D.~Pan.
+\newblock A tutorial on mpeg/audio compression.
+\newblock {\em IEEE Multimedia}, 2:60--74, Summer 1995.
+
+\end{thebibliography}

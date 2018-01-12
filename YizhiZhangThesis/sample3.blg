@@ -1,0 +1,20 @@
+This is BibTeX, Version 0.99dThe top-level auxiliary file: sample3.aux
+The style file: plain.bst
+Database file #1: mybib.bib
+I was expecting a `,' or a `}'---line 6 of file mybib.bib
+ :    year=1999
+ :             .
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 14 of file mybib.bib
+ :    year=1994
+ :             .
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 23 of file mybib.bib
+ :     month={Summer}
+ :                   .
+I'm skipping whatever remains of this entry
+I was expecting a `,' or a `}'---line 33 of file mybib.bib
+ : year={1996}
+ :            .
+I'm skipping whatever remains of this entry
+(There were 4 error messages)
