@@ -19,6 +19,7 @@
 \usepackage{subfigure}          % These two packages, epsfig and subfigure, are used for creating subplots.
 % Packages are explained in the Help document.
 \usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+\usepackage{color}
 \input FJHDef.tex
 
 %Requires ApproxUnivariate_k.tex, univariate_integration_k.tex, ConesPaperSpikyquad.eps, ConesPaperFlukyquad.eps
@@ -139,9 +140,11 @@ A
 
 \Chapter{Background}
 
-\Section{Space for Trapezoidal Rule}
+\Section{Definitions and Assumptions}
 
-**I need to write down more details. I need to give all definition before used in the algorithms for both trap and sim.**
+\textcolor{red}{I need to write down more details. I need to give all definition before used in the algorithms for both trap and sim.}
+
+The problem to be solved is univariate integration on the interval $[a,b]$, $\INT(f):=\int_{a}^{b}f(t) \, \dif t \in \reals$.  We will The fixed cost building blocks to construct the adaptive integration algorithm are the composite Simpson's rule based on an even number of $3n$ intervals.
 
 The algorithms used in this section on integration is based on linear splines on $[a,b]$.  The node set and the linear spline algorithm using $n$ function values are defined for $n \in \mathcal{I}:=\{2,3,\ldots\}$ as follows:
 \begin{subequations} \label{linearspline}
@@ -199,7 +202,7 @@ where $\xi_i$ is some point in $[x_i,x_{i+1}]$.
 
 \Section{Space for Simpson's Rule}
 
-The problem to be solved is univariate integration on the interval $[a,b]$, $\INT(f):=\int_{a}^{b}f(t) \, \dif t \in \reals$.  The fixed cost building blocks to construct the adaptive integration algorithm are the composite Simpson's rule based on an even number of $3n$ intervals. From (ref), the error bound of Simpson's rule is related to the variation of the third derivatives of the function to be integrated:
+From (ref), the error bound of Simpson's rule is related to the variation of the third derivatives of the function to be integrated:
 \begin{equation}\label{errorboundSimpson}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=\frac{(b-a)^4\Var(f''')}{5832n^4}.
 \end{equation}
@@ -222,74 +225,11 @@ The algorithm will be guaranteed to work for the cone of integrands for which $\
 %\end{equation}
 where $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$ is the inflation factor. The cut-off value $\mathfrak{h}$ and the inflation factor $\mathfrak{C}$ define the cone. The choice of $\mathfrak{C}$ is flexible. But it must be non-decreasing. One choice could be $\mathfrak{C}(h)=\mathfrak{C}(0)\frac{\mathfrak{h}}{\mathfrak{h}-h}, \mathfrak{C}(0)\ge1$.
 
-\Chapter{Adaptive, Automatic Algorithms with Guarantees}
-
-\Section{Basic Concepts}
-
-**I need to explain the embedded mechanism and stopping criteria with tolerance, max iteration and max number of points. In the following subsections, I need detailed explanation of the algorithms. I also need to find out where to put the algorithms because how I got the guarantees (error less than tolerance) is in Chapter 4.**
-
-\Section{Trapezoidal Rule}
-
-
-\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgo}
-Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, $\{\tF_n\}_{n\in \mathcal{I}}$, and $\{F_n\}_{n\in \mathcal{I}}$ be as described above.
-Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
-\begin{description}
-\item[Stage 1.\ Estimate {$\norm[1]{f'-f(1)+f(0)}$} and bound {$\Var(f')$}.] Compute $\tF_{n_i}(f)$ in \eqref{1direst} and $F_{n_i}(f)$ in \eqref{Fnormalg}.
-
-\item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
-    \begin{align*}
-     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}.
-    \end{align*}
-If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
-$$
-n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.
-$$
-Go to Stage 1.
-
-\item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
-    \begin{equation*}
-     \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{\tau}.
-    \end{equation*}
-If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
-$$
-n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
-$$
-Go to Stage 1.
-\end{description}
-\end{algo}
-
-
-\Section{Simpson's Rule}
-
-\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgosimpson}
-Given an interval $[a,b]$, an inflation function, $\mathfrak{C}$, a positive key mesh size $\mathfrak{h}$, a positive error tolerance, $\varepsilon$, and a routine for generating values of the integrand, $f$, set $l=1$, and
-$n_1=2(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$.%, if $\lfloor(n_1/2)\rfloor\neq n_1/2$, $n_1=n_1+1$.
-\begin{description}
-\item[Stage 1] %Estimate {$\|f''-4[f(1)-2f(1/2)+f(0)]\|_1$} and bound {$\Var(f''')$}.]
-Compute the error estimate $\widetilde{\text{err}}(f,n_l)$ according to \eqref{errorboundcone}.
-
-\item[Stage 2] %Check the necessary condition for $f \in \cc_{\tau}$.]
-If $\widetilde{\text{err}}(f,n_l)\le\varepsilon$, then return the Simpson's rule approximation $S_{n_l}(f)$ as the answer.
-
-\item[Stage 3] %Check for convergence.]
-Otherwise let $n_{l+1}=\max(2,m)\eta_{l}$, where
-$$m=\min\{r\in\mathbb{N}:\eta(rn_l)\widetilde{V}_{n_{l}(f)}\le\varepsilon\}, \text{with } \eta(n):=\frac{(b-a)^4\mathfrak{C}(2(b-a)/n)}{5832n^4}.$$
-increase $l$ by one, and go to 1.
-\end{description}
-\end{algo}
-
-\begin{theorem}\label{thmSimpson}
-    Algorithm \ref{multistageintegalgosimpson} is successful, i.e.,
-    \begin{equation*}
-      \left|\int_{a}^{b}f(x)dx-\texttt{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc.
-    \end{equation*}
-\end{theorem}
 
 
 
 \Chapter{Error Analysis}
-**I need to translate trap language to sim language to make them uniform. I need to explain the deduction for trap without using and assumptions or known theories in the paper. I also need to figure out notations. I need the notations not to conflict. Then I need to go to chapter 2 and change notation.**
+\textcolor{red}{I need to translate trap language to sim language to make them uniform. I need to explain the deduction for trap without using and assumptions or known theories in the paper. I also need to figure out notations. I need the notations not to conflict. Then I need to go to chapter 2 and change notation.}
 
 \Section{Trapezoidal Rule}
 Constructing the adaptive algorithm for integration requires an upper bound on the error of $T_n$ and a two-sided bound on the error of $\tF_n$.  Note that $\tF_{n}(f)$ never overestimates $\Ftnorm{f}$ because
@@ -621,6 +561,71 @@ complexity:
     Finally, comparing the upper bound on the computational cost of $\texttt{integral}$ in \eqref{uppbndcostineq} with the lower bound on the computational cost of the best algorithm in \eqref{lowbndcostineq}, both of them increase as $\mathcal{O}((\Var(f''')/\varepsilon))^{1/4}$ as $(\Var(f''')/\varepsilon)^{1/4}\rightarrow \infty$. Thus $\texttt{integral}$ is optimal.
 \end{proof}
 
+\Chapter{Adaptive, Automatic Algorithms with Guarantees}
+
+\Section{Basic Concepts}
+
+\textcolor{red}{I need to explain the embedded mechanism and stopping criteria with tolerance, max iteration and max number of points. In the following subsections, I need detailed explanation of the algorithms. I also need to find out where to put the algorithms because how I got the guarantees (error less than tolerance) is in Chapter 4.}
+
+\Section{Trapezoidal Rule}
+
+
+\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgo}
+Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, $\{\tF_n\}_{n\in \mathcal{I}}$, and $\{F_n\}_{n\in \mathcal{I}}$ be as described above.
+Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
+\begin{description}
+\item[Stage 1.\ Estimate {$\norm[1]{f'-f(1)+f(0)}$} and bound {$\Var(f')$}.] Compute $\tF_{n_i}(f)$ in \eqref{1direst} and $F_{n_i}(f)$ in \eqref{Fnormalg}.
+
+\item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
+    \begin{align*}
+     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}.
+    \end{align*}
+If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
+$$
+n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.
+$$
+Go to Stage 1.
+
+\item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
+    \begin{equation*}
+     \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{\tau}.
+    \end{equation*}
+If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
+$$
+n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
+$$
+Go to Stage 1.
+\end{description}
+\end{algo}
+
+
+\Section{Simpson's Rule}
+
+\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgosimpson}
+Given an interval $[a,b]$, an inflation function, $\mathfrak{C}$, a positive key mesh size $\mathfrak{h}$, a positive error tolerance, $\varepsilon$, and a routine for generating values of the integrand, $f$, set $l=1$, and
+$n_1=2(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$.%, if $\lfloor(n_1/2)\rfloor\neq n_1/2$, $n_1=n_1+1$.
+\begin{description}
+\item[Stage 1] %Estimate {$\|f''-4[f(1)-2f(1/2)+f(0)]\|_1$} and bound {$\Var(f''')$}.]
+Compute the error estimate $\widetilde{\text{err}}(f,n_l)$ according to \eqref{errorboundcone}.
+
+\item[Stage 2] %Check the necessary condition for $f \in \cc_{\tau}$.]
+If $\widetilde{\text{err}}(f,n_l)\le\varepsilon$, then return the Simpson's rule approximation $S_{n_l}(f)$ as the answer.
+
+\item[Stage 3] %Check for convergence.]
+Otherwise let $n_{l+1}=\max(2,m)\eta_{l}$, where
+$$m=\min\{r\in\mathbb{N}:\eta(rn_l)\widetilde{V}_{n_{l}(f)}\le\varepsilon\}, \text{with } \eta(n):=\frac{(b-a)^4\mathfrak{C}(2(b-a)/n)}{5832n^4}.$$
+increase $l$ by one, and go to 1.
+\end{description}
+\end{algo}
+
+\begin{theorem}\label{thmSimpson}
+    Algorithm \ref{multistageintegalgosimpson} is successful, i.e.,
+    \begin{equation*}
+      \left|\int_{a}^{b}f(x)dx-\texttt{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc.
+    \end{equation*}
+\end{theorem}
+
+
 \Chapter{Numerical Experiments}
 
 \Section{Trapezoidal temp}
@@ -658,7 +663,7 @@ Algorithm \ref{multistageintegalgo}
 Some commonly available numerical algorithms in MATLAB are {\tt quad} and {\tt integral} \cite{MAT8.1} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these three routines to the random family of test functions.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  They do not give warnings of possible failure.
 
 \Section{Simpson's Rule}
-**I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.
+\textcolor{red}{I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.}
 
 
 \Chapter{CONCLUSION}
