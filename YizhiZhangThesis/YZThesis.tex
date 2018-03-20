@@ -118,11 +118,11 @@ show drwabacks
 2. adaptive no guarantees
 3. maybe more
 
-introduce 
+introduce
 \begin{equation}\label{integral}
     \text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals.
 \end{equation}
-    
+
 
 
 \clearpage
@@ -130,7 +130,7 @@ introduce
 
 
 \Chapter{Problem Statement, Definition and Assumptions}
-In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule. 
+In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule.
 
 The composite trapezoidal rule using $n$ equally spaced intervals between $(a,b)$ can be defined as:
 \begin{equation}\label{traprule}
@@ -163,13 +163,15 @@ The space of input functions is $\cf:=\mathcal{V}^{1} \text{ and } \mathcal{V}^{
 \end{gather}
 \end{subequations}
 
-Define partition $u$ and $v$, or $x$? what should I use here? maybe $x$
+1 norm is not in used. consider to delete after translation completed for chapter 3.
+
+Define partition $u$ and $v$, or $x$? what should I use here? maybe $x$. It should be $x$ since it is true for any partition.
 
 For trapezoidale rule, we use $\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n}$ to approximate $\Var(f')$, where %)=\norm[1]{f'-f(b)+f(a)}
 \begin{align}\label{1direst}
 \widehat{V}_{1}(f',\{v_j\}_{j=0}^{n})=\sum_{j=1}^{n}\left|f(v_{j+1})-f(v_{j}) - \frac{f(b)-f(a)}{n}\right|.
 \end{align}
- 
+
 For Simpson's rule, we use $\widehat{V}(f''',\{u_j\}_{j=0}^{n+1})$ to approximate $\Var(f''')$, where
 \begin{equation}\label{vhatlessvar}
     \widehat{V}_{3}(f''',\{v_j\}_{j=0}^{n+1})=\sum_{j=1}^{n-1}|f'''(u_{j+1})-f'''(u_{j})|.
