@@ -130,7 +130,11 @@ introduce
 
 
 \Chapter{Problem Statement, Definition and Assumptions}
+<<<<<<< HEAD
 In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need to start from some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule.
+=======
+In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule.
+>>>>>>> 21cebda6e7817fb755d3478589754a399e341b25
 
 The composite trapezoidal rule using $n$ equally spaced intervals between $(a,b)$ can be defined as:
 \begin{equation}\label{traprule}
@@ -153,6 +157,7 @@ The reason why we use $3n$ intervals with an even number of $n$ is for the conve
 
 The error bound of trapezoidal rule and Simpson's rule can be presented in terms of the variation of the input fuction:
 
+<<<<<<< HEAD
 \begin{equation}\label{errorbound}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=h(n)\Var(f^{(p)}).
 \end{equation}
@@ -161,6 +166,20 @@ For trapezoidal rule, $h_{t}(n)=(b-a)^2/8n^2, p=1$(ref). For Simpson's rule, $h_
 The variation can be defined as follow:
 \begin{equation}\label{defvar}
   \Var(f) := \sup_{\substack{n \in \naturals\\ a = x_0 < x_1 < \cdots < x_{n+1} =b}} \sum_{i=0}^{n} \abs{f(x_i+1)-f(x_{i})},
+=======
+1 norm is not in used. consider to delete after translation completed for chapter 3.
+
+Define partition $u$ and $v$, or $x$? what should I use here? maybe $x$. It should be $x$ since it is true for any partition.
+
+For trapezoidale rule, we use $\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n}$ to approximate $\Var(f')$, where %)=\norm[1]{f'-f(b)+f(a)}
+\begin{align}\label{1direst}
+\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n})=\sum_{j=1}^{n}\left|f(v_{j+1})-f(v_{j}) - \frac{f(b)-f(a)}{n}\right|.
+\end{align}
+
+For Simpson's rule, we use $\widehat{V}(f''',\{u_j\}_{j=0}^{n+1})$ to approximate $\Var(f''')$, where
+\begin{equation}\label{vhatlessvar}
+    \widehat{V}_{3}(f''',\{v_j\}_{j=0}^{n+1})=\sum_{j=1}^{n-1}|f'''(u_{j+1})-f'''(u_{j})|.
+>>>>>>> 21cebda6e7817fb755d3478589754a399e341b25
 \end{equation}
 where the input functions, in the space $\cf$, are continuos in $[a,b]$, and have finite variation to the order of 1 and 3, respectively, for trapezoidal rule and Simpson's rule:
 \begin{equation}\label{defspace}
@@ -324,9 +343,7 @@ Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+
      \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}.
     \end{align*}
 If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
-$$
-n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.
-$$
+$$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
 Go to Stage 1.
 
 \item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
