@@ -118,11 +118,11 @@ show drwabacks
 2. adaptive no guarantees
 3. maybe more
 
-introduce 
+introduce
 \begin{equation}\label{integral}
     \text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals.
 \end{equation}
-    
+
 
 
 \clearpage
@@ -130,7 +130,7 @@ introduce
 
 
 \Chapter{Problem Statement, Definition and Assumptions}
-In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule. 
+In the previous chapter, I introduced the problem that this thesis is going to be focus on, which is the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. To solve this problem, we need to start from some adaptive integration algorithms constructed by the fixed cost building blocks such as composite trapezoidal rule and composite Simpson's rule.
 
 The composite trapezoidal rule using $n$ equally spaced intervals between $(a,b)$ can be defined as:
 \begin{equation}\label{traprule}
@@ -144,54 +144,76 @@ In the meanwhile, the composite Simpson's rule using $3n$ equally spaced interva
 \begin{equation}\label{simrule}
   S(f,n)=\frac{b-a}{6n}\sum_{j=0}^{3n}(f(v_{j})+4f(v_{j+1})+f(v_{j+2})),
 \end{equation}
-(\textcolor[rgb]{1.00,0.00,0.00}{double check index and fraction it is not right.})
+(\textcolor[rgb]{1.00,0.00,0.00}{double check index and fraction.})
 where
 \begin{equation}\label{vpts}
 v_j=a+\frac{j(b-a)}{n}, \qquad j=0, \ldots, 3n, \qquad n\in 2\mathbb{N}.
 \end{equation}
-The reason why we use $3n$ intervals with an even number of $n$ is that...
+The reason why we use $3n$ intervals with an even number of $n$ is for the convenience of notations of later deduction(???).
 
-In order to find the error bound of guaranteed algorithms, we start from some existing result of the error bound for trapezoidal rule and Simpson's rule in terms of the variation of the function. So we will have the following definition:
+The error bound of trapezoidal rule and Simpson's rule can be presented in terms of the variation of the input fuction:
 
-The space of input functions is $\cf:=\mathcal{V}^{1} \text{ and } \mathcal{V}^{3}$, separately for trapezoidal rule and Simpson's rule.  The general definitions of the variation, some relevant norms and spaces are as follows:
-\begin{subequations} \label{defSobolev}
-\begin{gather}
-\Var(f) := \sup_{\substack{n \in \naturals\\ a = x_0 < x_1 < \cdots < x_{n} =b}} \sum_{i=1}^n \abs{f(x_i)-f(x_{i-1})}, \\
-\norm[1]{f}:= \int_a^b \abs{f(x)} \, \dif x , \\
-\cv^{k}: =\cv^{k}[a,b]=\{f\in C[a,b]: \Var(f^{(k)}) < \infty \}.
-%\mathcal{W}^{k,p}=\mathcal{W}^{k,p}[0,1]=\{f\in C[0,1]: \|f^{(k)}\|_{p}<\infty\}.
-\end{gather}
-\end{subequations}
-
-Define partition $u$ and $v$, or $x$? what should I use here? maybe $x$
-
-For trapezoidale rule, we use $\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n}$ to approximate $\Var(f')$, where %)=\norm[1]{f'-f(b)+f(a)}
-\begin{align}\label{1direst}
-\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n})=\sum_{j=1}^{n}\left|f(v_{j+1})-f(v_{j}) - \frac{f(b)-f(a)}{n}\right|.
-\end{align}
- 
-For Simpson's rule, we use $\widehat{V}(f''',\{u_j\}_{j=0}^{n+1})$ to approximate $\Var(f''')$, where
-\begin{equation}\label{vhatlessvar}
-    \widehat{V}_{3}(f''',\{v_j\}_{j=0}^{n+1})=\sum_{j=1}^{n-1}|f'''(u_{j+1})-f'''(u_{j})|.
+\begin{equation}\label{errorbound}
+    \text{err}(f,n)\le\overline{\text{err}}(f,n):=h(n)\Var(f^{(p)}).
 \end{equation}
+For trapezoidal rule, $h_{t}(n)=(b-a)^2/8n^2, p=1$(ref). For Simpson's rule, $h_{s}(n)=(b-a)^4/5832n^4, p=3$.
+
+The variation can be defined as follow:
+\begin{equation}\label{defvar}
+  \Var(f) := \sup_{\substack{n \in \naturals\\ a = x_0 < x_1 < \cdots < x_{n+1} =b}} \sum_{i=0}^{n} \abs{f(x_i+1)-f(x_{i})},
+\end{equation}
+where the input functions, in the space $\cf$, are continuos in $[a,b]$, and have finite variation to the order of 1 and 3, respectively, for trapezoidal rule and Simpson's rule:
+\begin{equation}\label{defspace}
+ \cf: =\cv^{k}[a,b]=\{f\in C[a,b]: \Var(f^{(k)}) < \infty \}, k=1,3.
+\end{equation}
+%
+%The space of input functions is $\cf:=\mathcal{V}^{1} \text{ and } \mathcal{V}^{3}$, separately for trapezoidal rule and Simpson's rule.  The general definitions of the variation, some relevant norms and spaces are as follows:
+%\begin{subequations} \label{defSobolev}
+%\begin{gather}
+%\Var(f) := \sup_{\substack{n \in \naturals\\ a = x_0 < x_1 < \cdots < x_{n} =b}} \sum_{i=1}^n \abs{f(x_i)-f(x_{i-1})}, \\
+%\norm[1]{f}:= \int_a^b \abs{f(x)} \, \dif x , \\
+%\cv^{k}: =\cv^{k}[a,b]=\{f\in C[a,b]: \Var(f^{(k)}) < \infty \}.
+%%\mathcal{W}^{k,p}=\mathcal{W}^{k,p}[0,1]=\{f\in C[0,1]: \|f^{(k)}\|_{p}<\infty\}.
+%\end{gather}
+%\end{subequations}
+
+Given any partition $\{x_i\}_{i=0}^{n+1}$, where $a=x_{0}\le x_{1}\le\cdots\le x_{n}\le x_{n+1}=b$, we introduce an approximation to the variation as:
+\begin{equation}\label{defvhat}
+  \widehat{V}(f,\{x_i\}_{i=0}^{n+1})=\sum_{i=1}^{n-1}|f(x_{i+1})-f(x_{i})|
+\end{equation}
+
+By definition, $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ is actually a lower bound of variation:
+\begin{equation*}
+  \widehat{V}(f,\{x_i\}_{i=0}^{n+1})\leq\sup_{\{x_i\}_{i=0}^{n+1}, n\in\naturals}\left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1})\right\}=\Var(f,n).
+\end{equation*}
+
+%For trapezoidale rule, we use $\widehat{V}_{1}(f',\{v_j\}_{j=0}^{n}$ to approximate $\Var(f')$, where %)=\norm[1]{f'-f(b)+f(a)}
+%\begin{align}\label{1direst}
+%\widehat{V}(f,\{v_j\}_{j=0}^{n})=\sum_{j=1}^{n}\left|f(v_{j+1})-f(v_{j}) - \frac{f(b)-f(a)}{n}\right|.
+%\end{align}
+%
+%For Simpson's rule, we use $\widehat{V}(f''',\{u_j\}_{j=0}^{n+1})$ to approximate $\Var(f''')$, where
+%\begin{equation}\label{vhatlessvar}
+%    \widehat{V}_{3}(f''',\{v_j\}_{j=0}^{n+1})=\sum_{j=1}^{n-1}|f'''(u_{j+1})-f'''(u_{j})|.
+%\end{equation}
 
 So the algorithm will be guaranteed to work for the cone of integrands for which $\widehat{V}(f^{(p)},\{x_j\}_{j=0}^{n+1})$ does not underestimate $\Var{(f^{(p)})}$ too much:
 %\begin{equation}
 \begin{multline}\label{coneinteg}
-\cc:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}_{p}(f^{(p)},\{x_j\}_{j=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_j\}_{j=0}^{n+1} \text{with }\text{size}(\{x_j\}_{j=0}^{n+1})<\mathfrak{h}\right\},
+\cc:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\},
 \end{multline}
 
-the problem with $N$ and $2N$
+talk about size and $\mathfrak{h}$
 
 The goal is to find an algorithm that can provide an upper bound of the approximation error using only function values. In the next chapter, I will give detailed deduction of error bound analysis.
-
-\textcolor{red}{I need to write down more details. I need to give all definition before used in the algorithms for both trap and sim.}
 
 
 
 
 \Chapter{Error Bound Analysis}
 \textcolor{red}{I need to translate trap language to sim language to make them uniform. I need to explain the deduction for trap without using and assumptions or known theories in the paper. I also need to figure out notations. I need the notations not to conflict. Then I need to go to chapter 2 and change notation.}
+
+In the previous part???
 
 \Section{Trapezoidal Rule}
 From (ref), the error bound of Trapezoidal rule is related to the variation of the third derivatives of the function to be integrated:
@@ -246,38 +268,22 @@ Then we will have $$\overline{\text{err}}(f,n):=\frac{(b-a)^2\Var(f')}{8n^2}\leq
 
 \Section{Simpson's Rule}
 
-From (ref), the error bound of Simpson's rule is related to the variation of the third derivatives of the function to be integrated:
-\begin{equation}\label{errorboundSimpson}
-    \text{err}(f,n)\le\overline{\text{err}}(f,n):=\frac{(b-a)^4\Var(f''')}{5832n^4}.
-\end{equation}
-
-We do not have the variation of the third derivative of the function. In order to find the error bound, the approximation (1) and (2) of variation of the third derivative of the function defined in Chapter 2 became important.
-
-%$\{t_i\}_{i=0}^{6n}$, where $a=t_{0}\le t_{1}\le\cdots\le t_{6n-1}\le t_{6n}=b$, and partition   and $t_{3j-3}\le x_{j}\le t_{3j}$ for $j=1,\cdots,2n$,
-By definition, the approximation (1) is actually a lower bound of $\Var(f''')$:
-\begin{equation}\label{vhatlessvar}
-    \widehat{V}(f''',\{x_j\}_{j=0}^{n+1})\leq\Var{(f''')}, \quad \forall f \in \cc, \quad \{x_j\}_{j=0}^{n+1}, \quad n \in \mathbb{N}.
-\end{equation}
-
-The algorithm will be guaranteed to work for the cone (2) of integrands for which $\widehat{V}(f''',\{x_j\}_{j=0}^{n+1})$ does not underestimate $\Var{(f''')}$ too much.
-
-%Approximation of $\Var(f''')$ using only function values:
-We cannot use $\widehat{V}(f''',\{x_j\}_{j=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. However, $\widehat{V}(f''',\{x_j\}_{j=0}^{n+1})$ is closely related to the following approximation to $\Var{(f''')}$:
+From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of input functions so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
 \begin{multline}\label{vtilde}
 \widetilde{V}_n(f)=\frac{27n^3}{(b-a)^3}\sum_{j=1}^{n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
 \end{multline}
 
 % may be say more
 % Since $$\frac{216n^3}{(b-a)^3}\left|f(t_{i-3})-3f(t_{i-2})+3f(t_{i-1})-f(t_{i})\right|=f'''(x_{i-1}),???$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
-We use divided differences to explain The relationship between (1) and (2). Let $h=v_{i+1}-v_{i}=(b-a)/3n$ and
+We use divided differences to explain The relationship between \eqref{defvhat} and \eqref{vtilde}. Let $h=v_{j+1}-v_{j}=(b-a)/3n$ and
 \begin{align*}
-  f[v_{i}]&=f(v_{i}), \text{ for } i=0,\cdots, 3n,\\
-  f[v_{i},v_{i-1}]&=\frac{f(v_{i})-f(v_{i-1})}{h},\text{ for } i=1, \cdots, 3n,\\
-  f[v_{i},v_{i-1},v_{i-2}]&=\frac{f(v_{i})-2f(v_{i-1})+f(v_{i-2})}{2h^2},\text{ for } i=2, \cdots, 3n,\\
-  f[v_{i},v_{i-1},v_{i-2},v_{i-3}]&=\frac{f(v_{i})-3f(v_{i-1})+3f(v_{i-2})-f(v_{i-3})}{6h^3}, \text{ for } i=3, \cdots, 3n.
+  f[v_{j}]&=f(v_{j}), \text{ for } j=0,\cdots, 3n,\\
+  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h},\text{ for } j=1, \cdots, 3n,\\
+  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},\text{ for } j=2, \cdots, 3n,\\
+  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, \text{ for } j=3, \cdots, 3n.
 \end{align*}
 
-According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\cdots,n$, $\exists x_j\in (v_{3j-3},v_{3j})$ such that
+According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\cdots,n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that
 \begin{equation*}
     f[v_{3j},v_{3j-1},v_{3j-2},t_{3j-3}]=\frac{f'''(x_j)}{6},
 \end{equation*}
@@ -293,6 +299,8 @@ If we combine \eqref{vtilde} and \eqref{vtileqftriprime} together, we obtain
     \widetilde{V}_n(f)=\sum_{j=1}^{n-1}\left|f'''(x_{j+1})-f'''(x_{j})\right|=\widehat{V}(f''',\{x_j\}_{j=0}^{n+1}).
 \end{equation}
 Then we can use $\widetilde{V}_n(f)$ to approximate $\Var(f''')$ by just using function values.
+
+(Add the formula here.)
 
 
 \Chapter{Adaptive, Automatic Algorithms with Guarantees}
