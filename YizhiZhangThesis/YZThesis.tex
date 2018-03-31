@@ -123,7 +123,7 @@ introduce
     \text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals.
 \end{equation}
 
-
+The goal is to construct adaptive, automatic algorithms with guarantees of success. In Chapter 2, I will introduce the definitions and assumptions used in the thesis. Chapter 3 will be focusing on finding the upper bound of the approximation errors. The guaranteed algorithms based on trapezoidal rule and Simpson's rule will be presented in Chapter 4 with rigorous theoretical proof of success/successfulness. Chapter 5 will study the lower and upper bound of computational cost. Chapter 6 will study the lower bound of complexity. In Chapter 7, the results from numerical experiences will be discussed.
 
 \clearpage
 
@@ -153,7 +153,7 @@ v_j=a+\frac{j(b-a)}{n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
 \end{equation}
 It uses $6n+1$ equally spaced function values, which form $6n$ intervals/subintervals between $[a.b]$. The reason why we use $6n$ intervals is that firstly, Simpson's rule requires an even number of intervals. Secondly, we are going to use the third order finite difference method to approximate the third derivative of $f$ in later chapters. The third order finite difference method requires the number of intervals to be a multiple of 3. All in all, the number of intervals for input data has to be a multiple of 6.
 
-Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error. If we look back at the traditional non-adaptive trapezoidal rule and Simpson's rule, the upper bound of approximation error can be represented in terms of the total variation of a particular derivative of integrand. 
+Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error. If we look back at the traditional non-adaptive trapezoidal rule and Simpson's rule, the upper bound of approximation error can be represented in terms of the total variation of a particular derivative of integrand.
 \begin{equation}\label{errorbound}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=C(n)\Var(f^{(p)}).
 \end{equation}
@@ -183,82 +183,57 @@ In order to build an adaptive automatic and guaranteed algorithm, we have to set
 \end{multline}
 The cone space $\cc^{p}$ is a subspace of $\cv^{p}[a,b]$. Details about the cut-off value $\mathfrak{h}$ and $\text{size}(\{x_i\}_{i=0}^{n+1})$ will be explained in the next chapter.
 
-WIth the cone space defined, we can start constructing our trapezoidal rule algorithm and Simpson's rule algorithm for functions in $\cc^{p}$, with appropriate value of $p$. To begin with, I will show how the algorithms provide guarantees of success in Chapter 3.
+With the cone space defined, we can start constructing our trapezoidal rule algorithm and Simpson's rule algorithm for functions in $\cc^{p}$, with appropriate value of $p$. To begin with, I will show how the algorithms provide guarantees of success in Chapter 3.
 
 
 
 
 \Chapter{Error Bound Analysis}
-\textcolor{red}{I need to translate trap language to sim language to make them uniform. I need to explain the deduction for trap without using and assumptions or known theories in the paper. I also need to figure out notations. I need the notations not to conflict. Then I need to go to chapter 2 and change notation.}
 
-In the previous part???
+In this chapter, we will study the error bound of approximation errors. By \eqref{errorbound} in Chapter 2, we know that the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation. Moreover, with the cone condition \eqref{defcone} defined, the total variation $\var(f^{(p)})$ can be bounded by one of its approximation $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, we cannot directly use $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ for trapezoidal rule and Simpson's rule because $f'$ and $f'''$ are unknown to us. All we are provided is the function $f$ and the node points. In this case, we need to find out by using only function values, how to approximate the first and third derivatives of the function. 
 
 \Section{Trapezoidal Rule}
-From (ref), the error bound of Trapezoidal rule is related to the variation of the third derivatives of the function to be integrated:
-\begin{equation}\label{errorboundtrap}
-    \text{err}(f,n)\le\overline{\text{err}}(f,n):=\frac{(b-a)^2\Var(f')}{8n^2}.
-\end{equation}
-
-Note that $\tF_{n}(f)$ never overestimates $\Ftnorm{f}$ because
+We used the backward finite difference method to approximate $f'$. Let $h=u_{j+1}-u_{j}=(b-a)/n$ and
 \begin{align*}
-\Ftnorm{f} & = \bignorm[1]{f'-A_2(f)'}
-= \sum_{i=1}^{n-1} \int_{x_i}^{x_{i+1}} \abs{f'(x) - A_2(f)'(x)} \, \dif x \\
-& \ge \sum_{i=1}^{n-1} \abs{\int_{x_i}^{x_{i+1}} [f'(x) - A_2(f)'(x)] \, \dif x}=\norm[1]{A_n(f)'-A_2(f)'} = \tF_n(f).
+  f[u_{j}]&=f(u_{j}), \text{ for } j=0,\cdots, n,\\
+  f[u_{j},v_{u-1}]&=\frac{f(u_{j})-f(u_{j-1})}{h},\text{ for } j=1, \cdots, n.
 \end{align*}
-To find an upper bound on $\Ftnorm{f}-\tF_{n}(f)$, note that
+
+
+According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\cdots,n$, there exists $x_j\in (u_{j-1},u_{j})$ such that
 \begin{equation*}
-\Ftnorm{f} - \tF_{n}(f) = \Ftnorm{f} - \bigabs{A_n(f)}_{\tcf} \le \bigabs{f-A_n(f)}_{\tcf} = \bignorm[1]{f' -A_n(f)'},
+    f[u_{j},u_{j-1}]=f'(x_j),
 \end{equation*}
-since $(f-A_n(f))(x)$ vanishes for $x=0,1$.  Moreover,
-\begin{equation} \label{onenormfp}
-\bignorm[1]{f' -A_n(f)'} = \sum_{i=1}^{n-1} \int_{x_i}^{x_{i+1}} \abs{f'(x) -(n-1)[f(x_{i+1})-f(x_i)]} \, \dif x.
+for $j = 1, 2, \cdots, n.$ This implies that
+\begin{equation}\label{vtileqfprime}
+  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h}=\frac{n}{(b-a)}[f(u_{j})-f(u_{j-1})],
 \end{equation}
-Now we bound each integral in the summation.  For $i=1, \ldots, n-1$, let $\eta_i(x) = f'(x) -(n-1)[f(x_{i+1})-f(x_i)]$, and let $p_i$ denote the probability that $\eta_i(x)$ is non-negative:
-\[
-p_i = (n-1)\int_{x_i}^{x_{i+1}} \bbone_{[0,\infty)} (\eta_i(x)) \, \dif x,
-\]
-and so $1-p_i$ is the probability that $\eta_i(x)$ is negative.  Since $\int_{x_i}^{x_{i+1}} \eta_i(x) \, \dif x =0$, we know that $\eta_i$ must take on both non-positive and non-negative values.  Invoking the Mean Value Theorem, it follows that
-\begin{multline*}
-\frac{p_i}{n-1} \sup_{x_i \le x \le x_{i+1}} \eta_i(x) \ge \int_{x_i}^{x_{i+1}} \max(\eta_i(x),0) \, \dif x \\
-= \int_{x_i}^{x_{i+1}} \max(-\eta_i(x),0) \, \dif x \le \frac{-(1-p_i)}{n-1} \inf_{x_i \le x \le x_{i+1}} \eta_i(x) .
-\end{multline*}
-These bounds allow us to derive bounds on the integrals in \eqref{onenormfp}:
-\begin{align*}
-\MoveEqLeft{\int_{x_i}^{x_{i+1}} \abs{\eta_i(x)} \, \dif x} \\
- &= \int_{x_i}^{x_{i+1}} \max(\eta_i(x),0) \, \dif x + \int_{x_i}^{x_{i+1}} \max(-\eta_i(x),0) \, \dif x\\
-&=2(1-p_i) \int_{x_i}^{x_{i+1}} \max(\eta_i(x),0) \, \dif x + 2p_i\int_{x_i}^{x_{i+1}} \max(-\eta_i(x),0) \, \dif x\\
-&\le \frac{2p_i(1-p_i)}{n-1} \left[ \sup_{x_i \le x \le x_{i+1}} \eta_i(x) - \inf_{x_i \le x \le x_{i+1}} \eta_i(x) \right]\\
-&\le\frac{1}{2(n-1)} \left[ \sup_{x_i \le x \le x_{i+1}} f'(x) - \inf_{x_i \le x \le x_{i+1}} f'(x) \right],
-\end{align*}
-since $p_i(1-p_i)\le 1/4$.
+for some $x_j\in (u_{j-1},u_{j})$.
 
-Plugging this bound into \eqref{onenormfp} yields
-\begin{align*}
-\bignorm[1]{f'-f(1)+f(0)} - \tF_n(f) &= \Ftnorm{f} - \tF_{n}(f)\\
- & \le \bignorm[1]{f' -A_n(f)'}\\
-&\le \frac{1}{2n-2} \sum_{i=1}^{n-1} \left[ \sup_{x_i \le x \le x_{i+1}} f'(x) - \inf_{x_i \le x \le x_{i+1}} f'(x) \right] \\
-& \le \frac{\Var(f')}{2n-2} \leq \frac{\tau}{2n-2}\Ftnorm{f}  ,
-\end{align*}
+Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{n+1}$, it is true for \eqref{vtileqfprime}. Then we have the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ using only function values:
+\begin{equation}\label{vtilde1}
+  \widetilde{V}_1(f,n):=\frac{n}{(b-a)}\sum_{j=1}^{n-1}\left|f(u_{j+1})-2f(u_{j})+f(u_{j-1})\right|=\widehat{V}(f',\{x_i\}_{i=0}^{n+1}).
+\end{equation}
 
-So $$\Ftnorm{f}\leq\frac{2n-2}{2n-2-\tau}\tF_n(f).$$
+By combining \eqref{errorbound}, \eqref{defcone}, and \eqref{vtilde1} together, we will obtain the error bound for our trapezoidal rule algorithm using only function values:
 
-Then we will have $$\overline{\text{err}}(f,n):=\frac{(b-a)^2\Var(f')}{8n^2}\leq\frac{(b-a)\tau}{4(n-1)(2n-2-\tau)}\tF_n(f).$$
+
 
 \Section{Simpson's Rule}
 
 From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of input functions so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
-\begin{multline}\label{vtilde}
-\widetilde{V}_n(f)=\frac{27n^3}{(b-a)^3}\sum_{j=1}^{n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
+\begin{multline}\label{vtilde3}
+\widetilde{V}_n(f)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
 \end{multline}
 
 % may be say more
 % Since $$\frac{216n^3}{(b-a)^3}\left|f(t_{i-3})-3f(t_{i-2})+3f(t_{i-1})-f(t_{i})\right|=f'''(x_{i-1}),???$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
-We use divided differences to explain The relationship between \eqref{defvhat} and \eqref{vtilde}. Let $h=v_{j+1}-v_{j}=(b-a)/3n$ and
+We use divided differences to explain The relationship between \eqref{defvhat} and \eqref{vtilde}. Let $h=v_{j+1}-v_{j}=(b-a)/6n$ and
 \begin{align*}
-  f[v_{j}]&=f(v_{j}), \text{ for } j=0,\cdots, 3n,\\
-  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h},\text{ for } j=1, \cdots, 3n,\\
-  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},\text{ for } j=2, \cdots, 3n,\\
-  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, \text{ for } j=3, \cdots, 3n.
+  f[v_{j}]&=f(v_{j}), \text{ for } j=0,\cdots, 6n,\\
+  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h},\text{ for } j=1, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},\text{ for } j=2, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, \text{ for } j=3, \cdots, 6n.
 \end{align*}
 
 According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\cdots,n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that

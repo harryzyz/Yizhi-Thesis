@@ -16,43 +16,43 @@
 \vspace {-10pt}
 \contentsline {section}{\makebox [0.3in][r]{3.1.} \hspace *{3pt}Trapezoidal Rule}{5}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{3.2.} \hspace *{3pt}Simpson's Rule}{7}
+\contentsline {section}{\makebox [0.3in][r]{3.2.} \hspace *{3pt}Simpson's Rule}{6}
 \vspace *{3pt}
-\contentsline {chapter}{\makebox [0.75in][r]{4.}\hspace *{3pt} \uppercase {Adaptive, Automatic Algorithms with Guarantees}}{9}
+\contentsline {chapter}{\makebox [0.75in][r]{4.}\hspace *{3pt} \uppercase {Adaptive, Automatic Algorithms with Guarantees}}{8}
 \vspace *{10pt}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{4.1.} \hspace *{3pt}Basic Concepts}{9}
+\contentsline {section}{\makebox [0.3in][r]{4.1.} \hspace *{3pt}Basic Concepts}{8}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{4.2.} \hspace *{3pt}Trapezoidal Rule}{9}
+\contentsline {section}{\makebox [0.3in][r]{4.2.} \hspace *{3pt}Trapezoidal Rule}{8}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{4.3.} \hspace *{3pt}Simpson's Rule}{10}
+\contentsline {section}{\makebox [0.3in][r]{4.3.} \hspace *{3pt}Simpson's Rule}{9}
 \vspace *{3pt}
-\contentsline {chapter}{\makebox [0.75in][r]{5.}\hspace *{3pt} \uppercase {Computational Cost of Guaranteed Algorithms}}{11}
+\contentsline {chapter}{\makebox [0.75in][r]{5.}\hspace *{3pt} \uppercase {Computational Cost of Guaranteed Algorithms}}{10}
 \vspace *{10pt}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{5.1.} \hspace *{3pt}Traezoidale rule}{11}
+\contentsline {section}{\makebox [0.3in][r]{5.1.} \hspace *{3pt}Traezoidale rule}{10}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{5.2.} \hspace *{3pt}Simpson's rule}{11}
+\contentsline {section}{\makebox [0.3in][r]{5.2.} \hspace *{3pt}Simpson's rule}{10}
 \vspace *{3pt}
-\contentsline {chapter}{\makebox [0.75in][r]{6.}\hspace *{3pt} \uppercase {Lower Bound of Complexity}}{14}
+\contentsline {chapter}{\makebox [0.75in][r]{6.}\hspace *{3pt} \uppercase {Lower Bound of Complexity}}{13}
 \vspace *{10pt}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{6.1.} \hspace *{3pt}Traezoidale rule}{14}
+\contentsline {section}{\makebox [0.3in][r]{6.1.} \hspace *{3pt}Traezoidale rule}{13}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{6.2.} \hspace *{3pt}Simpson's rule}{15}
+\contentsline {section}{\makebox [0.3in][r]{6.2.} \hspace *{3pt}Simpson's rule}{14}
 \vspace *{3pt}
-\contentsline {chapter}{\makebox [0.75in][r]{7.}\hspace *{3pt} \uppercase {Numerical Experiments}}{19}
+\contentsline {chapter}{\makebox [0.75in][r]{7.}\hspace *{3pt} \uppercase {Numerical Experiments}}{18}
 \vspace *{10pt}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{7.1.} \hspace *{3pt}Traezoidale rule}{19}
+\contentsline {section}{\makebox [0.3in][r]{7.1.} \hspace *{3pt}Traezoidale rule}{18}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{7.2.} \hspace *{3pt}Simpson's Rule}{20}
+\contentsline {section}{\makebox [0.3in][r]{7.2.} \hspace *{3pt}Simpson's Rule}{19}
 \vspace *{3pt}
-\contentsline {chapter}{\makebox [0.75in][r]{8.}\hspace *{3pt} \uppercase {CONCLUSION}}{21}
+\contentsline {chapter}{\makebox [0.75in][r]{8.}\hspace *{3pt} \uppercase {CONCLUSION}}{20}
 \vspace *{10pt}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{8.1.} \hspace *{3pt}Summary}{21}
-\contentsline {chapter}{\vspace {20pt}\noindent APPENDIX\vspace *{-20pt}}{22}
-\contentsline {chapter}{\makebox [0.75in][r]{A.} \hspace *{3pt}\uppercase {Table of Transition Coefficients for the Design of Linear-Phase FIR Filters}}{22}
-\contentsline {chapter}{\makebox [0.75in][r]{B.} \hspace *{3pt}\uppercase {Name of your Second Appendix}}{24}
-\contentsline {chapter}{\makebox [0.75in][r]{C.} \hspace *{3pt}\uppercase {Name of your Third Appendix}}{26}
+\contentsline {section}{\makebox [0.3in][r]{8.1.} \hspace *{3pt}Summary}{20}
+\contentsline {chapter}{\vspace {20pt}\noindent APPENDIX\vspace *{-20pt}}{21}
+\contentsline {chapter}{\makebox [0.75in][r]{A.} \hspace *{3pt}\uppercase {Table of Transition Coefficients for the Design of Linear-Phase FIR Filters}}{21}
+\contentsline {chapter}{\makebox [0.75in][r]{B.} \hspace *{3pt}\uppercase {Name of your Second Appendix}}{23}
+\contentsline {chapter}{\makebox [0.75in][r]{C.} \hspace *{3pt}\uppercase {Name of your Third Appendix}}{25}
