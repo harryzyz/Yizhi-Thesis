@@ -132,8 +132,7 @@ The goal is to construct adaptive, automatic algorithms with guarantees of succe
 \Chapter{Problem Statement and Assumptions}
 
 
-In the previous chapter, I introduced the univariate integration problem, $\text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals$. (\textcolor[rgb]{1.00,0.00,0.00}{how to make the equality stay in one line.}) In order to build adaptive, automatic algorithms with guarantees to solve the problem, we firstly consider two straight-forward yet widely used fixed cost algorithms, trapezoidal rule and Simpson's rule.
-
+The previous chapter introduced the univariate integration problem. The building blocks of the adaptive, automatic algorithms are two widely used fixed cost algorithms, trapezoidal rule and Simpson's rule.
 The composite trapezoidal rule can be defined as:
 \begin{equation}\label{traprule}
   T(f,n)=\frac{b-a}{2n}\sum_{j=0}^{n}(f(u_{j})+f(u_{j+1})),
@@ -142,42 +141,41 @@ where
 \begin{equation}\label{upts}
 u_j=a+\frac{j(b-a)}{n}, \qquad j=0, \ldots, n, \qquad n\in\mathbb{N}.
 \end{equation}
-It uses $n+1$ function values where those $n+1$ node points are equally spaced between $[a,b]$. In the meanwhile, the composite Simpson's rule can be defined as:
+It uses $n+1$ function values where those $n+1$ node points are equally spaced between $[a,b]$. The composite Simpson's rule can be defined as:
 \begin{equation}\label{simrule}
   S(f,n)=\frac{b-a}{12n}\sum_{j=0}^{6n-2}(f(v_{j})+4f(v_{j+1})+f(v_{j+2})),
 \end{equation}
 (\textcolor[rgb]{1.00,0.00,0.00}{double check index and fraction.})
 where
 \begin{equation}\label{vpts}
-v_j=a+\frac{j(b-a)}{n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
+v_j=a+\frac{j(b-a)}{6n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
 \end{equation}
 It uses $6n+1$ equally spaced function values, which form $6n$ intervals/subintervals between $[a.b]$. The reason why we use $6n$ intervals is that firstly, Simpson's rule requires an even number of intervals. Secondly, we are going to use the third order finite difference method to approximate the third derivative of $f$ in later chapters. The third order finite difference method requires the number of intervals to be a multiple of 3. All in all, the number of intervals for input data has to be a multiple of 6.
 
-Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error. If we look back at the traditional non-adaptive trapezoidal rule and Simpson's rule, the upper bound of approximation error can be represented in terms of the total variation of a particular derivative of integrand.
+% Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error. 
+We also need to find error bounds to guarantee our methods. If we look back at the traditional non-adaptive trapezoidal rule and Simpson's rule, the upper bound of approximation error can be represented in terms of the total variation of a particular derivative of integrand.
 \begin{equation}\label{errorbound}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=C(n)\Var(f^{(p)}).
 \end{equation}
 For trapezoidal rule, $C(n)=(b-a)^2/8n^2, p=1$ (ref). For Simpson's rule, $C(n)=(b-a)^4/5832n^4, p=3$ (ref).
 
-To better define the total variation, $\Var(f)$, firstly we introduce $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ as an approximation to the total variation:
+To define the total variation, $\Var(f)$, firstly we introduce the notation $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ as an approximation to the total variation:
 \begin{equation}\label{defvhat}
     \widehat{V}(f,\{x_i\}_{i=0}^{n+1})=\sum_{i=1}^{n-1}|f(x_{i+1})-f(x_{i})|,
 \end{equation}
-where $\{x_i\}_{i=0}^{n+1}$ is any given partition with no necessity of equal spacing, and $a=x_{0}\leq x_{1}<\cdots<x_{n}\leq x_{n+1}=b$.
-(\textcolor[rgb]{1.00,0.00,0.00}{1. explain two side points. 2. how to make the inequality stay in one line.})
-
-From the definition of $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$, the total variation can be defined as an upper of bound of $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$:
+where $\{x_i\}_{i=0}^{n+1}$ is any given partition with not necessarily of equal spacing, and $a=x_{0}\leq x_{1}<\cdots<x_{n}\leq x_{n+1}=b$.
+The use of $n+2$ points is for convenience later. 
+The total variation can be defined as an upper of bound of $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$:
 \begin{equation}\label{defvar}
-  \Var(f) := \sup_{n \in \naturals, \{x_i\}_{i=0}^{n+1}} \left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1})\right\},
+  \Var(f) := \sup \left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1}), \quad \text{for any }n \in \naturals, \text{ and } \{x_i\}_{i=0}^{n+1}\right\},
 \end{equation}
-
-For an algorithm with finite error bound, it is trivial that the input functions must be in a space of integrands such that it is continuous in $[a,b]$ with finite total variations of derivatives, to the proper order, of the functions:
+To ensure finite error bound, our algorithms are defined for function spaces with finite total variations of the relative derivatives:
 \begin{equation}\label{defspace}
- \cv^{p}[a,b]:=\{f\in C[a,b]: \Var(f^{(p)}) < \infty \}.
+ \cv^{p}[a,b]:=\{f\in C[a,b]: \Var(f^{(p)}) < \infty \},
 \end{equation}
-For trapezoidal rule, $p=1$. For Simpson's rule, $p=3$.
+where for trapezoidal rule, $p=1$, and for Simpson's rule, $p=3$.
 
-In order to build an adaptive automatic and guaranteed algorithm, we have to set up the following pre-existing condition that all functions to be approximated must lie in a cone space of integrands for which $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ does not underestimate $\Var(f)$ too much:
+Algorithms will not work for all $f \in \cv^{p}$ because $f$ may have changes in $f^{(p)}$ on small intervals that the algorithms cannot detect. In order to build an adaptive automatic and guaranteed algorithm, we have to set up the following pre-existing condition that all functions to be approximated must lie in a cone space of integrands for which $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ does not underestimate $\Var(f)$ too much:
 \begin{multline}\label{defcone}
 \cc^{p}:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\},
 \end{multline}
@@ -188,9 +186,9 @@ With the cone space defined, we can start constructing our trapezoidal rule algo
 
 
 
-\Chapter{Error Bound Analysis}
+\Chapter{Data-Driven Error Bound}
 
-In this chapter, we will study the error bound of approximation errors. By \eqref{errorbound} in Chapter 2, we know that the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation. Moreover, with the cone condition \eqref{defcone} defined, the total variation $\var(f^{(p)})$ can be bounded by one of its approximation $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, we cannot directly use $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ for trapezoidal rule and Simpson's rule because $f'$ and $f'''$ are unknown to us. All we are provided is the function $f$ and the node points. In this case, we need to find out by using only function values, how to approximate the first and third derivatives of the function. 
+In this chapter, we will study the error bound of approximation errors. By \eqref{errorbound} in Chapter 2, we know that the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation. Moreover, with the cone condition \eqref{defcone} defined, the total variation $\var(f^{(p)})$ can be bounded by one of its approximation $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, we cannot directly use $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ for trapezoidal rule and Simpson's rule because $f'$ and $f'''$ are unknown to us. All we are provided is the function $f$ and the node points. In this case, we need to find out by using only function values, how to approximate the first and third derivatives of the function.
 
 \Section{Trapezoidal Rule}
 We used the backward finite difference method to approximate $f'$. Let $h=u_{j+1}-u_{j}=(b-a)/n$ and
