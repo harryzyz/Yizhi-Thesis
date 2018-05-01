@@ -182,9 +182,9 @@ The cone space $\cc^{p}$ is a subspace of $\cv^{p}$. Here $\text{size}(\{x_i\}_{
 \begin{equation}\label{defsize}
   \text{size}(\{x_i\}_{i=0}^{n+1}):=\max_{i=0,\cdots, n} x_{i+1}-x_{i}.
 \end{equation}
-The cut-off value $\mathfrak{h} \in (0, b-a)$ and the inflation factor $\mathfrak{C}: [0,\mathfrak{h} \rightarrow [1.\infty)$ define the cone. The choice of $\mathfrak{C}$ is flexible, but it must be non-decreaing. In this thesis, we choose 
+The cut-off value $\mathfrak{h} \in (0, b-a)$ and the inflation factor $\mathfrak{C}: [0,\mathfrak{h} \rightarrow [1.\infty)$ define the cone. The choice of $\mathfrak{C}$ is flexible, but it must be non-decreaing. In this thesis, we choose
 \begin{equation}\label{definflationfactor}
-  mathfrak{C}(h):=\mathfrak{C}(0)\mathfrak{h}/(\mathfrak{h}-h)
+  \mathfrak{C}(h):=\mathfrak{C}(0)\mathfrak{h}/(\mathfrak{h}-h)
 \end{equation}
 for convenience.
 
@@ -198,10 +198,10 @@ With the cone space defined, we can start constructing our adaptive trapezoidal 
 In this chapter, we will derive upper bounds with quadrature error in terms of function values. By \eqref{errorbound} in Chapter 2, we know that the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation of the appropriate derivatives. The definition of the cone suggests a way of bounding $\Var(f^{(p)})$ in terms of $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, our algorithms are based on function values and $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ is defined in terms of derivative values. Thus we will use finite differences to express derivative values in terms of function values.
 
 \Section{Trapezoidal Rule}
-We used the backward finite difference method to approximate $f'$. Let $h=u_{j+1}-u_{j}=(b-a)/n$ and
+We used the backward finite difference method to approximate $f'$. Let $h_1=u_{j+1}-u_{j}=(b-a)/n$ and
 \begin{align*}
   f[u_{j}]&=f(u_{j}), \text{ for } j=0,\cdots, n,\\
-  f[u_{j},u_{j-1}]&=\frac{f(u_{j})-f(u_{j-1})}{h},\text{ for } j=1, \cdots, n.
+  f[u_{j},u_{j-1}]&=\frac{f(u_{j})-f(u_{j-1})}{h_1},\text{ for } j=1, \cdots, n.
 \end{align*}
 
 
@@ -211,42 +211,42 @@ According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\
 \end{equation*}
 for $j = 1, 2, \cdots, n.$ This implies that
 \begin{equation}\label{vtileqfprime}
-  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h}=\frac{n}{(b-a)}[f(u_{j})-f(u_{j-1})],
+  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h_1}=\frac{n}{(b-a)}[f(u_{j})-f(u_{j-1})],
 \end{equation}
-for some $x_j\in (u_{j-1},u_{j})$. Let $\{a=x_{0}, x_{1},\cdots,x_{n},x_{n+1}=b\}$ be a partition as was introduced just below \eqref{defvhat}. Note that no matter how the $x_i$'s are located, the largest possible width cannot be larger than two intervals. So $\text{size}(\{x_i\}_{i=0}^{n+1})\leq 2h=2(b-a)/n$.
+for some $x_j\in (u_{j-1},u_{j})$. Let $\{a=x_{0}, x_{1},\cdots,x_{n},x_{n+1}=b\}$ be a partition as was introduced just below \eqref{defvhat}. Note that no matter how the $x_j$'s are located, the largest possible width cannot be larger than two intervals. So $\text{size}(\{x_j\}_{j=0}^{n+1})\leq 2h_1=2(b-a)/n$.
 
 Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{n+1}$, it is true for \eqref{vtileqfprime}. Then we have the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ using only function values:
 \begin{equation}\label{vtilde1}
   \widetilde{V}_1(f,n):=\frac{n}{(b-a)}\sum_{j=1}^{n-1}\left|f(u_{j+1})-2f(u_{j})+f(u_{j-1})\right|=\widehat{V}(f',\{x_i\}_{i=0}^{n+1}).
 \end{equation}
 
-Therefore by combining \eqref{errorbound}, \eqref{defcone}, and \eqref{vtilde1} together, we will obtain the error bound for our trapezoidal rule algorithm using only function values:
+Therefore by combining \eqref{errorbound}, \eqref{defcone}, and \eqref{vtilde1} (put numbers to the equation below) together, we obtain the error bound for our trapezoidal rule algorithm using only function values:
 \begin{align*}%\label{errortrapcone}
-  \overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),\\
-  \leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\\
+  \overline{\text{err}}(f,n):=&C(n)\Var(f'),\\
+  \leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f',\{x_i\}_{i=0}^{n+1}),\\
   =& C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widetilde{V}_1(f,n),\\
-  =& \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n}
+  =& \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}
 \end{align*}
-(fix equation number)
+(fix equation number, explain C is non-decreasing, double check $n^2$ at bottom)
 
 This error bound of our algorithm  using only function values provides guarantees that it will succeed. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$.
 
 \Section{Simpson's Rule}
 
-From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of input functions so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
-\begin{multline}\label{vtilde3}
-\widetilde{V}_n(f)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
-\end{multline}
+Similar to the trapezoidal rule, we used the third order backward finite difference methods to approximate $f'''$. Let $h_3=v_{j+1}-v_{j}=(b-a)/6n$ and
+\begin{align*}
+  f[v_{j}]&=f(v_{j}), \text{ for } j=0,\cdots, 6n,\\
+  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h_3},\text{ for } j=1, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h_3^2},\text{ for } j=2, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h_3^3}, \text{ for } j=3, \cdots, 6n.
+\end{align*}
+
+%From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of input functions so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
+
 
 % may be say more
 % Since $$\frac{216n^3}{(b-a)^3}\left|f(t_{i-3})-3f(t_{i-2})+3f(t_{i-1})-f(t_{i})\right|=f'''(x_{i-1}),???$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
-We use divided differences to explain The relationship between \eqref{defvhat} and \eqref{vtilde}. Let $h=v_{j+1}-v_{j}=(b-a)/6n$ and
-\begin{align*}
-  f[v_{j}]&=f(v_{j}), \text{ for } j=0,\cdots, 6n,\\
-  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h},\text{ for } j=1, \cdots, 6n,\\
-  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},\text{ for } j=2, \cdots, 6n,\\
-  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, \text{ for } j=3, \cdots, 6n.
-\end{align*}
+
 
 According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\cdots,n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that
 \begin{equation*}
@@ -254,40 +254,58 @@ According to Mean Value Theorem for divided differences, (ref), for all $j=1,2,\
 \end{equation*}
 for $j = 1, 2, \cdots, n.$ This implies that
 \begin{multline}\label{vtileqftriprime}
-  f'''(x_j)=\frac{f(v_{3j})-3f(v_{3j-1})+3f(v_{3j-2})-f(v_{3j-3})}{h^3},\\=\frac{216n^3}{(b-a)^3}[f(v_{3j})-3f(v_{3j-1})+3f(v_{3j-2})-f(v_{3j-3})].
+  f'''(x_j)=\frac{f(v_{3j})-3f(v_{3j-1})+3f(v_{3j-2})-f(v_{3j-3})}{h_3^3},\\=\frac{216n^3}{(b-a)^3}[f(v_{3j})-3f(v_{3j-1})+3f(v_{3j-2})-f(v_{3j-3})].
+\end{multline}
+for some $x_j\in (v_{j-1},v_{j})$. Let $\{a=x_{0}, x_{1},\cdots,x_{n},x_{n+1}=b\}$ be a partition as was introduced just below \eqref{defvhat}. Note that no matter how the $x_j$'s are located, the largest possible width cannot be larger than six intervals. So $\text{size}(\{x_j\}_{i=0}^{n+1})\leq 6h_3=(b-a)/n$.
+
+Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{n+1}$, it is true for \eqref{vtileqfprime}. Then we have the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ using only function values:
+\begin{multline}\label{vtilde3}
+\widetilde{V}_3(f,n)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
 \end{multline}
 
+Therefore by combining the relative equations (\eqref{errorbound}, \eqref{defcone}, and \eqref{vtilde1}) (put numbers to the equation below) together, we obtain the error bound for our Simpson's rule algorithm using only function values:
+\begin{align*}%\label{errortrapcone}
+  \overline{\text{err}}(f,n):=&C(n)\Var(f'''),\\
+  \leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f''',\{x_i\}_{i=0}^{n+1}),\\
+  =& C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widetilde{V}_3(f,n),\\
+  =& \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}
+\end{align*}
+
+This error bound of our algorithm using only function values provides guarantees that it will succeed. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$.
+
+The error bounds of our trapezoidal rule and Simpson's rule algorithms then can be treated as the stopping criterion. In the next Chapter, details about the algorithms will be introduced. The lower bounds and upper bounds of the computational cost will be discussed as well.
+
+%If we combine \eqref{vtilde} and \eqref{vtileqftriprime} together, we obtain
+%\begin{equation}\label{vtileqvhat}
+%    \widetilde{V}_3(f,n)=\sum_{j=1}^{n-1}\left|f'''(x_{j+1})-f'''(x_{j})\right|=\widehat{V}(f''',\{x_j\}_{j=0}^{n+1}).
+%\end{equation}
+%Then we can use $\widetilde{V}_n(f)$ to approximate $\Var(f''')$ by just using function values.
+%
+%(Add the formula here.)
 
 
-If we combine \eqref{vtilde} and \eqref{vtileqftriprime} together, we obtain
-\begin{equation}\label{vtileqvhat}
-    \widetilde{V}_n(f)=\sum_{j=1}^{n-1}\left|f'''(x_{j+1})-f'''(x_{j})\right|=\widehat{V}(f''',\{x_j\}_{j=0}^{n+1}).
-\end{equation}
-Then we can use $\widetilde{V}_n(f)$ to approximate $\Var(f''')$ by just using function values.
-
-(Add the formula here.)
+\Chapter{Adaptive, Automatic Algorithms with Guarantees and their Computational Cost}
 
 
-\Chapter{Adaptive, Automatic Algorithms with Guarantees}
-
-\Section{Basic Concepts}
-AA
-\textcolor{red}{I need to explain the embedded mechanism and stopping criteria with tolerance, max iteration and max number of points. In the following subsections, I need detailed explanation of the algorithms.}
-
+In the previous Chapter, we have found the error bounds of our trapezoidal rule and Simpson's rule algorithms using input function values. In the Chapter, firstly we will provide details about the two algorithms. We build our algorithms as black-box algorithms. That is, as long as the user provides the input function and error tolerance, the algorithms will automatically give out an answer by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. In order to prevent the algorithms taking too long, we will also set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms will quit and provide a best possible output. In order to save the computation time, we will use embedded input points to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again. 
 
 \Section{Trapezoidal Rule}
 
+\Subsection{Trapezoidal Rule Algorithm}
 
-\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgo}
-Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, $\{\tF_n\}_{n\in \mathcal{I}}$, and $\{F_n\}_{n\in \mathcal{I}}$ be as described above.
+
+\begin{algo}[Trapezoidal Rule] \label{multistagetrapalgo}
+Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$, 
+and $\widetilde{V}_1(f,n)$ be as described above.
 Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
-\item[Stage 1.\ Estimate {$\norm[1]{f'-f(1)+f(0)}$} and bound {$\Var(f')$}.] Compute $\tF_{n_i}(f)$ in \eqref{1direst} and $F_{n_i}(f)$ in \eqref{Fnormalg}.
+\item[Stage 1.\ Estimate {$\norm[1]{f'}$} and bound {$\Var(f')$}.] Compute  and $\widetilde{V}_1(f,n)$ in \eqref{vtilde1}.
 
 \item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
     \begin{align*}
-     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}.
+     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}. (C
     \end{align*}
+    (Change)
 If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
 $$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
 Go to Stage 1.
@@ -296,17 +314,37 @@ Go to Stage 1.
     \begin{equation*}
      \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{\tau}.
     \end{equation*}
+    (Change)
 If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
 $$
 n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
 $$
+(Change)
 Go to Stage 1.
 \end{description}
 \end{algo}
 
+\Subsection{Computational Cost of Traezoidale Rule}
+\begin{theorem} \label{multistageintegthm}
+Let $\sigma >0$ be some fixed parameter, and let $\cb_{\sigma}=\{f \in  \mathcal{V}^{1} : \Var(f')\leq \sigma\}$. Let $T \in \ca(\cb_{\sigma}, \reals, \INT, \Lambda^{\std})$ be the non-adaptive trapezoidal rule defined by Algorithm \ref{nonadaptalgo}, and let $\varepsilon>0$ be the error tolerance. Then this algorithm succeeds for $f \in \cb_{\sigma}$, i.e., $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$, and the cost of this algorithm is $\left \lceil \sqrt{\sigma/(8\varepsilon)}\right \rceil + 1$, regardless of the size of $\Var(f')$.
 
+Now let $T \in \ca(\cc_{\tau}, \reals, \INT, \Lambda^{\std})$ be the adaptive trapezoidal rule defined by Algorithm \ref{multistageintegalgo}, and let $\tau$, $n_1$, and $\varepsilon$ be as described there. Let $\cc_\tau$ be the cone of functions defined in \eqref{coneinteg}.  Then it follows that Algorithm \ref{multistageintegalgo} is successful for all functions in $\cc_{\tau}$,  i.e.,  $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$.  Moreover, the cost of this algorithm is bounded below and above as follows:
+\begin{multline}
+\max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{ \Var(f')}{8\varepsilon}} \right \rceil \right) +1 \\
+\le \max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{8\varepsilon}} \right \rceil \right) +1 \\
+\le
+\cost(T,f;\varepsilon) \\
+\le \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{2\varepsilon}} + \tau + 4
+\le \sqrt{\frac{\tau \Var(f') }{4\varepsilon}} + \tau + 4.
+\end{multline}
+The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
+\end{theorem}
+ 
+ Need proof
+ 
+ \Section{Simpson's rule}
 
-\Section{Simpson's Rule}
+\Subsection{Simpson's Rule Algorithm}
 
 \begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgosimpson}
 Given an interval $[a,b]$, an inflation function, $\mathfrak{C}$, a positive key mesh size $\mathfrak{h}$, a positive error tolerance, $\varepsilon$, and a routine for generating values of the integrand, $f$, set $l=1$, and
@@ -333,24 +371,10 @@ increase $l$ by one, and go to 1.
 \end{theorem}
 
 
-\Chapter{Computational Cost of Guaranteed Algorithms}
-\Section{Traezoidale rule}
-\begin{theorem} \label{multistageintegthm}
-Let $\sigma >0$ be some fixed parameter, and let $\cb_{\sigma}=\{f \in  \mathcal{V}^{1} : \Var(f')\leq \sigma\}$. Let $T \in \ca(\cb_{\sigma}, \reals, \INT, \Lambda^{\std})$ be the non-adaptive trapezoidal rule defined by Algorithm \ref{nonadaptalgo}, and let $\varepsilon>0$ be the error tolerance. Then this algorithm succeeds for $f \in \cb_{\sigma}$, i.e., $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$, and the cost of this algorithm is $\left \lceil \sqrt{\sigma/(8\varepsilon)}\right \rceil + 1$, regardless of the size of $\Var(f')$.
 
-Now let $T \in \ca(\cc_{\tau}, \reals, \INT, \Lambda^{\std})$ be the adaptive trapezoidal rule defined by Algorithm \ref{multistageintegalgo}, and let $\tau$, $n_1$, and $\varepsilon$ be as described there. Let $\cc_\tau$ be the cone of functions defined in \eqref{coneinteg}.  Then it follows that Algorithm \ref{multistageintegalgo} is successful for all functions in $\cc_{\tau}$,  i.e.,  $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$.  Moreover, the cost of this algorithm is bounded below and above as follows:
-\begin{multline}
-\max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{ \Var(f')}{8\varepsilon}} \right \rceil \right) +1 \\
-\le \max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{8\varepsilon}} \right \rceil \right) +1 \\
-\le
-\cost(T,f;\varepsilon) \\
-\le \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{2\varepsilon}} + \tau + 4
-\le \sqrt{\frac{\tau \Var(f') }{4\varepsilon}} + \tau + 4.
-\end{multline}
-The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
-\end{theorem}
 
-\Section{Simpson's rule}
+
+\Subsection{Computational Cost of Simpson's Rule}
 \begin{theorem}\label{uppbndcost}
     Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Stage 2 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
     \begin{multline}\label{uppbndcostineq}
@@ -378,12 +402,14 @@ The algorithm is computationally stable, meaning that the minimum and maximum co
   \end{align*}
   This completes the prove of latter part of the upper bound.
 \end{proof}
-
+Say something about next Chapter
 
 \Chapter{Lower Bound of Complexity}
 
+In the previous Chapter, we have discussed the algorithms and their computational cost. In this Chapter, we will discuss the lower bound of complexity. The complexity of a problem is that... So if the lower bound of the complexity is asymptotically xxx to the computational cost, it proves that our algorithm is optimal. (Need to ask.) The method of proving the lower bound of complexity is by providing a fooling function to show that no matter how good the algorithms are, it will always be fooled by the function and provide a wrong answer. (Need say more.)
+
 \Section{Traezoidale rule}
-Next, we derive a lower bound on the cost of approximating functions in the ball $\cb_{\sigma}$ and in the cone $\cc_{\tau}$ by constructing fooling functions. Following the arguments of Section \ref{LowBoundSec}, we choose  the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
+Firstly, we derive a lower bound on the cost of approximating functions in the ball $\cb_{\sigma}$ and in the cone $\cc_{\tau}$ by constructing fooling functions. Following the arguments of Section \ref{LowBoundSec}, we choose  the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
 \begin{gather*}
 \Ftnorm{f_0}=\norm[1]{f'_0-f_0(1)+f_0(0)}=\int_0^1 \abs{\sign(1/2-x)} \, \dif x = 1, \\ \Fnorm{f_0}=\Var(f'_0)=2= \tau_{\min}.
 \end{gather*}
