@@ -149,36 +149,41 @@ where
 \begin{equation}\label{vpts}
 v_j=a+\frac{j(b-a)}{6n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
 \end{equation}
-It uses $6n+1$ equally spaced function values, which form $6n$ intervals/subintervals between $a$ and $b$. The reason why we use $6n$ intervals is that firstly, Simpson's rule requires an even number of intervals. Secondly, we are going to use the third order finite difference method to approximate the third derivative of $f$ in later chapters. The third order finite difference method requires the number of intervals to be a multiple of 3. Thus, the number of intervals for input data has to be a multiple of 6.
+It uses $6n+1$ equally spaced function values, which form $6n$ intervals/subintervals between $a$ and $b$. The reason why we use $6n$ intervals is that firstly, Simpson's rule requires an even number of intervals. Secondly, we are going to use a third order finite difference to approximate the third derivative of $f$ in later chapters. This third order finite difference method requires the number of intervals to be a multiple of 3. Thus, the number of intervals for input data has to be a multiple of 6.
 
 % Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error.
 We also need to find error bounds to guarantee our methods. The traditional non-adaptive trapezoidal rule and Simpson's rule have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand:
-\begin{equation}\label{errorbound}
-    \text{err}(f,n)\le\overline{\text{err}}(f,n):=C(n)\Var(f^{(p)}).
-\end{equation}
-For trapezoidal rule, $C(n)=(b-a)^2/8n^2, p=1$ (ref), and for Simpson's rule, $C(n)=(b-a)^4/5832n^4, p=3$ (ref). check 5832
+\begin{align}\label{errorbound}
+    \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),\\
+    \nonumber&C(n)=
+    \begin{cases*}
+           \frac{(b-a)^2}{8n^2}, p=1,  & \mbox{trapezoidal rule}, \\
+           \frac{(b-a)^4}{5832n^4}, p=3, & \mbox{Simpson's rule}.
+    \end{cases*}
+\end{align}
+check 5832 add ref.
 
-To define the total variation, $\Var(f)$, firstly we introduce the notation $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ as an approximation to the total variation:
+To define the total variation, $\Var(f)$, firstly we introduce the notation $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ as an under-approximation of the total variation:
 \begin{equation}\label{defvhat}
     \widehat{V}(f,\{x_i\}_{i=0}^{n+1})=\sum_{i=1}^{n-1}|f(x_{i+1})-f(x_{i})|,
 \end{equation}
-where $\{x_i\}_{i=0}^{n+1}$ is any given partition with not necessarily equal spacing, and $a=x_{0}\leq x_{1}<\cdots<x_{n}\leq x_{n+1}=b$.
-The use of $n+2$ points and ignoring $x_0$ and $x_{n+1}$ in \eqref{defvhat} are for convenience later.
-The total variation can be defined as an upper of bound of $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$:
+where $\{x_i\}_{i=0}^{n+1}$ is any partition with not necessarily equal spacing, and $a=x_{0}\leq x_{1}<\cdots<x_{n}\leq x_{n+1}=b$.
+We use $n+2$ points and ignore $x_0$ and $x_{n+1}$ in \eqref{defvhat} for convenience later.
+The total variation can be defined as the upper of bound of $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$:
 \begin{equation}\label{defvar}
-  \Var(f) := \sup \left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1}), \quad \text{for any }n \in \naturals, \text{ and } \{x_i\}_{i=0}^{n+1}\right\},
+  \Var(f) := \sup \left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1}), \quad \text{for any }n \in \naturals, \text{ and } \{x_i\}_{i=0}^{n+1}\right\}.
 \end{equation}
-To ensure a finite error bound, our algorithms are defined for function spaces with finite interval and finite total variations of the relative derivatives:
+To ensure a finite error bound, our algorithms are defined for function spaces with finite total variations of the respective derivatives:
 \begin{equation}\label{defspace}
  \cv^{p}:=\{f\in C[a,b]: \Var(f^{(p)}) < \infty \},
 \end{equation}
 where for trapezoidal rule, $p=1$, and for Simpson's rule, $p=3$.
 
-Our algorithms will not work for all $f \in \cv^{p}$ because $f$ may have changes in $f^{(p)}$ on small intervals that the algorithms cannot detect. In order to build adaptive automatic and guaranteed algorithms, we have to set up the following pre-existing condition that all functions to be integrated must lie in a cone space of integrands for which $\widehat{V}(f,\{x_i\}_{i=0}^{n+1})$ does not underestimate $\Var(f)$ too much:
+Our algorithms will not work for all $f \in \cv^{p}$ because $f$ may have changes in $f^{(p)}$ on small intervals that the algorithms cannot detect. In order to build adaptive automatic and guaranteed algorithms, we set up the following assumptions that all functions to be integrated must lie in a cone of integrands for which $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ does not underestimate $\Var(f^{(p)})$ too much:
 \begin{multline}\label{defcone}
 \cc^{p}:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
 \end{multline}
-The cone space $\cc^{p}$ is a subspace of $\cv^{p}$. Here $\text{size}(\{x_i\}_{i=0}^{n+1})$ is the largest possible width between any adjunct $x_i$:
+The cone space $\cc^{p}$ is a subset of $\cv^{p}$. Here $\text{size}(\{x_i\}_{i=0}^{n+1})$ is the largest possible width between any adjacent $x_i$:
 \begin{equation}\label{defsize}
   \text{size}(\{x_i\}_{i=0}^{n+1}):=\max_{i=0,\cdots, n} x_{i+1}-x_{i}.
 \end{equation}
@@ -287,7 +292,7 @@ The error bounds of our trapezoidal rule and Simpson's rule algorithms then can 
 \Chapter{Adaptive, Automatic Algorithms with Guarantees and their Computational Cost}
 
 
-In the previous Chapter, we have found the error bounds of our trapezoidal rule and Simpson's rule algorithms using input function values. In the Chapter, firstly we will provide details about the two algorithms. We build our algorithms as black-box algorithms. That is, as long as the user provides the input function and error tolerance, the algorithms will automatically give out an answer by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. In order to prevent the algorithms taking too long, we will also set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms will quit and provide a best possible output. In order to save the computation time, we will use embedded input points to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again. 
+In the previous Chapter, we have found the error bounds of our trapezoidal rule and Simpson's rule algorithms using input function values. In the Chapter, firstly we will provide details about the two algorithms. We build our algorithms as black-box algorithms. That is, as long as the user provides the input function and error tolerance, the algorithms will automatically give out an answer by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. In order to prevent the algorithms taking too long, we will also set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms will quit and provide a best possible output. In order to save the computation time, we will use embedded input points to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again.
 
 \Section{Trapezoidal Rule}
 
@@ -295,7 +300,7 @@ In the previous Chapter, we have found the error bounds of our trapezoidal rule 
 
 
 \begin{algo}[Trapezoidal Rule] \label{multistagetrapalgo}
-Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$, 
+Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_1(f,n)$ be as described above.
 Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
@@ -339,9 +344,9 @@ Now let $T \in \ca(\cc_{\tau}, \reals, \INT, \Lambda^{\std})$ be the adaptive tr
 \end{multline}
 The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
 \end{theorem}
- 
+
  Need proof
- 
+
  \Section{Simpson's rule}
 
 \Subsection{Simpson's Rule Algorithm}
