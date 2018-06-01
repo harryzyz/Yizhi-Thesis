@@ -230,12 +230,18 @@ Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{n+1}$, it is tru
 \end{align}
 
 Therefore by combining the dedection above together, we obtain the error bound for our trapezoidal rule algorithm using only function values:
-\begin{align}\label{errortrapcone}
-\nonumber  \overline{\text{err}}(f,n):=&C(n)\Var(f'),\qquad &\text{ (by \eqref{errorbound})}\\
-\nonumber  \leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f',\{x_i\}_{i=0}^{n+1}), \qquad &\text{ (by \eqref{defcone})}\\
-\nonumber  =& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{n+1}))\widetilde{V}_1(f,n), \qquad &\text{ (by \eqref{vtilde1})}\\
+\begin{align*}
+\overline{\text{err}}(f,n):=&C(n)\Var(f'),\qquad &\text{ (by \eqref{errorbound})}\\
+\leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f',\{x_i\}_{i=0}^{n+1}), \qquad &\text{ (by \eqref{defcone})}\\
+=& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{n+1}))\widetilde{V}_1(f,n), \qquad &\text{ (by \eqref{vtilde1})}\\
   \leq & \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.\qquad &\text{ (by \eqref{cutoff1})}
-\end{align}
+\end{align*}
+    
+\begin{lem}\label{lemmaerrorboundtrap}
+    \begin{equation}\label{errortrapcone}
+      \overline{\text{err}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
+    \end{equation}
+\end{lem}
 
 Since $\mathfrak{C}$ is a non-decreasing function, $a$, $b$ is fixed, as the value of $n$ going up, $\mathfrak{C}(2(b-a)/n)$ is non-increasing. Thus $\overline{\text{err}}(f,n)$ is decreasing w.r.t. $n$. Therefore, this error bound \eqref{errortrapcone} of our algorithm using only function values provides guarantees that it will succeed. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$.
 
@@ -274,12 +280,19 @@ Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{2n+1}$, it is tr
 \end{multline}
 
 Therefore by combining the relative equations together, we obtain the error bound for our Simpson's rule algorithm using only function values:
-\begin{align}\label{errorsimcone}
-\nonumber  \overline{\text{err}}(f,n):=&C(n)\Var(f'''),\qquad &\text{ (by \eqref{errorbound})}\\
-\nonumber  \leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{2n+1}))\widehat{V}(f''',\{x_i\}_{i=0}^{2n+1}), \qquad &\text{ (by \eqref{defcone})}\\
-\nonumber  =& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{2n+1}))\widetilde{V}_3(f,n), \qquad &\text{ (by \eqref{vtilde3})}\\
+\begin{align*}
+\overline{\text{err}}(f,n):=&C(n)\Var(f'''),\qquad &\text{ (by \eqref{errorbound})}\\
+\leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{2n+1}))\widehat{V}(f''',\{x_i\}_{i=0}^{2n+1}), \qquad &\text{ (by \eqref{defcone})}\\
+=& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{2n+1}))\widetilde{V}_3(f,n), \qquad &\text{ (by \eqref{vtilde3})}\\
   \leq & \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.\qquad &\text{ (by \eqref{cutoff3})}
-\end{align}
+\end{align*}
+
+\begin{lem}\label{lemmaerrorboundsim}
+    \begin{equation}\label{errorsimcone}
+      \overline{\text{err}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
+    \end{equation}
+\end{lem}
+
 
 Since $\mathfrak{C}$ is a non-decreasing function, $a$, $b$ is fixed, as the value of $n$ going up, $\mathfrak{C}(2(b-a)/n)$ is non-increasing. Thus $\overline{\text{err}}(f,n)$ is decreasing w.r.t. $n$. Therefore, this error bound \eqref{errorsimcone} of our algorithm using only function values provides guarantees that it will succeed. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$.
 
