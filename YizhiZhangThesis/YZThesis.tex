@@ -236,7 +236,7 @@ Therefore by combining the dedection above together, we obtain the error bound f
 =& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{n+1}))\widetilde{V}_1(f,n), \qquad &\text{ (by \eqref{vtilde1})}\\
   \leq & \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.\qquad &\text{ (by \eqref{cutoff1})}
 \end{align*}
-    
+
 \begin{lem}\label{lemmaerrorboundtrap}
     \begin{equation}\label{errortrapcone}
       \overline{\text{err}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
@@ -320,29 +320,32 @@ add necessary condition and process of widening the cone here.
 \begin{algo}[Trapezoidal Rule] \label{multistagetrapalgo}
 Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_1(f,n)$ be as described above.
-Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
+Let $\mathfrak{h}\ge (b-a)$. Set $k=1$. Let $\eta_{0}=0$, $n_1=\lceil2(b-a)/\mathfrak{h}\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
-\item[Stage 1.\ Estimate {$\norm[1]{f'}$} and bound {$\Var(f')$}.] Compute  and $\widetilde{V}_1(f,n)$ in \eqref{vtilde1}.
+\item[Stage 1.\ Estimate and bound {$\Var(f')$}.] Compute  and $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.
 
-\item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
+\item[Stage 2. Check the necessary condition for $f \in \cc^1$.] Compute
     \begin{align*}
-     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}. (C
+        \eta_{k}=\min\left(\eta_{k-1},\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n_k+1}))\widetilde{V}_1(f,n_k)\right).
     \end{align*}
-    (Change)
-If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
-$$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
+If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to stage 3.  Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If $n_k \ge 2(b-a)/\mathfrak{h}$, then go to stage 3.  Otherwise, choose
+%$$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
+$$n_{k+1}=1+ (n_k-1)\left\lceil\frac{1}{2(n_i-1)\mathfrak{h}}\right\rceil.$$
+(need double check)
 Go to Stage 1.
 
-\item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
+\item[Stage 3. Check for convergence.] Check whether $n_k$ is large enough to satisfy the error tolerance, i.e.
     \begin{equation*}
-     \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{\tau}.
+        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a^2)\mathfrak{C}(2(b-a)/n_k)}.
     \end{equation*}
-    (Change)
-If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
+If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.   If this is not true, choose
+%$$
+%n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
+%$$
 $$
-n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
+n_{k+1}=1+ n_k*\text{some multiplier}.
 $$
-(Change)
+(need more consideration)
 Go to Stage 1.
 \end{description}
 \end{algo}
