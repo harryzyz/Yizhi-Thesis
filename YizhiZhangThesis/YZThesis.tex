@@ -216,17 +216,17 @@ According to Mean Value Theorem for finite differences, (ref), for all $j=1,2,\c
 \end{equation*}
 for $j = 1, 2, \cdots, n.$ This implies that
 \begin{equation}\label{fprime}
-  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h}=\frac{n}{(b-a)}[f(u_{j})-f(u_{j-1})],
+  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h}=\frac{n}{b-a}[f(u_{j})-f(u_{j-1})],
 \end{equation}
 for some $x_j\in (u_{j-1},u_{j})$. Let $\{a=x_{0}, x_{1},\cdots,x_{n},x_{n+1}=b\}$ be a partition as was introduced just below \eqref{defvhat}. Note that no matter how the $x_j$'s are located, the largest possible width cannot be larger than two intervals. So
 \begin{equation}\label{cutoff1}
-  \text{size}(\{x_j\}_{j=0}^{n+1})\leq 2h=2(b-a)/n:=\mathfrak{h}.
+  \text{size}(\{x_j\}_{j=0}^{n+1})\leq 2h=2(b-a)/n.
 \end{equation}
 Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{n+1}$, it is true for \eqref{fprime} with this particular partition $\{x_j\}_{i=0}^{n+1}$. Then we have the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_j\}_{i=0}^{n+1})$ using only function values:
 \begin{align}\label{vtilde1}
 \nonumber    \widehat{V}(f',\{x_j\}_{j=0}^{n+1})&= \sum_{j=1}^{n-1}\left|f'(x_{j+1})-f'(x_{j})\right|,\\
-\nonumber    &=\sum_{j=1}^{n-1}\left|\frac{n}{(b-a)}[f(u_{j+1})-f(u_{j})-f(u_{j})+f(u_{j-1})]\right|\\
-    &=\frac{n}{(b-a)}\sum_{j=1}^{n-1}\left|f(u_{j+1})-2f(u_{j})+f(u_{j-1})\right|=:\widetilde{V}_1(f,n).
+\nonumber    &=\sum_{j=1}^{n-1}\left|\frac{n}{b-a}[f(u_{j+1})-f(u_{j})-f(u_{j})+f(u_{j-1})]\right|\\
+    &=\frac{n}{b-a}\sum_{j=1}^{n-1}\left|f(u_{j+1})-2f(u_{j})+f(u_{j-1})\right|=:\widetilde{V}_1(f,n).
 \end{align}
 
 Therefore by combining the dedection above together, we obtain the error bound for our trapezoidal rule algorithm using only function values:
@@ -237,7 +237,9 @@ Therefore by combining the dedection above together, we obtain the error bound f
   \leq & \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.\qquad &\text{ (by \eqref{cutoff1})}
 \end{align*}
 
+Thus, we have the following lemma.
 \begin{lem}\label{lemmaerrorboundtrap}
+    The approximation error of composite trapezoidal rule is bounded by the function values of the input function.
     \begin{equation}\label{errortrapcone}
       \overline{\text{err}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
     \end{equation}
@@ -287,7 +289,9 @@ Therefore by combining the relative equations together, we obtain the error boun
   \leq & \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.\qquad &\text{ (by \eqref{cutoff3})}
 \end{align*}
 
+Thus, we have the following lemma.
 \begin{lem}\label{lemmaerrorboundsim}
+    The approximation error of composite Simpson's rule is bounded by the function values of the input function.
     \begin{equation}\label{errorsimcone}
       \overline{\text{err}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
     \end{equation}
@@ -320,17 +324,23 @@ add necessary condition and process of widening the cone here.
 \begin{algo}[Trapezoidal Rule] \label{multistagetrapalgo}
 Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_1(f,n)$ be as described above.
-Let $\mathfrak{h}\ge (b-a)$. Set $k=1$. Let $\eta_{0}=0$, $n_1=\lceil2(b-a)/\mathfrak{h}\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
+Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)/\mathfrak{h}\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
-\item[Stage 1.\ Estimate and bound {$\Var(f')$}.] Compute  and $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.
+\item[Step 1.\ Estimate and bound {$\Var(f')$}.] Compute  and $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.
 
-\item[Stage 2. Check the necessary condition for $f \in \cc^1$.] Compute
+\item[Step 2. Check the necessary condition for $f \in \cc^1$.] Compute
     \begin{align*}
         \eta_{k}=\min\left(\eta_{k-1},\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n_k+1}))\widetilde{V}_1(f,n_k)\right).
     \end{align*}
-If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to stage 3.  Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If $n_k \ge 2(b-a)/\mathfrak{h}$, then go to stage 3.  Otherwise, choose
+a. If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to stage 3.  
+
+b. Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If
+
+\vspace*{6mm} i. $n_k \ge 2(b-a)/\mathfrak{h}$, then go to stage 3.  
+
+\indent ii. Otherwise, choose
 %$$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
-$$n_{k+1}=1+ (n_k-1)\left\lceil\frac{1}{2(n_i-1)\mathfrak{h}}\right\rceil.$$
+$$n_{k+1}=(n_k-1)\left\lceil\frac{1}{2(n_i-1)\mathfrak{h}}\right\rceil.$$
 (need double check)
 Go to Stage 1.
 
@@ -338,15 +348,19 @@ Go to Stage 1.
     \begin{equation*}
         \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a^2)\mathfrak{C}(2(b-a)/n_k)}.
     \end{equation*}
-If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.   If this is not true, choose
+a. If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.   
+
+b. If this is not true, go the Step 4. 
+
+\item[Step 4.\ multiply number of inputs and loop again.] Choose
 %$$
 %n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
 %$$
 $$
-n_{k+1}=1+ n_k*\text{some multiplier}.
+n_{k+1}=n_k*\max\left(\left\lceil\frac{(b-a)}{n_{k}}\sqrt{\frac{\widetilde{V}_1(f,n_k)}{8\varepsilon}}\right\rceil,2\right).
 $$
 (need more consideration)
-Go to Stage 1.
+Go to Step 1.
 \end{description}
 \end{algo}
 

@@ -16,7 +16,7 @@
 \vspace {-10pt}
 \contentsline {section}{\makebox [0.3in][r]{3.1.} \hspace *{3pt}Trapezoidal Rule}{5}
 \vspace {-10pt}
-\contentsline {section}{\makebox [0.3in][r]{3.2.} \hspace *{3pt}Simpson's Rule}{6}
+\contentsline {section}{\makebox [0.3in][r]{3.2.} \hspace *{3pt}Simpson's Rule}{7}
 \vspace *{3pt}
 \contentsline {chapter}{\makebox [0.75in][r]{4.}\hspace *{3pt} \uppercase {Adaptive, Automatic Algorithms with Guarantees and their Computational Cost}}{9}
 \vspace *{10pt}
