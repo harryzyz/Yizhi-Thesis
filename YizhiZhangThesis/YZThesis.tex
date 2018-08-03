@@ -241,7 +241,7 @@ Thus, we have the following lemma.
 \begin{lem}\label{lemmaerrorboundtrap}
     The approximation error of composite trapezoidal rule is bounded by the function values of the input function.
     \begin{equation}\label{errortrapcone}
-      \overline{\text{err}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
+      \overline{\textup{err}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
     \end{equation}
 \end{lem}
 
@@ -293,7 +293,7 @@ Thus, we have the following lemma.
 \begin{lem}\label{lemmaerrorboundsim}
     The approximation error of composite Simpson's rule is bounded by the function values of the input function.
     \begin{equation}\label{errorsimcone}
-      \overline{\text{err}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
+      \overline{\textup{err}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
     \end{equation}
 \end{lem}
 
@@ -332,11 +332,11 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)
     \begin{align*}
         \eta_{k}=\min\left(\eta_{k-1},\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n_k+1}))\widetilde{V}_1(f,n_k)\right).
     \end{align*}
-a. If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to stage 3.  
+a. If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to stage 3.
 
 b. Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If
 
-\vspace*{6mm} i. $n_k \ge 2(b-a)/\mathfrak{h}$, then go to stage 3.  
+\vspace*{6mm} i. $n_k \ge 2(b-a)/\mathfrak{h}$, then go to stage 3.
 
 \indent ii. Otherwise, choose
 %$$n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil.$$
@@ -348,9 +348,9 @@ Go to Stage 1.
     \begin{equation*}
         \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a^2)\mathfrak{C}(2(b-a)/n_k)}.
     \end{equation*}
-a. If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.   
+a. If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.
 
-b. If this is not true, go the Step 4. 
+b. If this is not true, go the Step 4.
 
 \item[Step 4.\ multiply number of inputs and loop again.] Choose
 %$$
