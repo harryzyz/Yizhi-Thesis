@@ -334,7 +334,7 @@ Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{
 and $\widetilde{V}_1(f,n)$ be as described above.
 Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
-\item[Step 1.\ Estimate and bound {$\Var(f')$}.] Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.
+\item[Step 1.\ Estimate and bound {$\Var(f')$}.] Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1} and $T_{n_k}(f)$ in \eqref{traprule}.
 
 \item[Step 2. Check the necessary condition for $f \in \cc^1$.] Compute
     \begin{align*}
@@ -355,9 +355,9 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)
 
 \item[Step 3. Check for convergence.] Check whether $n_k$ is large enough to satisfy the error tolerance, i.e.
     \begin{equation*}
-        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a^2)\mathfrak{C}(2(b-a)/n_k)}.
+        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2\mathfrak{C}(2(b-a)/n_k)}.
     \end{equation*}
-    
+
     \begin{enumerate}[label=\alph*)]
       \item If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.
       \item If this is not true, go the Step 4.
@@ -373,20 +373,37 @@ Go to Step 1.
 \end{algo}
 
 \Subsection{Computational Cost of Trapezoidal Rule}
-\begin{theorem} \label{multistageintegthm}
-Let $\sigma >0$ be some fixed parameter, and let $\cb_{\sigma}=\{f \in  \mathcal{V}^{1} : \Var(f')\leq \sigma\}$. Let $T \in \ca(\cb_{\sigma}, \reals, \INT, \Lambda^{\std})$ be the non-adaptive trapezoidal rule defined by Algorithm \ref{nonadaptalgo}, and let $\varepsilon>0$ be the error tolerance. Then this algorithm succeeds for $f \in \cb_{\sigma}$, i.e., $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$, and the cost of this algorithm is $\left \lceil \sqrt{\sigma/(8\varepsilon)}\right \rceil + 1$, regardless of the size of $\Var(f')$.
 
-Now let $T \in \ca(\cc_{\tau}, \reals, \INT, \Lambda^{\std})$ be the adaptive trapezoidal rule defined by Algorithm \ref{multistageintegalgo}, and let $\tau$, $n_1$, and $\varepsilon$ be as described there. Let $\cc_\tau$ be the cone of functions defined in \eqref{coneinteg}.  Then it follows that Algorithm \ref{multistageintegalgo} is successful for all functions in $\cc_{\tau}$,  i.e.,  $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$.  Moreover, the cost of this algorithm is bounded below and above as follows:
-\begin{multline}
-\max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{ \Var(f')}{8\varepsilon}} \right \rceil \right) +1 \\
-\le \max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{8\varepsilon}} \right \rceil \right) +1 \\
-\le
-\cost(T,f;\varepsilon) \\
-\le \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{2\varepsilon}} + \tau + 4
-\le \sqrt{\frac{\tau \Var(f') }{4\varepsilon}} + \tau + 4.
-\end{multline}
-The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
+\begin{theorem}\label{thmTrap}
+    Algorithm \ref{multistagetrapalgo} is successful, i.e.,
+    \begin{equation*}
+      \left|\int_{a}^{b}f(x)dx-\textup{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^1.
+    \end{equation*}
 \end{theorem}
+
+
+\begin{theorem}\label{uppbndcostSimp}
+    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
+    \begin{multline}\label{uppbndcostineq}
+        \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}+1\right).
+    \end{multline}
+    The number of function values required by the algorithm is $N(f,\varepsilon)+1$.
+\end{theorem}
+%
+%\begin{theorem} \label{multistageintegthm}
+%Let $\sigma >0$ be some fixed parameter, and let $\cb_{\sigma}=\{f \in  \mathcal{V}^{1} : \Var(f')\leq \sigma\}$. Let $T \in \ca(\cb_{\sigma}, \reals, \INT, \Lambda^{\std})$ be the non-adaptive trapezoidal rule defined by Algorithm \ref{nonadaptalgo}, and let $\varepsilon>0$ be the error tolerance. Then this algorithm succeeds for $f \in \cb_{\sigma}$, i.e., $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$, and the cost of this algorithm is $\left \lceil \sqrt{\sigma/(8\varepsilon)}\right \rceil + 1$, regardless of the size of $\Var(f')$.
+%
+%Now let $T \in \ca(\cc_{\tau}, \reals, \INT, \Lambda^{\std})$ be the adaptive trapezoidal rule defined by Algorithm \ref{multistageintegalgo}, and let $\tau$, $n_1$, and $\varepsilon$ be as described there. Let $\cc_\tau$ be the cone of functions defined in \eqref{coneinteg}.  Then it follows that Algorithm \ref{multistageintegalgo} is successful for all functions in $\cc_{\tau}$,  i.e.,  $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$.  Moreover, the cost of this algorithm is bounded below and above as follows:
+%\begin{multline}
+%\max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{ \Var(f')}{8\varepsilon}} \right \rceil \right) +1 \\
+%\le \max \left(\left \lceil\frac{\tau+1}{2} \right \rceil, \left \lceil \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{8\varepsilon}} \right \rceil \right) +1 \\
+%\le
+%\cost(T,f;\varepsilon) \\
+%\le \sqrt{\frac{\tau \norm[1]{f'-f(1)+f(0)}}{2\varepsilon}} + \tau + 4
+%\le \sqrt{\frac{\tau \Var(f') }{4\varepsilon}} + \tau + 4.
+%\end{multline}
+%The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
+%\end{theorem}
 
  Need proof
 
@@ -428,7 +445,7 @@ Let the sequence of algorithms $\{S_n\}_{n\in \mathcal{I}}$, %$ \widehat{V}(f,\{
 and $\widetilde{V}_3(f,n)$ be as described above.
 Let $\mathfrak{h}\le (b-a)/6$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil(b-a)/\mathfrak{h}\rceil$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
 \begin{description}
-\item[Step 1.\ Estimate and bound {$\Var(f''')$}.] Compute  $\widetilde{V}_3(f,n_k)$ in \eqref{vtilde3}.
+\item[Step 1.\ Estimate and bound {$\Var(f''')$}.] Compute  $\widetilde{V}_3(f,n_k)$ in \eqref{vtilde3} and $S_{n_k}(f)$ in \eqref{simrule}.
 
 \item[Step 2. Check the necessary condition for $f \in \cc^3$.] Compute
     \begin{align*}
@@ -449,18 +466,18 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil(b-a
 
 \item[Step 3. Check for convergence.] Check whether $n_k$ is large enough to satisfy the error tolerance, i.e.
     \begin{equation*}
-        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a^2)\mathfrak{C}(2(b-a)/n_k)}.
+        \widetilde{V}_3(f,n_k) \le \frac{5832\varepsilon n_{k}^4}{(b-a)^4\mathfrak{C}((b-a)/n_{k})}.
     \end{equation*}
 
     \begin{enumerate}[label=\alph*)]
-      \item If this is true, then return $T_{n_k}(f)$ and terminate the algorithm.
+      \item If this is true, then return $S_{n_k}(f)$ and terminate the algorithm.
       \item If this is not true, go the Step 4.
     \end{enumerate}
 
 
 \item[Step 4. Multiply number of inputs and loop again.] Choose
 $$
-n_{k+1}=n_k*\max\left(\left\lceil\frac{(b-a)}{n_{k}}\sqrt{\frac{\widetilde{V}_1(f,n_k)}{8\varepsilon}}\right\rceil,2\right).
+n_{k+1}=n_k\times\max\left(\left\lceil\frac{(b-a)}{3n_{k}}\left(\frac{\widetilde{V}_3(f,n_k)}{72\varepsilon}\right)^{1/4}\right\rceil,2\right).
 $$
 Go to Step 1.
 \end{description}
@@ -469,23 +486,23 @@ Go to Step 1.
 \begin{theorem}\label{thmSimpson}
     Algorithm \ref{multistageintegalgosimpson} is successful, i.e.,
     \begin{equation*}
-      \left|\int_{a}^{b}f(x)dx-\texttt{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc.
+      \left|\int_{a}^{b}f(x)dx-\textup{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^3.
     \end{equation*}
 \end{theorem}
 
 
 
 \Subsection{Computational Cost of Simpson's Rule}
-\begin{theorem}\label{uppbndcost}
-    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Stage 2 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
+\begin{theorem}\label{uppbndcostSimp}
+    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
     \begin{multline}\label{uppbndcostineq}
-        \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq2\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(2\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right).
+        \max\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right).
     \end{multline}
-    The number of function values required by the algorithm is $3N(f,\varepsilon)+1$.
+    The number of function values required by the algorithm is $6N(f,\varepsilon)+1$.
 \end{theorem}
 \begin{proof}
   %No matter what inputs $f$ and $\varepsilon$ are provided, the number of intervals must be at least $n_1=\lfloor2(b-a)/\mathfrak{h}\rfloor+1$ in order to comply with both Simpson's rule and divided differences method. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
-  No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=2(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
+  No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
 
   Let $L$ be the value of $l$ for which Algorithm \ref{multistageintegalgosimpson} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the integer found in Step 3, and let $m^*=\max(2,m)$. Note that $\eta((m^*-1)n_{L-1})\Var(f''')>\varepsilon$. For $m^*=2$, this is true because $\eta(n_{L-1})\Var(f''')\ge\eta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\eta$ is a decreasing function, it follows that
   $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\eta(n)\Var(f''')\le\varepsilon\right\}.$$
@@ -510,7 +527,7 @@ Say something about next Chapter
 In the previous Chapter, we have discussed the algorithms and their computational cost. In this Chapter, we will discuss the lower bound of complexity. The complexity of a problem is that... So if the lower bound of the complexity is asymptotically xxx to the computational cost, it proves that our algorithm is optimal. (Need to ask.) The method of proving the lower bound of complexity is by providing a fooling function to show that no matter how good the algorithms are, it will always be fooled by the function and provide a wrong answer. (Need say more.)
 
 \Section{Traezoidale rule}
-Firstly, we derive a lower bound on the cost of approximating functions in the ball $\cb_{\sigma}$ and in the cone $\cc_{\tau}$ by constructing fooling functions. Following the arguments of Section \ref{LowBoundSec}, we choose  the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
+Firstly, we derive a lower bound on the cost of approximating functions in the ball $\cb_{\sigma}$ and in the cone $\cc_{\tau}$ by constructing fooling functions. We choose  the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
 \begin{gather*}
 \Ftnorm{f_0}=\norm[1]{f'_0-f_0(1)+f_0(0)}=\int_0^1 \abs{\sign(1/2-x)} \, \dif x = 1, \\ \Fnorm{f_0}=\Var(f'_0)=2= \tau_{\min}.
 \end{gather*}
@@ -600,7 +617,7 @@ complexity:
     \begin{equation}\label{lowbndcostineq}
         -\frac{5}{4}+\frac{b-a-5\mathfrak{h}}{8}\left[\frac{[\mathfrak{C}(0)-1]\Var( f''')}{\varepsilon}\right]^{1/4}
     \end{equation}
-    function values. As $\Var(f''')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of \texttt{integral}.
+    function values. As $\Var(f''')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of \textup{integral}.
 \end{theorem}
 \begin{proof}
   For any positive $\alpha$, suppose that $\texttt{int}(\cdot,a,b,\varepsilon)$ evaluates integrand $\alpha\text{bump}'''(\cdot;t,h)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\texttt{int}(\cdot,a,b,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+3\mathfrak{h}$, $x_{m+1}:=b-h$ (why $h$ but not $\mathfrak{h}$ or $5h$?) and $h:=(b-a-5\mathfrak{h})/(4n+5)$. There must e at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
