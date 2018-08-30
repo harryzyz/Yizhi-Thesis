@@ -51,6 +51,7 @@
 \newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
 \newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
 \newcommand{\flin}{f_{\text{\rm{lin}}}}
+%\newcommand{\dif}{\textup{d}}
 
 \begin{document}
 
@@ -113,7 +114,7 @@
 %\section{Numerical Integration and Applications}
 In numerical analysis, numerical integration plays an important role. It uses a certain algorithm to calculate the numerical value of a definite integral. It is used instead of those general and mathematically sophisticated analytical methods because that sometimes the problem is lack of analytical solution, or the integrand is only known at certain points by sampling. In this thesis, we will be focusing on the univariate integration problem
 \begin{equation}\label{integral}
-    \text{INT}(f)=\int_{a}^{b}f(x)dx\in\reals.
+    \text{INT}(f)=\int_{a}^{b}f(x)\,\textup{d}x\in\reals.
 \end{equation}
 We will provide automatic algorithms that adaptively determine the computational cost required to obtain a result of the integral. The required inputs are both an error tolerance, $\varepsilon$, and the integrand $f$. The output will be guaranteed to not differ from the true answer by more than $\varepsilon$.
 
@@ -325,7 +326,9 @@ The error bounds of our trapezoidal rule and Simpson's rule algorithms then can 
 In the previous Chapter, we have found the error bounds of our trapezoidal rule and Simpson's rule algorithms using input function values. In the Chapter, firstly we will provide details about the two algorithms. We build our algorithms as black-box algorithms. That is, as long as the user provides the input function and error tolerance, the algorithms will automatically give out an answer by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. In order to prevent the algorithms taking too long, we will also set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms will quit and provide a best possible output. In order to save the computation time, we will use embedded input points to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again.
 
 \Section{Trapezoidal Rule}
+
 add necessary condition and process of widening the cone here.
+
 \Subsection{Trapezoidal Rule Algorithm}
 
 
@@ -346,7 +349,7 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)
   \item Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If
     \begin{enumerate}[label=(\roman*)]
       \item $n_k \ge 2(b-a)/\mathfrak{h}$, then go to step 3.
-      \item Otherwise, choose $$n_{k+1}=(n_k-1)\left\lceil\frac{1}{2(n_i-1)\mathfrak{h}}\right\rceil.$$
+      \item Otherwise, choose $$n_{k+1}=n_k\times\left\lceil\frac{1}{2n_k\mathfrak{h}}\right\rceil.$$
         (need double check)
         Go to Step 1.
     \end{enumerate}
@@ -364,7 +367,7 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil2(b-a)
     \end{enumerate}
 
 
-\item[Step 4. Multiply number of inputs and loop again.] Choose
+\item[Step 4. Increase number of inputs and loop again.] Choose
 $$
 n_{k+1}=n_k*\max\left(\left\lceil\frac{(b-a)}{n_{k}}\sqrt{\frac{\widetilde{V}_1(f,n_k)}{8\varepsilon}}\right\rceil,2\right).
 $$
@@ -383,7 +386,7 @@ Go to Step 1.
 
 
 \begin{theorem}\label{uppbndcostSimp}
-    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
+    Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
     \begin{multline}\label{uppbndcostineq}
         \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}+1\right).
     \end{multline}
@@ -405,7 +408,26 @@ Go to Step 1.
 %The algorithm is computationally stable, meaning that the minimum and maximum costs for all integrands, $f$, with fixed $\norm[1]{f'-f(1)+f(0)}$ or $\Var(f')$ are an $\varepsilon$-independent constant of each other.
 %\end{theorem}
 
- Need proof
+\begin{proof}
+  %No matter what inputs $f$ and $\varepsilon$ are provided, the number of intervals must be at least $n_1=\lfloor2(b-a)/\mathfrak{h}\rfloor+1$ in order to comply with both Simpson's rule and divided differences method. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
+  No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
+
+  Let $L$ be the value of $l$ for which Algorithm \ref{multistageintegalgosimpson} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the integer found in Step 3, and let $m^*=\max(2,m)$. Note that $\eta((m^*-1)n_{L-1})\Var(f')>\varepsilon$. For $m^*=2$, this is true because $\eta(n_{L-1})\Var(f')\ge\eta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\eta$ is a decreasing function, it follows that
+  $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\eta(n)\Var(f')\le\varepsilon\right\}.$$
+  Therefore $n_L=m^*n_{L-1}<m^*\frac{n^*}{m^*-1}=\frac{m^*}{m^*-1}n^*\le2n^*$.
+
+  To prove the latter part of the upper bound, we need to prove that
+  $$n^*\leq\max\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1,(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{8\varepsilon}\right)^{1/4}+1\right),\quad 0<\alpha<1.$$
+  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\eta$, and $\mathfrak{C}$ is non-decreasing:
+  \begin{align*}
+    &\eta(n^*-1)\Var(f''')>\varepsilon, \\
+    \Rightarrow 1&<\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    \Rightarrow n^*-1&<n^*-1\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    &=n^*-1\left(\frac{(b-a)^4\mathfrak{C}(2(b-a)/(n^*-1))\Var(f''')}{8(n^*-1)^4\varepsilon}\right)^{1/4},\\
+    &\le(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{8\varepsilon}\right)^{1/4}.
+  \end{align*}
+  This completes the prove of latter part of the upper bound.
+\end{proof}
 
 % \Section{Simpson's rule}
 %change the algo the multistage. add necessary condition, add min cone constant from the min number of points.
@@ -457,7 +479,7 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil(b-a
   \item Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.  If
     \begin{enumerate}[label=(\roman*)]
       \item $n_k \ge (b-a)/\mathfrak{h}$, then go to step 3.
-      \item Otherwise, choose $$n_{k+1}=(n_k-1)\left\lceil\frac{1}{2(n_i-1)\mathfrak{h}}\right\rceil.$$
+      \item Otherwise, choose $$n_{k+1}=n_k\times\left\lceil\frac{1}{n_k\mathfrak{h}}\right\rceil.$$
         (need double check)
         Go to Step 1.
     \end{enumerate}
@@ -475,7 +497,7 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=1$. Let $\eta_{0}=\infty$, $n_1=\lceil(b-a
     \end{enumerate}
 
 
-\item[Step 4. Multiply number of inputs and loop again.] Choose
+\item[Step 4. Increase number of inputs and loop again.] Choose
 $$
 n_{k+1}=n_k\times\max\left(\left\lceil\frac{(b-a)}{3n_{k}}\left(\frac{\widetilde{V}_3(f,n_k)}{72\varepsilon}\right)^{1/4}\right\rceil,2\right).
 $$
@@ -494,7 +516,7 @@ Go to Step 1.
 
 \Subsection{Computational Cost of Simpson's Rule}
 \begin{theorem}\label{uppbndcostSimp}
-    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
+    Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 3 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
     \begin{multline}\label{uppbndcostineq}
         \max\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right).
     \end{multline}
@@ -520,7 +542,8 @@ Go to Step 1.
   \end{align*}
   This completes the prove of latter part of the upper bound.
 \end{proof}
-Say something about next Chapter
+
+Once we obtained the upper bound of the computational cost, it is important to discover the lower bound of complexity for the univariate integration problems. The computational complexity of a certain problem is the lowest cost required for the best possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is to the same order asymptotically. It is confident to say that our algorithm has the optimal cost for solving the problem. In the next chapter, we will discuss the complexity of the problem.
 
 \Chapter{Lower Bound of Complexity}
 
