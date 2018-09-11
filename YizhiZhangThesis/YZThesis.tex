@@ -327,7 +327,11 @@ In the previous Chapter, we have found the error bounds of our trapezoidal rule 
 
 \Section{Trapezoidal Rule}
 
-add necessary condition and process of widening the cone here.
+Our algorithm is guaranteed to work for those functions lying in the cone-shaped function space. In order to decide whether one input function is in the cone or not, it is important to find out a necessary condition for which $f\in\cc^1$. This condition then can be used as a threshold for the algorithm to rule out all the functions such that $f\notin\cc^1$. For those functions, we will propose a method later in this section. This method tries to make the cone function space a more inclusive new one so that it will contain more functions than before. The details will be provided later. Now, we will find out a necessary condition for which $f\in\cc^1$ first. 
+
+%From \eqref{defvar}, we know that 
+
+%\Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})
 
 \Subsection{Trapezoidal Rule Algorithm}
 
