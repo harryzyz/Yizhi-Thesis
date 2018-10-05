@@ -1,0 +1,10 @@
+\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}
+\begin{thebibliography}{1}
+
+\bibitem{BraPet11a}
+H.~Brass and K.~Petras.
+\newblock {\em Quadrature theory: the theory of numerical integration on a
+  compact interval}.
+\newblock American Mathematical Society, Rhode Island, first edition, 2011.
+
+\end{thebibliography}
