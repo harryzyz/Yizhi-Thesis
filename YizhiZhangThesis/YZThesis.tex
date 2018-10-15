@@ -1,8 +1,8 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-%\documentclass{iitthesis}
-\documentclass[draft]{iitthesis}
+\documentclass{iitthesis}
+%\documentclass[draft]{iitthesis}
 
 % Document Options:
 %
@@ -203,7 +203,7 @@ The cone space $\cc^{p}$ is a subset of $\cv^{p}$. Here $\text{size}(\{x_i\}_{i=
 \end{equation}
 The cut-off value $\mathfrak{h} \in (0, b-a)$ and the inflation factor $\mathfrak{C}: [0,\mathfrak{h} \rightarrow [1.\infty)$ define the cone. The choice of $\mathfrak{C}$ is flexible, but it must be non-decreaing. In this thesis, we choose
 \begin{equation}\label{definflationfactor}
-  \mathfrak{C}(h):=\frac{\mathfrak{C}(0)}{1-h/\mathfrak{h}}; \quad \mathfrak{C}(0)=1
+  \mathfrak{C}(h):=\frac{\mathfrak{C}(0)}{1-h/\mathfrak{h}}; \quad \mathfrak{C}(0)>1
 \end{equation}
 for convenience.
 
@@ -335,27 +335,26 @@ In the previous Chapter, we have found the error bounds of our trapezoidal rule 
 
 \Section{Trapezoidal Rule}
 
-Our algorithm is guaranteed to work for those functions lying in the cone-shaped function space. In order to decide whether one input function is in the cone or not, it is important to find out a necessary condition for which $f\in\cc^1$. This condition then can be used as a threshold for the algorithm to rule out all the functions such that $f\notin\cc^1$. For those functions, we will propose a method later in this section. This method tries to make the cone function space a more inclusive new one so that it will contain more functions than before. Firstly, we will find out a necessary condition for which $f\in\cc^1$.
+Our algorithm is guaranteed to work for those functions lying in the cone-shaped function space. However, one may not be able to check the sufficient condition such that a particular integrand is in the cone. In order to decide whether one integrand is in the cone or not, it is important to find out a necessary condition for which $f\in\cc^1$. This condition then can be used as a threshold for the algorithm to rule out all the functions such that $f\notin\cc^1$. For those functions, we will propose a method later in this section. This method tries to make the cone function space a more inclusive new one so that it will contain more functions than before. Firstly, we will find out a necessary condition for which $f\in\cc^1$.
 
-From \eqref{defvar}, we know that $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'})$, i.e. $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})\leq \Var({f'})$. From the definition of the cone \eqref{defcone}, we know that the variation of the first derivative of the input function has an upper bound in terms of the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$. The size of the partition is unknown, due to the definition of the cut-off value in \eqref{defcone} and the fact that $\mathfrak{C}(\cdot)$ is non-decreasing, we can have $\mathfrak{C}(\mathfrak{h})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$. 
-As the number of nodes $n$ increases, $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ increases. But the inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$ decreases since it is a non-decreasing function and the size is smaller. Therefore, the largest lower bound on $\Var(f')$ will always be the one at the current $k$th loop. However, the smallest upper bound is not always the case. In the algorithm, the lower and upper bounds will be updated as the number of nodes multiplies.
+From \eqref{defvar}, we know that $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'})$, i.e. $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})\leq \Var({f'})$ for all $n \ge 2$. From the definition of the cone \eqref{defcone}, we know that the variation of the first derivative of the input function has an upper bound in terms of the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ for all $n \ge 2$. The size of the partition is unknown, from the definition of the cut-off value in \eqref{cutoff1}, $\text{size}(\{x_j\}_{j=0}^{n+1})<2(b-a)/n$. Since  that $\mathfrak{C}(\cdot)$ is non-decreasing, $\mathfrak{C}(2(b-a)/n)\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$. Because the nodes used in the algorithm are nested, for $\widetilde{V}_1(f,n_k)=\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$, $\widetilde{V}_1(f,n_k)$ is non-decreasing as $n_k$ multiplies. But $\mathfrak{C}(2(b-a)/n)$ decreases since it is a non-decreasing function. Therefore, the largest lower bound on $\Var(f')$ will always be the one at the current $k$th loop. However, the smallest upper bound is not always the case. In the algorithm, the lower and upper bounds will be updated as the number of nodes multiplies.
 
 Thus, in order to make two sides of the inequality hold, namely, for an input function being in the cone function space $\cc^1$, the function must satisfy the following condition:
 \begin{equation}\label{neccontrap}
-    \widehat{V}({f'},\{x_k\}_{k=0}^{n+1})\leq\mathfrak{C}(\mathfrak{h})\widehat{V}({f'},\{x_j\}_{j=0}^{n+1}), \quad \text{ for all } j \leq k.
+    \widetilde{V}_1(f,n_k)\leq\mathfrak{C}(2(b-a)/n_{j})\widetilde{V}_1(f,n_j), \quad \text{ for all } j \leq k.
 \end{equation}
-%\mathfrak{C}(\text{size}(\{x_i\}_{j=0}^{n+1}))
+%\mathfrak{C}(\text{size}(\{x_i\}_{j=0}^{n+1})) and the fact that $\mathfrak{C}(\cdot)$ is non-decreasing,
 
 Secondly, if the input function does not meet \eqref{neccontrap} and falls out of the cone, we will try to make the cone function space more inclusive by halving the cut-off value $\mathfrak{h}$. The reason it that the inflation factor defined in \eqref{definflationfactor} is decreasing with respect to $\mathfrak{h}$. Thus by halving $\mathfrak{h}$, the inflation factor becomes larger. Intuitively, the cone of function space will be more inclusive.
 
 \Subsection{Trapezoidal Rule Algorithm}
-With the settings of how to check whether the input function is in the cone, and how to revise the cone if needed, we now provide the guaranteed automatic integration algorithm using trapezoidal rule.
+Following the settings of how to check whether the input function is in the cone, and how to revise the cone if needed, we now provide the guaranteed automatic integration algorithm using trapezoidal rule.
 \begin{algo}[Trapezoidal Rule Adaptive Algorithm] \label{multistagetrapalgo}
 Let the sequence of algorithms $\{T_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_1(\cdot,\cdot)$ be as described above.
-Let $\mathfrak{h}\le (b-a)$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
+Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$,. Let $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 \begin{description}
-\item[Step 1. Reset upper bound and increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
+\item[Step 1. Set upper bound on $\Var(f')$; increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
 
 \item[Step 2. Compute the largest lower bound on {$\Var(f')$}.] Let $k=k+1$. Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.% and $T_{n_k}(f)$ in \eqref{traprule}.
 
@@ -371,7 +370,7 @@ Let $\mathfrak{h}\le (b-a)$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1=\
   Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.
     \begin{enumerate}[label=\alph*)]
       \item Let $\mathfrak{J}=\{j=1, \cdots, k: n_{j}\ge 2(b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
-      \item Otherwise, recompute the upper bound on $\Var(f')$, $n_{j}$, for $j \in \mathfrak{J}$ by the following: 
+      \item Otherwise, recompute the upper bound on $\Var(f')$, for $n_{j}$, such that $j \in \mathfrak{J}$ by the following:
       \begin{align*}
         &\text{For } j'=\min\mathfrak{J}, \text{ let } \eta_{j'}=\mathfrak{C}(2(b-a)/n_{j'})\widetilde{V}_1(f,n_{j'}), \\
         &\text{Compute } \eta_{j}=\min\{\eta_{j-1},\mathfrak{C}(2(b-a)/n_{j})\widetilde{V}_1(f,n_{j})\}, \text{ for } j=j'+1, \cdots, k.
@@ -388,7 +387,8 @@ Let $\mathfrak{h}\le (b-a)$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1=\
 %        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2\mathfrak{C}(2(b-a)/n_k)}.
 %    \end{equation*}
     \begin{equation*}
-        \eta_{k} \le \frac{8\varepsilon n_k^2}{(b-a)^2}.
+        \eta_{k} \le \frac{8\varepsilon n_k^2}{(b-a)^2},\\
+         \mathfrak{C}(2(b-a)/n_k)\widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2}.
     \end{equation*}
 
     \begin{enumerate}[label=\alph*)]
@@ -420,14 +420,13 @@ The algorithm will always be true if the input function is in the cone and the n
 \Subsection{Computational Cost of Trapezoidal Algorithm}
 Having created the multistage adaptive algorithm using trapezoidal rule, we now continue to find the computational cost of the algorithm. The computational cost of trapezoidal algorithm can be bounded by the following theorem.
 \begin{theorem}\label{uppbndcosttrap}
-    Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 5 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
+    Let $N(f,\varepsilon)$ denote the final number $n_k$ in Step 5 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
     \begin{multline}\label{uppbndcosttrapineq}
-        \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}+1\right).
+        \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\zeta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}+1\right),
     \end{multline}
-    The number of function values required by the algorithm is $N(f,\varepsilon)+1$.
+    where $\zeta(n)=(b-a)^2\mathfrak{C}(2(b-a)/n)/(8\varepsilon n^2)$. The number of function values, namely, the computational cost required by the algorithm is $N(f,\varepsilon)+1$.
 \end{theorem}
 
-\textcolor{red}{Give $\eta$ another name and definition.}
 %
 %\begin{theorem} \label{multistageintegthm}
 %Let $\sigma >0$ be some fixed parameter, and let $\cb_{\sigma}=\{f \in  \mathcal{V}^{1} : \Var(f')\leq \sigma\}$. Let $T \in \ca(\cb_{\sigma}, \reals, \INT, \Lambda^{\std})$ be the non-adaptive trapezoidal rule defined by Algorithm \ref{nonadaptalgo}, and let $\varepsilon>0$ be the error tolerance. Then this algorithm succeeds for $f \in \cb_{\sigma}$, i.e., $\abs{\INT(f) - T(f,\varepsilon)} \le \varepsilon$, and the cost of this algorithm is $\left \lceil \sqrt{\sigma/(8\varepsilon)}\right \rceil + 1$, regardless of the size of $\Var(f')$.
@@ -448,17 +447,17 @@ Having created the multistage adaptive algorithm using trapezoidal rule, we now 
   %No matter what inputs $f$ and $\varepsilon$ are provided, the number of intervals must be at least $n_1=\lfloor2(b-a)/\mathfrak{h}\rfloor+1$ in order to comply with both Simpson's rule and divided differences method. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
   No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
 
-  Let $L$ be the value of $l$ for which Algorithm \ref{multistagetrapalgo} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the integer found in Step 3, and let $m^*=\max(2,m)$. Note that $\eta((m^*-1)n_{L-1})\Var(f')>\varepsilon$. For $m^*=2$, this is true because $\eta(n_{L-1})\Var(f')\ge\eta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\eta$ is a decreasing function, it follows that
-  $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\eta(n)\Var(f')\le\varepsilon\right\}.$$
+  Let $L$ be the value of $l$ for which Algorithm \ref{multistagetrapalgo} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the multiplication integer found in Step 6, and let $m^*=\max(2,m)$. Note that $\zeta((m^*-1)n_{L-1})\Var(f')>\varepsilon$. For $m^*=2$, this is true because $\zeta(n_{L-1})\Var(f')\ge\zeta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\zeta$ is a decreasing function, it follows that
+  $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\zeta(n)\Var(f')\le\varepsilon\right\}.$$
   Therefore $n_L=m^*n_{L-1}<m^*\frac{n^*}{m^*-1}=\frac{m^*}{m^*-1}n^*\le2n^*$.
 
   To prove the latter part of the upper bound, we need to prove that
   $$n^*\leq\max\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1,(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{8\varepsilon}\right)^{1/2}+1\right),\quad 0<\alpha<1.$$
-  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\eta$, and $\mathfrak{C}$ is non-decreasing:
+  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\zeta$, and $\mathfrak{C}$ is non-decreasing:
   \begin{align*}
-    &\eta(n^*-1)\Var(f')>\varepsilon, \\
-    \Rightarrow 1&<\left(\frac{\eta(n^*-1)\Var(f')}{\varepsilon}\right)^{1/2},\\
-    \Rightarrow n^*-1&<n^*-1\left(\frac{\eta(n^*-1)\Var(f')}{\varepsilon}\right)^{1/2},\\
+    &\zeta(n^*-1)\Var(f')>\varepsilon, \\
+    \Rightarrow 1&<\left(\frac{\zeta(n^*-1)\Var(f')}{\varepsilon}\right)^{1/2},\\
+    \Rightarrow n^*-1&<n^*-1\left(\frac{\zeta(n^*-1)\Var(f')}{\varepsilon}\right)^{1/2},\\
     &=n^*-1\left(\frac{(b-a)^2\mathfrak{C}(2(b-a)/(n^*-1))\Var(f')}{8(n^*-1)^2\varepsilon}\right)^{1/2},\\
     &\le(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}\right)^{1/2}.
   \end{align*}
@@ -480,8 +479,8 @@ Having created the multistage adaptive algorithm using trapezoidal rule, we now 
 %If $\widetilde{\text{err}}(f,n_l)\le\varepsilon$, then return the Simpson's rule approximation $S_{n_l}(f)$ as the answer.
 %
 %\item[Stage 3] %Check for convergence.]
-%Otherwise let $n_{l+1}=\max(2,m)\eta_{l}$, where
-%$$m=\min\{r\in\mathbb{N}:\eta(rn_l)\widetilde{V}_{n_{l}(f)}\le\varepsilon\}, \text{with } \eta(n):=\frac{(b-a)^4\mathfrak{C}(2(b-a)/n)}{5832n^4}.$$
+%Otherwise let $n_{l+1}=\max(2,m)\zeta_{l}$, where
+%$$m=\min\{r\in\mathbb{N}:\zeta(rn_l)\widetilde{V}_{n_{l}(f)}\le\varepsilon\}, \text{with } \zeta(n):=\frac{(b-a)^4\mathfrak{C}(2(b-a)/n)}{5832n^4}.$$
 %increase $l$ by one, and go to 1.
 %\end{description}
 %\end{algo}
@@ -495,9 +494,9 @@ Having created the multistage adaptive algorithm using trapezoidal rule, we now 
 
 \Section{Simpson's rule}
 
-Similar to the trapezoidal algorithm, firstly we will provide the necessary condition for the input function lying in the cone. From \eqref{defvar}, we know that $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'''})$, i.e. $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})\leq \Var({f'''})$. From the definition of the cone \eqref{defcone}, we know that the variation of the first derivative of the input function can be bounded by the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'''})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1}).$. After similar derivation as the trapezoidal case, the necessary condition for an input function being in the cone function space $\cc^3$ at the $k$th loop is:
+Similar to the trapezoidal algorithm, firstly we will provide the necessary condition for the input function lying in the cone. From \eqref{defvar}, we know that $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'''})$, i.e. $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})\leq \Var({f'''})$ for all $n \ge 6$. From the definition of the cone \eqref{defcone}, we know that the variation of the first derivative of the input function can be bounded by the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'''})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$, for all $n \ge 6$. After similar derivation as the trapezoidal case, the necessary condition for an input function being in the cone function space $\cc^3$ at the $k$th loop is:
 \begin{equation}\label{necconsim}
-    \widehat{V}({f'''},\{x_k\}_{k=0}^{n+1})\leq\mathfrak{C}(\mathfrak{h})\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1}), \quad \text{ for all } j \leq k.
+    \widetilde{V}_3(f,n_k)\leq\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n_j), \quad \text{ for all } j \leq k.
 \end{equation}
 We will use the same mechanism to make the cone function space more inclusive in the Simpson's rule case.
 
@@ -550,7 +549,7 @@ Now we provide the guaranteed automatic integration algorithm using Simpson's ru
 \begin{algo} [Simpson's Rule Adaptive Algorithm] \label{multistageintegalgosimpson}
 Let the sequence of algorithms $\{S_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_3(\cdot,\cdot)$ be as described above.
-Let $\mathfrak{h}\le (b-a)/6$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1=\lceil(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
+Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=0$. Let $n_1=\lceil(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 \begin{description}
 \item[Step 1. Reset upper bound and increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil(b-a)/\mathfrak{h}n_{k}\right\rceil$.
 
@@ -568,7 +567,7 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1
   Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.
     \begin{enumerate}[label=\alph*)]
       \item Let $\mathfrak{J}=\{j=1, \cdots, k: n_{j}\ge (b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
-      \item Otherwise, recompute the upper bound on $\Var(f''')$, $n_{j}$, for $j \in \mathfrak{J}$ by the following: 
+      \item Otherwise, recompute the upper bound on $\Var(f''')$ for $n_{j}$, such that $j \in \mathfrak{J}$ by the following:
       \begin{align*}
         &\text{For } j'=\min\mathfrak{J}, \text{ let } \eta_{j'}=\mathfrak{C}((b-a)/n_{j'})\widetilde{V}_3(f,n_{j'}), \\
         &\text{Compute } \eta_{j}=\min\{\eta_{j-1},\mathfrak{C}((b-a)/n_{j})\widetilde{V}_3(f,n_{j})\}, \text{ for } j=j'+1, \cdots, k.
@@ -585,7 +584,8 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $n_{0}=1$, $k=0$, $\eta_{0}=\infty$. Let $n_1
 %        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2\mathfrak{C}(2(b-a)/n_k)}.
 %    \end{equation*}
     \begin{equation*}
-        \eta_{k} \le \frac{5832\varepsilon n_k^4}{(b-a)^4}.
+        \eta_{k} \le \frac{5832\varepsilon n_k^4}{(b-a)^4},\\
+        \mathfrak{C}((b-a)/n_k)\widetilde{V}_3(f,n_k) \le \frac{5832\varepsilon n_k^4}{(b-a)^4}.
     \end{equation*}
 
     \begin{enumerate}[label=\alph*)]
@@ -618,75 +618,194 @@ Having created the multistage adaptive algorithm using Simpson's rule, we now co
 \begin{theorem}\label{uppbndcostSimp}
     Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 5 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
     \begin{multline}\label{uppbndcostineq}
-        \max\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right).
+        \max\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\zeta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right),
     \end{multline}
-    The number of function values required by the algorithm is $6N(f,\varepsilon)+1$.
+    where $\zeta(n)=(b-a)^4\mathfrak{C}((b-a)/n)/(5832n^4)$. The number of function values, namely the computational cost, required by the algorithm is $6N(f,\varepsilon)+1$.
 \end{theorem}
-\textcolor{red}{Give $\eta$ another name and definition.}
+
 \begin{proof}
   %No matter what inputs $f$ and $\varepsilon$ are provided, the number of intervals must be at least $n_1=\lfloor2(b-a)/\mathfrak{h}\rfloor+1$ in order to comply with both Simpson's rule and divided differences method. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
   No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
 
-  Let $L$ be the value of $l$ for which Algorithm \ref{multistageintegalgosimpson} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the integer found in Step 3, and let $m^*=\max(2,m)$. Note that $\eta((m^*-1)n_{L-1})\Var(f''')>\varepsilon$. For $m^*=2$, this is true because $\eta(n_{L-1})\Var(f''')\ge\eta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\eta$ is a decreasing function, it follows that
-  $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\eta(n)\Var(f''')\le\varepsilon\right\}.$$
+  Let $L$ be the value of $l$ for which Algorithm \ref{multistageintegalgosimpson} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the multiplication integer found in Step 6, and let $m^*=\max(2,m)$. Note that $\zeta((m^*-1)n_{L-1})\Var(f''')>\varepsilon$. For $m^*=2$, this is true because $\zeta(n_{L-1})\Var(f''')\ge\zeta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\zeta$ is a decreasing function, it follows that
+  $$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\zeta(n)\Var(f''')\le\varepsilon\right\}.$$
   Therefore $n_L=m^*n_{L-1}<m^*\frac{n^*}{m^*-1}=\frac{m^*}{m^*-1}n^*\le2n^*$.
 
   To prove the latter part of the upper bound, we need to prove that
   $$n^*\leq\max\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1,(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right),\quad 0<\alpha<1.$$
-  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\eta$, and $\mathfrak{C}$ is non-decreasing:
+  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\zeta$, and $\mathfrak{C}$ is non-decreasing:
   \begin{align*}
-    &\eta(n^*-1)\Var(f''')>\varepsilon, \\
-    \Rightarrow 1&<\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
-    \Rightarrow n^*-1&<n^*-1\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    &\zeta(n^*-1)\Var(f''')>\varepsilon, \\
+    \Rightarrow 1&<\left(\frac{\zeta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    \Rightarrow n^*-1&<n^*-1\left(\frac{\zeta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
     &=n^*-1\left(\frac{(b-a)^4\mathfrak{C}(2(b-a)/(n^*-1))\Var(f''')}{5832(n^*-1)^4\varepsilon}\right)^{1/4},\\
     &\le(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}.
   \end{align*}
   This completes the proof of latter part of the upper bound.
 \end{proof}
 
-Having obtained the upper bound on the computational cost, it is important to discover a lower bound of complexity for univariate integration problems. By studying the lower bound on the complexity, we can decide how well performed our algorithm is. In the next chapter, we will discuss the complexity of the problem.
+Having obtained the upper bound on the computational cost, it is important to discover a lower bound of complexity for univariate integration problems. By studying the lower bound on the complexity, we can decide whether the cost of our algorithms are optimal among all possible algorithms using function values for the same problem. In the next chapter, we will discuss the complexity of the problem.
 
 \Chapter{Lower Bound of Complexity}
 
-In the previous Chapter, we have discussed the algorithms and their computational cost. In this Chapter, we will discuss the lower bound of complexity.The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The method of proving the lower bound of complexity is by building a fooling function to show that no matter how good the algorithms are, it will always be fooled by the function and provide a wrong answer. In this case, when the number of nodes is less than a certain number $n$, the algorithm is always fooled by the fooling function. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. We will start from defining $\textup{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem. Then we will build two fooling functions for trapezoidal rule and Simpson's rule and discuss how to find the lowest number of nodes required to solve the problem.
+In the previous Chapter, we have discussed the algorithms and their computational cost. In this Chapter, we will discuss the lower bound of complexity. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up by (ref p11). That is, to build a fooling function to show that no matter how good the algorithms are, it will always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, the algorithm is always fooled by the fooling function. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. We will start from defining $\textup{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem. Then we will build two fooling functions for trapezoidal rule and Simpson's rule respectively and discuss how to find the lowest number of nodes required to solve the problem.
 
 \Section{Trapezoidal rule}
 
-Firstly, we construct the fooling function. We choose the triangle shaped function $f_0: x \mapsto 1/2-\abs{1/2-x}$. Then
-%\begin{gather*}
-%\Ftnorm{f_0}=\norm[1]{f'_0-f_0(1)+f_0(0)}=\int_0^1 \abs{\sign(1/2-x)} \, \dif x = 1, \\ \Fnorm{f_0}=\Var(f'_0)=2= \tau_{\min}.
-%\end{gather*}
-\begin{equation*}
-  \Var(f'_0)=2
-\end{equation*}
-For any $n \in \natzero$, suppose that the one has the data $L_i(f)=f(\xi_i)$, $i=1, \ldots, n$ for arbitrary $\xi_i$, where $0=\xi_0 \le \xi_1 < \cdots < \xi_n \le \xi_{n+1} = 1$.  There must be some $j=0, \ldots, n$ such that $\xi_{j+1} - \xi_j \ge 1/(n+1)$.  The function $f_{1}$ is defined as a triangle function on the interval $[\xi_j, \xi_{j+1}]$:
-$$
-f_{1}(x):=\begin{cases} \displaystyle
-\frac{\xi_{j+1}-\xi_{j}-\abs{\xi_{j+1}+\xi_{j}-2x}}{8} & \xi_{j} \le x \leq \xi_{j+1},\\
-0 & \text{otherwise}.
+To construct the fooling function for the trapezoidal rule, we will start from creating a triangle shaped function $\text{peak}(x,t,h)$ on $(a,b)$ that starts at point $t$, with the width of $2h$ and zero value elsewhere than $t, t+2h$. Considering the B-Spline to the first order:
+\begin{align*}
+  \text{b}_{j,0}(x):= \begin{cases} \displaystyle 1, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle  0, & \text{otherwise}.
 \end{cases}
-$$
-This is a piecewise linear function whose derivative changes from $0$ to $1/4$ to $-1/4$ to $0$ provided $0 < \xi_j < \xi_{j+1} < 1$, and so $\Var(f'_1)\le 1$. Moreover,
-\begin{gather*}
-\INT(f)=\int_0^1 f_1(x) \, \dif x = \frac{(\xi_{j+1} - \xi_j)^2}{16} \ge \frac{1}{16(n+1)^2}
-\end{gather*}
-%Using these choices of $f_0$ and $f_1$, along with the corresponding $g$ above, one may invoke Theorems \ref{complowbdball}--\ref{complowbd}, and Corollary \ref{optimcor} to obtain the following theorem.
-With the fooling function, we can find the lower bound of complexity of the trapezoidal algorithm.
+\end{align*}
 
+\begin{align*}
+  \text{b}_{j,1}(x):= \begin{cases} \displaystyle \frac{x-t_{j}}{h}, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle \frac{t_{j+2}-x}{h}, & t_{j+1} \le x < t_{j+2},\\[1ex]
+\displaystyle  0, & \text{otherwise}.
+\end{cases}
+\end{align*}
+The function $\text{b}_{j,1}(x)$ is a triangle shaped function that starts at point $t_j$, with the width of $t_{j+2}-t_{j}$ and zero value elsewhere than $t_{j}, t_{j+2}$. Assuming that $\{t_{j}\}_{j=1}^{n}$ is equally space between $(a,b)$, $t_{j+1}-t_{j}=h$, and $t=t_{j}$ . We can define our peak function as
+\begin{equation}\label{peakfunction}
+  peak(x:t,h)=h \text{b}_{j,1}=x\begin{cases} \displaystyle x-t, & t \le x < t+h,\\[1ex]
+\displaystyle t+2h-x, & t+h \le x < t+2h,\\[1ex]
+\displaystyle  0, & \text{otherwise}.
+\end{cases}.
+\end{equation} 
+And
+\begin{gather*}
+  \text{peak}'(x;t,h):= \begin{cases} \displaystyle 1, & t \le x < t+h,\\[1ex]
+\displaystyle -1, & t+h \le x < t+2h,\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases}, \\
+\Var(\text{peak}'(\cdot;t,h))\le 4 \text{ with equality if } a<t<t+2h<b, \\
+\int_{a}^{b}\text{peak}(x;t,h)dx=h^2. 
+\end{gather*}
+The peak function above is continuous to the first derivative and with finite variation of the first derivative of the function. With this peak function $\text{peak}'(x;t,h)$, we can now build the following double-two function:
+\begin{subequations}
+    \begin{multline}\label{foolingfunctiontrap}
+        \text{twopk}(x;t,h,\pm):=\text{peak}(x;a,\mathfrak{h})\pm\frac{3[\mathfrak{C}(h)-1]}{4}\text{peak}(x;t,h)\\ a+3\mathfrak{h}\le t \le b-3h, 0\le h <\mathfrak{h}.
+    \end{multline}
+    \\
+    \begin{equation}
+        \Var(\text{twopk}'(x;t,h,\pm))=3+4\frac{3[\mathfrak{C}(h)-1]}{4}=3\mathfrak{C}(h).
+    \end{equation}
+\end{subequations}
+Note that $\text{twopk}(x;t,h,\pm)$ are always in $\cc^1$:
+From this definition it follows that
+\begin{align*}
+  &\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}(\text{twopk}'(x;t,h,\pm),\{x_j\}_{j=0}^{n+1})\\
+  \ge & \begin{cases} \displaystyle 3\mathfrak{C}(h)=\Var(\text{twopk}'(x;t,h,\pm)), h \le \text{size}(\{x_j\}_{j=0}^{n+1})) <\mathfrak{h}\\[1ex]
+                      \displaystyle \mathfrak{C}(0)\Var(\text{twopk}'''(x;t,h,\pm)), 0\le \text{size}(\{x_j\}_{j=0}^{n+1}))<h
+        \end{cases}\\
+  \ge & \Var(\text{twopk}'(x;t,h,\pm))
+\end{align*}
+The functions $\text{twopk}(x;t,h,\pm)$ have two peaks. The first always starts from the left end, $a$, and has the width of $2\mathfrak{h}$. The second will start from any point $t$ that is at least one interval right to the first peak and have a smaller width of $2h$. Although $\text{twopk}(x;t,h,\pm)$ may have a bump with arbitrarily small width $2h$, the height is small enough for $\text{twopk}(x;t,h,\pm)$ to lie in the cone. This function then can be used as our fooling functions. 
+
+With the fooling function, we can find the lower bound of complexity of the trapezoidal algorithm. The key to the proof is that, one appropriate $h$ needs to be found such that the smaller peak will reside within one interval of data sites, then cannot be detected by the algorithm. Then, the algorithm cannot distinguish between $\text{peak}'(x;t,h)$ and $\text{twopk}(x;t,h,\pm)$. Assuming that the algorithm $\textup{int}(\cdot,\varepsilon)$ uses $n$ equally spaced nodes to successfully return and answer. Moreover, assuming that $\{x_{j}\}_{j=1}^{m}$ is a subinterval of $\{x_{j}\}_{j=0}^{n}$ where the smaller peak resides. In order to find the proper $h$, notice that average width of intervals is $(x_{m+1}-x_{0})(m+1)$ and $x_{m+1}-x_{0}=b-a-3\mathfrak{h}-h$. Choose one interval such that the width is less than $2h$, the width of small bump. In order to do that, we can choose interval wider than average and $2h$ narrower than average.
+
+  \begin{align*}
+    \frac{x_{j+1}-x_{j}}{2}&\ge\frac{x_{m+1}-x_{0}}{2(m+1)}\ge\frac{x_{m+1}-x_{0}}{2(n+1)}=\frac{b-a-3\mathfrak{h}-h}{2n+2}=h,\\
+    \Rightarrow h&=\frac{b-a-3\mathfrak{h}}{2n+3}
+  \end{align*}
+
+Therefore, the lower bound of the complexity for the integration problem using trapezoidal rule can be represented as:
 \begin{theorem} \label{comptrap}
-The complexity of the integration problem over the cone of functions $\cc^1$ defined in \eqref{defcone} is bounded below as
-\begin{equation}\label{complowbdtrap}
- \left \lceil \sqrt{\frac{((b-a)/\mathfrak{h})-2)\Var(f')}{32 \mathfrak{h} \varepsilon}} \right \rceil -1 .
-\end{equation}
-As $\Var(f')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of Algorithm \ref{multistagetrapalgo}. The adaptive trapezoidal Algorithm \ref{multistagetrapalgo} has optimal order for integration of functions in $\cc^1$.
+Let $\textup{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc^1$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f')$, there will be some $f\in \cc^1$ for which $\textup{int}(\cdot,\varepsilon)$ must use at least
+    \begin{equation}\label{complowbdtrap}
+        -\frac{3}{2}+\frac{b-a-3\mathfrak{h}}{8}\sqrt{\left[\frac{[\mathfrak{C}(0)-1]\Var( f')}{\varepsilon}\right]}
+    \end{equation}
+    function values. As $\Var(f')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of Algorithm \ref{multistagetrapalgo}. The adaptive trapezoidal Algorithm \ref{multistagetrapalgo} has optimal order for integration of functions in $\cc^1$.
 \end{theorem}
 \begin{proof}
-  need to change
+  For any positive $\alpha$, suppose that $\textup{int}(\cdot,\varepsilon)$ evaluates integrand $\alpha\text{peak}'(\cdot;t,h)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\texttt{int}(\cdot,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+2\mathfrak{h}$, $x_{m+1}:=b-h$ and $h:=(b-a-3\mathfrak{h})/(2n+3)$. There must e at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
+  \begin{align*}
+    \frac{x_{j+1}-x_{j}}{2}\ge\frac{x_{m+1}-x_{0}}{2(m+1)}\ge\frac{x_{m+1}-x_{0}}{2(n+1)}=\frac{b-a-3\mathfrak{h}-h}{2n+2}=h.
+  \end{align*}
+  Choose one such $x_{j}$ and call it $t$. The choice of $t$ and $h$ ensures that $\textup{int}(\cdot,a,b,\varepsilon)$ cannot distinguish between $\alpha\textup{peak}(\cdot;t,h)$ and $\alpha\textup{twopk}(\cdot;t,h,\pm)$. Thus
+  \begin{align*}
+    \textup{int}(\alpha\text{twopk}(\cdot;t,h,\pm),a,b,\varepsilon)=\textup{int}(\alpha\text{peak}(\cdot;t,h),a,b,\varepsilon)
+  \end{align*}
+  Moreover, $\alpha\text{peak}(\cdot;t,h)$ and $\alpha\text{twopk}(\cdot;t,h,\pm)$ are all in the cone $\cc^1$. This means that $\textup{int}(\cdot,\varepsilon)$ is successful for all of the functions.
+  \begin{subequations}
+  \begin{multline*}
+    \varepsilon\ge\frac{1}{2}\left[\right.\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,h,-)dx-\textup{int}(\alpha\textup{twopk}(\cdot;t,h,-),a,b,\varepsilon)\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,h,+)dx-\textup{int}(\alpha\textup{twopk}(\cdot;t,h,+),a,b,\varepsilon)\right|\left.\right]
+  \end{multline*}
+  \begin{multline*}
+    \ge\frac{1}{2}\left[\right.\left|\textup{int}(\alpha\textup{peak}(\cdot;t,h,-),a,b,\varepsilon)-\int_{a}^{b}\alpha\textup{twopk}(x;t,h,-)dx\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,h,+)dx-\textup{int}(\alpha\textup{peak}(\cdot;t,h,+),a,b,\varepsilon)\right|\left.\right]
+  \end{multline*}
+  \begin{align*}
+     &\ge\frac{1}{2}\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,h,+)dx-\int_{a}^{b}\alpha\textup{twopk}(x;t,h,-)dx\right|\\
+     &=\int_{a}^{b}\alpha\textup{peak}(x;t,h)dx\\
+     &=\frac{3\alpha[\mathfrak{C}(h)-1]h^2}{4}\\
+     &=\frac{[\mathfrak{C}(h)-1]h^2\Var(\alpha\textup{peak}'(\cdot;a,\mathfrak{h}))}{4}
+  \end{align*}
+  \end{subequations}
+  Substituting $h$  in terms of $n$:
+      \begin{align*}
+        2n+3=\frac{b-a-3\mathfrak{h}}{h}&\ge(b-a-3\mathfrak{h})\left[\frac{[\mathfrak{C}(h)-1]\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h})))}{4\varepsilon}\right]^{1/2},\\
+        &\ge\frac{b-a-3\mathfrak{h}}{2}\left[\frac{[\mathfrak{C}(0)-1]\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))}{\varepsilon}\right]^{1/2}.
+    \end{align*}
+    Since $\alpha$ is an arbitrary positive number, the value of $\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))$ is arbitrary.
+
+    Finally, comparing the upper bound on the computational cost of $\textup{integral}$ in \eqref{uppbndcostineq} with the lower bound on the computational cost of the best algorithm in \eqref{lowbndcostineq}, both of them increase as $\mathcal{O}((\Var(f')/\varepsilon))^{1/2}$ as $(\Var(f')/\varepsilon)^{1/2}\rightarrow \infty$. Thus $\textup{integral}$ is optimal.
 \end{proof}
 
 \Section{Simpson's rule}
 
-Firstly we need to build fooling function such that it can make the algorithm fail. This function should be continuous to the third derivative and lie in the cone. We start by considering the following bump function:
+To build the fooling functions for Simpson's rule, we will continue our B-Spline expansion in the previous section in order to find the functions the such that $f,f',f''$ are continuous and $\Var(f''')<\infty$.??? Change $f$
+
+\begin{align*}
+  \text{b}_{j,0}(x):= \begin{cases} \displaystyle 1, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases}
+\end{align*}
+
+\begin{align*}
+  \text{b}_{j,1}(x):= \begin{cases} \displaystyle \frac{x-t_{j}}{h}, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle \frac{t_{j+2}-x}{h}, & t_{j+1} \le x < t_{j+2},\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases}
+\end{align*}
+
+\begin{align*}
+  \text{b}_{j,2}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^2}{2h^2}, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle \frac{(t_{j+2}-x)(x-t_{j})}{2h^2}+\frac{(t_{j+3}-x)(x-t_{j+2})}{2h^2}, & t_{j+1} \le x < t_{j+2},\\[1ex]
+\displaystyle \frac{(t_{j+3}-x)^2}{2h^2}, & t_{j+2} \le x < t_{j+3},\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases}
+\end{align*}
+
+%\begin{align*}
+%  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, & t_{j} \le x < t_{j+1},\\[1ex]
+%\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3}, & t_{j+1} \le x < t_{j+2},\\[1ex]
+%\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3}, & t_{j+2} \le x < t_{j+3},\\[1ex]
+%\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, & t_{j+3} \le x < t_{j+4},\\[1ex]
+%\displaystyle  0, & \text{otherwise},
+%\end{cases}
+%\end{align*}
+
+\begin{align*}
+  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3}, \\[1ex]
+\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3}, \\[1ex]
+\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, t_{j+3} \le x < t_{j+4},\\[1ex]
+\displaystyle  0, \text{otherwise},
+\end{cases}
+\end{align*}
+
+\begin{align*}
+  \text{b}_{j,3}'''(x):= \begin{cases} \displaystyle 1//h^3, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle -3/h^3, & t_{j+1} \le x < t_{j+2},\\[1ex]
+\displaystyle 3/h^3, & t_{j+2} \le x < t_{j+3},\\[1ex]
+\displaystyle -1/h^3, & t_{j+3} \le x < t_{j+4},\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases},
+\end{align*}
+The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point $t_j$, with the width of $t_{j+4}-t_{j}$ and zero value elsewhere than $t_{j}, t_{j+4}$. Assuming that $\{t_{j}\}_{j=1}^{n}$ is equally space between $(a,b)$, $t_{j+1}-t_{j}=h$, and $t=t_{j}$ . We can define our peak function as
+
 \begin{subequations} \label{bumpfunction}
 %\begin{gather}
 %bump(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
@@ -733,6 +852,13 @@ From this definition it follows that
   \ge & \Var(\text{twobp}'''(x;t,h,\pm))
 \end{align*}
 Although $\text{twobp}'''(x;t,h,\pm)$ may have a bump with arbitrarily small width $4h$, the height is small enough for $\text{twobp}'''(x;t,h,\pm)$ to lie in the cone.
+
+Similar to the trapezoidal case, the average width of intervals is $\frac{x_{m+1}-x_{0}}{m+1}$ and $x_{m+1}-x_{0}=b-a-5\mathfrak{h}-h$. Choose one interval such that width less bigger than $4h$ (the width of small bump). In order to do that, we can choose interval wider than average and $4h$ narrower than average:
+
+  \begin{align*}
+    \frac{x_{j+1}-x_{j}}{4}&\ge\frac{x_{m+1}-x_{0}}{4(m+1)}\ge\frac{x_{m+1}-x_{0}}{4(n+1)}=\frac{b-a-5\mathfrak{h}-h}{4n+4}=h,\\
+    \Rightarrow h&=\frac{b-a-5\mathfrak{h}}{4n+5}
+  \end{align*}
 
 With the fooling function, we can find the lower bound of complexity of the Simpson's algorithm.
 \begin{theorem}\label{compsim}
