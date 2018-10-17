@@ -57,7 +57,7 @@
 \begin{document}
 
 %%% Declarations for Title Page %%%
-\title{Title}
+\title{Guaranteed, Adaptive, Automatic Algorithms for Univariate Integration: Methods, Cost, and Implementations}
 \author{Yizhi Zhang}
 \degree{Doctor of Philosophy}
 \dept{Applied Mathematics}
@@ -111,24 +111,40 @@
 \textpages     % Settings of text-pages are done with \textpages command
 
 % Chapters are created with \Chapter{title} command
-\Chapter{INTRODUCTION}
+\Chapter{Introduction}
 %\section{Numerical Integration and Applications}
 
-In numerical analysis, numerical integration plays an important role. It uses a certain algorithm to calculate the numerical value of a definite integral. It is used instead of those general and mathematically sophisticated analytical methods because that sometimes the problem is lack of analytical solution, or the integrand is only known at certain points by sampling. In this thesis, we will be focusing on the univariate integration problem
+In numerical analysis, numerical integration plays an important role. It uses a certain algorithm to calculate the numerical value of a definite integral. It is used instead of those general and mathematically sophisticated analytical methods because that sometimes the problem is lack of analytical solution, or the integrand is only known at certain points by sampling. In this thesis, we will focus on the univariate integration problem
 \begin{equation}\label{integral}
     \text{INT}(f)=\int_{a}^{b}f(x)\,\textup{d}x\in\reals.
 \end{equation}
-We will provide automatic algorithms that adaptively determine the computational cost required to obtain a result of the integral. The required inputs are both an error tolerance, $\varepsilon$, and the integrand $f$. The output will be guaranteed to not differ from the true answer by more than $\varepsilon$.
+We will provide two adaptive automatic algorithms, $\text{integral}\_\text{t}$, and $\text{integral}\_\text{s}$, that use trapezoidal rule and Simpson's rule respectively, and are guaranteed to provide numerical approximations no differ from the true integral by a specified error tolerance $\varepsilon$, i.e.
+\begin{align}\label{approx}
+      \left|\int_{a}^{b}f(x)\,\textup{d}x-\text{integral}\_\text{t}(f,\varepsilon)\right|\leq \varepsilon,& \\
+      \left|\int_{a}^{b}f(x)\,\textup{d}x-\text{integral}\_\text{s}(f,\varepsilon)\right|\leq \varepsilon,&
+\end{align}
+assuming that $\forall f \in \cc^{p}, a,b\in\reals, a<b, \varepsilon>0$, where $a$ and $b$ are finite, and $\cc^{p}$ are some sets of integrands defined in the later part of the thesis.
 
-Unfortunately, most commonly used guaranteed algorithms are not adaptive. They cannot adjust their effort based on the property of the input function. On the other hand, msot existing adaptive algorithms are not guaranteed to provide answers satisfying the error tolerance. Out goal here is to construct adaptive, automatic algorithms that are guaranteed to satisfy the error tolerance.
+%adaptively determine the computational cost required to obtain a result of the integral. The required inputs are both an error tolerance, $\varepsilon$, %and the integrand $f$. The output will be guaranteed to not differ from the true answer by more than $\varepsilon$.
+Our algorithms are adaptive. By adaptive, it means that the algorithms automatically expand the right amount of computational effort needed to provide an approximate solution within the error tolerance. Our algorithms are also guaranteed to satisfy the error tolerance. Other existing guaranteed algorithms are usually not adaptive. They cannot adjust their effort based on the property of the input function. Details about those algorithms are discussed in section \ref{secgua}.
 
-\Section{Fixed-Cost Algorithms on Balls}
+The essence of every adaptive algorithm is an error estimate of the numerical approximation based on the computations already performed. For those existing adaptive algorithms, these error estimates either require too much information from the user or based on heuristics and not guaranteed. Details about those algorithms are discussed in section \ref{secada}.
 
-1. Non-adaptive
+\Section{Fixed-Cost Algorithms for Balls of Input Functions}\label{secgua}
 
-\Section{Adaptive Algorithms with No Guarantees}
+Fixed-cost algorithms with guarantees usually require input functions to lying in a ball-shaped function space. Traditional trapezoidal rule and Simpson's rule in calculus courses are two typical examples of fixed-cost algorithms. They have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand:
+\begin{align}\label{errorsimple}
+    \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),
+\end{align}
+for trapezoidal rule, $p=1$; for Simpson's rule, $p=3$. In order to make sure that the algorithms succeed, users need to obtain information about the total variation of the integrand. So the algorithms only provide guarantees when the total variation has an upper bound, namely $\Var(f^{p})<\sigma$. The computational cost $n=C^{-1}(\varepsilon/\sigma)$. Those algorithms are automatic because it the computational effort required is depended on the error tolerance.
 
-2. adaptive no guarantees
+Those algorithms have drawbacks. Firstly, users may not obtain the properties of the input function. If a moderate $\sigma$ is selected. The algorithms may work for easy functions but not for functions with sharp peaks. Secondly, if the algorithms work for $f$, it may not work for $cf$, where $c$ is a constant and $c>1$, because $cf$ may fall out of the ball. Moreover, those algorithms have the computational cost depending on $\sigma$, which does not depend on function values. Thus, those functions are not adaptive.
+
+\Section{Adaptive Algorithms with No Guarantees}\label{secada}
+
+Adaptive, automatic algorithms are commonly used in numerical software packages. MATLAB's integral and Chebfun are two well-known examples. These methods do not require a value of $\sigma$. Instead, they estimate the error using only function values and then determine the sample size accordingly. These algorithms work well in many cases. However, they do not have rigorous justification. Namely, one cannot tell whether the answer provided by the algorithm is true or not. Therefore, the asymptotic error estimates from these algorithms are heuristics and do not hold for all cases. Users can always fool these methods by giving them a peak-shaped function with the width less than the mesh size. In this case, the algorithms cannot detect the peak and return zero as an answer.
+
+In fact, the challenge of spiky integrands applies to algorithm that depends on function values, including ours. In contrast to fixed-cost algorithms, our methods are adaptive and succeed for a cone of integrands. In contrast to the adaptive algorithms, our methods have rigorous proof of how spiky an integrand can be to stay inside the cone.
 
 
 
@@ -137,7 +153,7 @@ Unfortunately, most commonly used guaranteed algorithms are not adaptive. They c
 
 \Section{Motivation and Outline}
 
-The goal is to construct adaptive, automatic algorithms with guarantees of success. In Chapter 2, I will introduce the definitions and assumptions used in the thesis. Chapter 3 will be focusing on finding the upper bound of the approximation errors. The guaranteed algorithms based on trapezoidal rule and Simpson's rule will be presented in Chapter 4 with rigorous theoretical proof of success/successfulness. Chapter 5 will study the lower and upper bound of computational cost. Chapter 6 will study the lower bound of complexity. In Chapter 7, the results from numerical experiences will be discussed.
+The goal is to construct adaptive, automatic algorithms with guarantees of success. In Chapter 2, we introduce the definitions and assumptions used in the thesis. Chapter 3 will focus on finding upper bound on approximation error and rigorous theoretical proof of success. Guaranteed algorithms are presented in Chapter 4 with the lower and upper bound of the computational cost. Chapter 5 studies the lower bound of complexity. In Chapter 6, the results from numerical experiences will be discussed.  The guaranteed algorithms derived here are based on trapezoidal rule and Simpson's rule. The former is simple but has a lower order of convergence rate The latter has a higher convergence rate but the derivation is more complicated. The derivation of the two algorithms is done in parallel in Chapters 4 to 6 for the trapezoidal rule and Simpson's rule.
 
 \clearpage
 
@@ -166,7 +182,7 @@ v_j=a+\frac{j(b-a)}{6n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
 It uses $6n+1$ equally spaced function values, which form $6n$ intervals/subintervals between $a$ and $b$. The reason why we use $6n$ intervals is that firstly, Simpson's rule requires an even number of intervals. Secondly, we are going to use a third order finite difference to approximate the third derivative of $f$ in later chapters. This third order finite difference method requires the number of intervals to be a multiple of 3. Thus, the number of intervals for input data has to be a multiple of 6.
 
 % Finding a proper way to approximate the first and third order derivatives plays an important role in constructing our algorithms, especially in finding the upper bound of approximation error.
-We also need to find error bounds to guarantee our methods. The traditional non-adaptive trapezoidal rule and Simpson's rule have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand:
+We also need to find error bounds to guarantee our methods. Traditional non-adaptive trapezoidal rule and Simpson's rule have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand as mentioned in \eqref{errorsimple}. Here we give detailed definitions on $C(n)$:
 \begin{align}\label{errorbound}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),\\
     \nonumber&C(n)=
@@ -671,17 +687,22 @@ The function $\text{b}_{j,1}(x)$ is a triangle shaped function that starts at po
 \displaystyle t+2h-x, & t+h \le x < t+2h,\\[1ex]
 \displaystyle  0, & \text{otherwise}.
 \end{cases}.
-\end{equation} 
-And
+\end{equation}
+Picture \ref{fig:peakfunction} shows the shape of the function.
+\begin{figure}
+\centering
+\includegraphics[width=5.5cm]{peak.eps}
+\caption{A peak function. \label{fig:peakfunction}}
+\end{figure}
 \begin{gather*}
   \text{peak}'(x;t,h):= \begin{cases} \displaystyle 1, & t \le x < t+h,\\[1ex]
 \displaystyle -1, & t+h \le x < t+2h,\\[1ex]
 \displaystyle  0, & \text{otherwise},
 \end{cases}, \\
 \Var(\text{peak}'(\cdot;t,h))\le 4 \text{ with equality if } a<t<t+2h<b, \\
-\int_{a}^{b}\text{peak}(x;t,h)dx=h^2. 
+\int_{a}^{b}\text{peak}(x;t,h)dx=h^2.
 \end{gather*}
-The peak function above is continuous to the first derivative and with finite variation of the first derivative of the function. With this peak function $\text{peak}'(x;t,h)$, we can now build the following double-two function:
+The peak function above is continuous to the first derivative and with finite variation of the first derivative of the function. With this peak function $\text{peak}'(x;t,h)$, we can now build the following double-peak function:
 \begin{subequations}
     \begin{multline}\label{foolingfunctiontrap}
         \text{twopk}(x;t,h,\pm):=\text{peak}(x;a,\mathfrak{h})\pm\frac{3[\mathfrak{C}(h)-1]}{4}\text{peak}(x;t,h)\\ a+3\mathfrak{h}\le t \le b-3h, 0\le h <\mathfrak{h}.
@@ -691,6 +712,12 @@ The peak function above is continuous to the first derivative and with finite va
         \Var(\text{twopk}'(x;t,h,\pm))=3+4\frac{3[\mathfrak{C}(h)-1]}{4}=3\mathfrak{C}(h).
     \end{equation}
 \end{subequations}
+Picture \ref{fig:twopkfunction} shows the shape of the double-peak function.
+\begin{figure}
+\centering
+\includegraphics[width=5.5cm]{twopk.eps}
+\caption{A fooling function that can fool the trapezoidal rule algorithm. \label{fig:twopkfunction}}
+\end{figure}
 Note that $\text{twopk}(x;t,h,\pm)$ are always in $\cc^1$:
 From this definition it follows that
 \begin{align*}
@@ -700,7 +727,7 @@ From this definition it follows that
         \end{cases}\\
   \ge & \Var(\text{twopk}'(x;t,h,\pm))
 \end{align*}
-The functions $\text{twopk}(x;t,h,\pm)$ have two peaks. The first always starts from the left end, $a$, and has the width of $2\mathfrak{h}$. The second will start from any point $t$ that is at least one interval right to the first peak and have a smaller width of $2h$. Although $\text{twopk}(x;t,h,\pm)$ may have a bump with arbitrarily small width $2h$, the height is small enough for $\text{twopk}(x;t,h,\pm)$ to lie in the cone. This function then can be used as our fooling functions. 
+The functions $\text{twopk}(x;t,h,\pm)$ have two peaks. The first always starts from the left end, $a$, and has the width of $2\mathfrak{h}$. The second will start from any point $t$ that is at least one interval right to the first peak and have a smaller width of $2h$. Although $\text{twopk}(x;t,h,\pm)$ may have a bump with arbitrarily small width $2h$, the height is small enough for $\text{twopk}(x;t,h,\pm)$ to lie in the cone. This function then can be used as our fooling functions.
 
 With the fooling function, we can find the lower bound of complexity of the trapezoidal algorithm. The key to the proof is that, one appropriate $h$ needs to be found such that the smaller peak will reside within one interval of data sites, then cannot be detected by the algorithm. Then, the algorithm cannot distinguish between $\text{peak}'(x;t,h)$ and $\text{twopk}(x;t,h,\pm)$. Assuming that the algorithm $\textup{int}(\cdot,\varepsilon)$ uses $n$ equally spaced nodes to successfully return and answer. Moreover, assuming that $\{x_{j}\}_{j=1}^{m}$ is a subinterval of $\{x_{j}\}_{j=0}^{n}$ where the smaller peak resides. In order to find the proper $h$, notice that average width of intervals is $(x_{m+1}-x_{0})(m+1)$ and $x_{m+1}-x_{0}=b-a-3\mathfrak{h}-h$. Choose one interval such that the width is less than $2h$, the width of small bump. In order to do that, we can choose interval wider than average and $2h$ narrower than average.
 
@@ -778,23 +805,23 @@ To build the fooling functions for Simpson's rule, we will continue our B-Spline
 \end{cases}
 \end{align*}
 
-%\begin{align*}
-%  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, & t_{j} \le x < t_{j+1},\\[1ex]
-%\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3}, & t_{j+1} \le x < t_{j+2},\\[1ex]
-%\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3}, & t_{j+2} \le x < t_{j+3},\\[1ex]
-%\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, & t_{j+3} \le x < t_{j+4},\\[1ex]
-%\displaystyle  0, & \text{otherwise},
-%\end{cases}
-%\end{align*}
-
 \begin{align*}
-  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, t_{j} \le x < t_{j+1},\\[1ex]
-\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3}, \\[1ex]
-\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3}, \\[1ex]
-\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, t_{j+3} \le x < t_{j+4},\\[1ex]
-\displaystyle  0, \text{otherwise},
+  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, & t_{j} \le x < t_{j+1},\\[1ex]
+\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}\\[1ex]\displaystyle\quad+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3},& t_{j+1} \le x < t_{j+2},\\[1ex]
+\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}\\[1ex]\displaystyle\quad+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3},& t_{j+2} \le x < t_{j+3},\\[1ex]
+\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, & t_{j+3} \le x < t_{j+4},\\[1ex]
+\displaystyle  0, & \text{otherwise},
 \end{cases}
 \end{align*}
+
+%\begin{align*}
+%  \text{b}_{j,3}(x):= \begin{cases} \displaystyle \frac{(x-t_{j})^3}{6h^3}, t_{j} \le x < t_{j+1},\\[10ex]
+%\displaystyle \frac{(t_{j+2}-x)(x-t_{j})^2}{6h^3}+\frac{(t_{j+3}-x)(x-t_{j})(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)(x-t_{j+1})^2}{6h^3}, \\[1ex]
+%\displaystyle \frac{(t_{j+3}-x)^2(x-t_{j})}{6h^3}+\frac{(t_{j+4}-x)(t_{j+3}-x)(x-t_{j+1})}{6h^3}+\frac{(t_{j+4}-x)^2(x-t_{j+2})}{6h^3}, \\[1ex]
+%\displaystyle \frac{(t_{j+4}-x)^3}{6h^3}, t_{j+3} \le x < t_{j+4},\\[1ex]
+%\displaystyle  0, \text{otherwise},
+%\end{cases}
+%\end{align*}
 
 \begin{align*}
   \text{b}_{j,3}'''(x):= \begin{cases} \displaystyle 1//h^3, & t_{j} \le x < t_{j+1},\\[1ex]
@@ -817,8 +844,8 @@ The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point 
 %\\
 \begin{gather}
 \text{bump}(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
-\displaystyle [-3(x-t)^3+12h(x-t)^2-12h^2(x-t)+4h^3]/6, & t+h \le x < t+2h,\\[1ex]
-\displaystyle [3(x-t)^3-24h(x-t)^2+60h^2(x-t)-44h^3]/6, & t+2h \le x < t+3h,\\[1ex]
+\displaystyle [-3(x-t)^3+12h(x-t)^2-12h^2(x-t)+4h^3]/6,\\[1ex] \displaystyle & t+h \le x < t+2h,\\[1ex]
+\displaystyle [3(x-t)^3-24h(x-t)^2+60h^2(x-t)-44h^3]/6,\\[1ex] \displaystyle & t+2h \le x < t+3h,\\[1ex]
 \displaystyle (t+4h-x)^3/6, & t+3h \le x < t+4h,\\[1ex]
 \displaystyle  0, & \text{otherwise},
 \end{cases}
@@ -833,6 +860,12 @@ The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point 
 \int_{a}^{b}\text{peak}(x;t,h)dx=h^4.
 \end{gather}
 \end{subequations}
+Picture \ref{fig:bumpfunction} shows the shape of the function.
+\begin{figure}
+\centering
+\includegraphics[width=5.5cm]{bump.eps}
+\caption{A bump function. \label{fig:bumpfunction}}
+\end{figure}
 The bump function above is continuous to the third derivative. We can now build the following double-bump function that is always in $\cc^3$:
 \begin{subequations}
     \begin{multline}\label{foolingfunctionsim}
@@ -843,6 +876,12 @@ The bump function above is continuous to the third derivative. We can now build 
         \Var(\text{twobp}'''(x;t,h,\pm))=15+16\frac{15[\mathfrak{C}(h)-1]}{16}=15\mathfrak{C}(h).
     \end{equation}
 \end{subequations}
+Picture \ref{fig:twobpfunction} shows the shape of the double-peak function.
+\begin{figure}
+\centering
+\includegraphics[width=5.5cm]{twobp.eps}
+\caption{A fooling function that can fool the Simpson's rule algorithm. \label{fig:twobpfunction}}
+\end{figure}
 From this definition it follows that
 \begin{align*}
   &\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}(\text{twobp}'''(x;t,h,\pm),\{x_j\}_{j=0}^{n+1})\\
@@ -907,20 +946,15 @@ With the fooling function, we can find the lower bound of complexity of the Simp
 
 \Chapter{Numerical Experiments}
 
+We use the fooling function \eqref{foolingfunctionsim} to build our test function. Consider the family of bump test functions on interval $(0,1)$ defined by
+\begin{equation}\label{testfun}
+f(x,t,h)= a\text{twobp}(x;t,h,+)
+\end{equation}
+with  $t \sim \cu[0.5,1]$, $h \sim \cu[0,1]$, and $a=1/(h^4)$ chosen to make $\int_0^1 f(x) \, \dif x = 1$.
+%It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
 
-\Section{Traezoidale rule}
-Consider the family of bump test functions defined by
-\begin{multline}\label{testfun}
-f(x)= \\
-\begin{cases}
-\displaystyle  b[4a^2 + (x-z)^2 + (x-z-a)|x-z-a|\\
-\qquad \qquad -(x-z+a)|x-z+a|], & z-2a\leq x\leq z+2a,\\[2ex]
-\displaystyle  0, & \text{otherwise}.
-\end{cases}
-\end{multline}
-with  $\log_{10}(a) \sim \cu[-4,-1]$, $z \sim \cu[2a,1-2a]$, and $b=1/(4a^3)$ chosen to make $\int_0^1 f(x) \, \dif x = 1$.  It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
-
-As an experiment, we chose $10000$ random test functions and applied Algorithm \ref{multistageintegalgo} with an error tolerance of  $\varepsilon = 10^{-8}$ and initial $\tau$ values of $10, 100, 1000$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals agree to within $\varepsilon$. The success and failure rates are given in Table \ref{integresultstable}. Our algorithm imposes a cost budget of $N_{\max}=10^7$.  If the proposed $n_{i+1}$ in Stages 2 or 3 exceeds $N_{\max}$, then our algorithm returns a warning and falls back to the largest possible $n_{i+1}$ not exceeding $N_{\max}$ for which $n_{i+1}-1$ is a multiple of $n_i-1$.  The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$ and for which no attempt was made to exceed the cost budget.
+%As an experiment, we chose $10000$ random test functions and applied Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} with an error tolerance of  $\varepsilon = 10^{-8}$ and initial $\mahtfrak{h}$ values of $0.1$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals agree to within $\varepsilon$. The success and failure rates are given in Table \ref{integresultstable}. Our algorithm imposes a cost budget of $N_{\max}=10^7$.
+%If the proposed $n_{i+1}$ in Stages 2 or 3 exceeds $N_{\max}$, then our algorithm returns a warning and falls back to the largest possible $n_{i+1}$ not exceeding $N_{\max}$ for which $n_{i+1}-1$ is a multiple of $n_i-1$.  The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$ and for which no attempt was made to exceed the cost budget.
 
 \begin{table}[h]
 \centering
@@ -940,7 +974,7 @@ Algorithm \ref{multistageintegalgo}
 \caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistageintegalgo} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
 \end{table}
 
-Some commonly available numerical algorithms in MATLAB are {\tt quad} and {\tt integral} \cite{MAT8.1} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these three routines to the random family of test functions.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  They do not give warnings of possible failure.
+Some commonly available numerical algorithms in MATLAB are {\tt quad} and {\tt integral} \cite{MAT8.1} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these three routines to the random family of test functions.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  %They do not give warnings of possible failure.
 
 \Section{Simpson's Rule}
 \textcolor{red}{I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.}
