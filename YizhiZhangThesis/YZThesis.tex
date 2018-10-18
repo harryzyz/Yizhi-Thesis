@@ -370,7 +370,7 @@ Let the sequence of algorithms $\{T_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x
 and $\widetilde{V}_1(\cdot,\cdot)$ be as described above.
 Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$,. Let $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 \begin{description}
-\item[Step 1. Set upper bound on $\Var(f')$; increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
+\item[Step 1. Set upper bound on $\Var(f')$; increase number of nodes.] Let $\quad$ $\qquad$ $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
 
 \item[Step 2. Compute the largest lower bound on {$\Var(f')$}.] Let $k=k+1$. Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.% and $T_{n_k}(f)$ in \eqref{traprule}.
 
@@ -689,10 +689,10 @@ The function $\text{b}_{j,1}(x)$ is a triangle shaped function that starts at po
 \end{cases}.
 \end{equation}
 Picture \ref{fig:peakfunction} shows the shape of the function.
-\begin{figure}
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{peak.eps}
-\caption{A peak function. \label{fig:peakfunction}}
+\caption{A peak function where $a=0$, $b=1$, $t=0.2$, $h=0.1$. \label{fig:peakfunction}}
 \end{figure}
 \begin{gather*}
   \text{peak}'(x;t,h):= \begin{cases} \displaystyle 1, & t \le x < t+h,\\[1ex]
@@ -702,7 +702,14 @@ Picture \ref{fig:peakfunction} shows the shape of the function.
 \Var(\text{peak}'(\cdot;t,h))\le 4 \text{ with equality if } a<t<t+2h<b, \\
 \int_{a}^{b}\text{peak}(x;t,h)dx=h^2.
 \end{gather*}
-The peak function above is continuous to the first derivative and with finite variation of the first derivative of the function. With this peak function $\text{peak}'(x;t,h)$, we can now build the following double-peak function:
+The peak function above is continuous and with finite variation of the first derivative of the function shown in \ref{fig:peakp1}:
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5.5cm]{peakp1.eps}
+\caption{First derivative of peak function \ref{peakfunction}. \label{fig:peakp1}}
+\end{figure}
+
+With this peak function $\text{peak}'(x;t,h)$, we can now build the following double-peak function:
 \begin{subequations}
     \begin{multline}\label{foolingfunctiontrap}
         \text{twopk}(x;t,h,\pm):=\text{peak}(x;a,\mathfrak{h})\pm\frac{3[\mathfrak{C}(h)-1]}{4}\text{peak}(x;t,h)\\ a+3\mathfrak{h}\le t \le b-3h, 0\le h <\mathfrak{h}.
@@ -716,7 +723,7 @@ Picture \ref{fig:twopkfunction} shows the shape of the double-peak function.
 \begin{figure}
 \centering
 \includegraphics[width=5.5cm]{twopk.eps}
-\caption{A fooling function that can fool the trapezoidal rule algorithm. \label{fig:twopkfunction}}
+\caption{A fooling function that can fool the trapezoidal rule algorithm, where $a=0$, $b=1$, $t=0.5$, $h=0.05$ and $\mathfrak{h}=0.1$. \label{fig:twopkfunction}}
 \end{figure}
 Note that $\text{twopk}(x;t,h,\pm)$ are always in $\cc^1$:
 From this definition it follows that
@@ -833,7 +840,6 @@ To build the fooling functions for Simpson's rule, we will continue our B-Spline
 \end{align*}
 The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point $t_j$, with the width of $t_{j+4}-t_{j}$ and zero value elsewhere than $t_{j}, t_{j+4}$. Assuming that $\{t_{j}\}_{j=1}^{n}$ is equally space between $(a,b)$, $t_{j+1}-t_{j}=h$, and $t=t_{j}$ . We can define our peak function as
 
-\begin{subequations} \label{bumpfunction}
 %\begin{gather}
 %bump(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
 %\displaystyle [(x-t)^2(t+2h-x)+(x-t)(t+3h-x)(x-t-h)+(t+4h-x)(x-t-h)^2]/6, & t+h \le x < t+2h,\\[1ex]
@@ -842,14 +848,23 @@ The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point 
 %\displaystyle  0, & \text{otherwise},
 %\end{cases}
 %\\
-\begin{gather}
-\text{bump}(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
-\displaystyle [-3(x-t)^3+12h(x-t)^2-12h^2(x-t)+4h^3]/6,\\[1ex] \displaystyle & t+h \le x < t+2h,\\[1ex]
-\displaystyle [3(x-t)^3-24h(x-t)^2+60h^2(x-t)-44h^3]/6,\\[1ex] \displaystyle & t+2h \le x < t+3h,\\[1ex]
-\displaystyle (t+4h-x)^3/6, & t+3h \le x < t+4h,\\[1ex]
-\displaystyle  0, & \text{otherwise},
+
+\begin{align} \label{bumpfunction}
+\text{bump}(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6,  &t \le x < t+h,\\[1ex]
+\displaystyle [-3(x-t)^3+12h(x-t)^2-12h^2(x-t)+4h^3]/6,\\[1ex] \displaystyle\quad  &t+h \le x < t+2h,\\[1ex]
+\displaystyle [3(x-t)^3-24h(x-t)^2+60h^2(x-t)-44h^3]/6,\\[1ex] \displaystyle\quad  &t+2h \le x < t+3h,\\[1ex]
+\displaystyle (t+4h-x)^3/6,  &t+3h \le x < t+4h,\\[1ex]
+\displaystyle  0,  &\text{otherwise},
 \end{cases}
-\\
+\end{align}
+Picture \ref{fig:bumpfunction} shows the shape of the bump function. The bump function is continuous.
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5.5cm]{bump.eps}
+\caption{A bump function, where $a=0$, $b=1$, $t=0.2$, $h=0.1$ and $\mathfrak{h}=0.1$. \label{fig:bumpfunction}}
+\end{figure}
+\begin{subequations}
+\begin{gather}
 \text{bump}'''(x;t,h):= \begin{cases} \displaystyle 1, & t \le x < t+h,\\[1ex]
 \displaystyle -3, & t+h \le x < t+2h,\\[1ex]
 \displaystyle 3, & t+2h \le x < t+3h,\\[1ex]
@@ -860,11 +875,20 @@ The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point 
 \int_{a}^{b}\text{peak}(x;t,h)dx=h^4.
 \end{gather}
 \end{subequations}
-Picture \ref{fig:bumpfunction} shows the shape of the function.
-\begin{figure}
+\begin{figure}[ht]
 \centering
-\includegraphics[width=5.5cm]{bump.eps}
-\caption{A bump function. \label{fig:bumpfunction}}
+\includegraphics[width=5.5cm]{bumpp1.eps}
+\caption{First derivative of bump function. \label{fig:bumpp1}}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5.5cm]{bumpp2.eps}
+\caption{Second derivative of bump function. \label{fig:bumpp2}}
+\end{figure}
+\begin{figure}[ht]
+\centering
+\includegraphics[width=5.5cm]{bumpp3.eps}
+\caption{Third derivative of bump function. \label{fig:bumpp3}}
 \end{figure}
 The bump function above is continuous to the third derivative. We can now build the following double-bump function that is always in $\cc^3$:
 \begin{subequations}
@@ -880,7 +904,7 @@ Picture \ref{fig:twobpfunction} shows the shape of the double-peak function.
 \begin{figure}
 \centering
 \includegraphics[width=5.5cm]{twobp.eps}
-\caption{A fooling function that can fool the Simpson's rule algorithm. \label{fig:twobpfunction}}
+\caption{A fooling function that can fool the Simpson's rule algorithm, where $a=0$, $b=1$, $t=0.5$, $h=0.05$ and $\mathfrak{h}=0.1$. \label{fig:twobpfunction}}
 \end{figure}
 From this definition it follows that
 \begin{align*}
