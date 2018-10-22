@@ -7,4 +7,18 @@ H.~Brass and K.~Petras.
   compact interval}.
 \newblock American Mathematical Society, Rhode Island, first edition, 2011.
 
+\bibitem{TrefEtal12}
+N.~Hale, L.~N. Trefethen, and T.~A. Driscoll.
+\newblock {\em Chebfun Version 4}, 2012.
+
+\bibitem{MAT8.1}
+{The MathWorks, Inc.}
+\newblock {\em {MATLAB} 8.1}.
+\newblock Natick, MA, 2013.
+
+\bibitem{TraWer98}
+J.~F. Traub and A.~G. Werschulz.
+\newblock {\em Complexity and Information}.
+\newblock Cambridge University Press, Cambridge, 1998.
+
 \end{thebibliography}
