@@ -4,14 +4,7 @@
 \documentclass{iitthesis}
 %\documentclass[draft]{iitthesis}
 
-% Document Options:
-%
-% Note if you want to save paper when printing drafts,
-% replace the above line by
-%
-%   \documentclass[draft]{iitthesis}
-%
-% See Help file for more about options.
+
 
 \usepackage[dvips]{graphicx}    % This package is used for Figures
 \usepackage{rotating}           % This package is used for landscape mode.
@@ -24,7 +17,6 @@
 \usepackage{color}
 \input FJHDef.tex
 
-%Requires ApproxUnivariate_k.tex, univariate_integration_k.tex, ConesPaperSpikyquad.eps, ConesPaperFlukyquad.eps
 
 \DeclareMathOperator{\Var}{Var}
 \DeclareMathOperator{\INT}{INT}
@@ -72,7 +64,7 @@
 
 %%%  Acknowledgement %%%
 \begin{acknowledgement}     % acknowledgement environment, this is optional
-\par  This thesis is dedicated to my dearest father and late mother. I want to express my appreciation for their support. I miss my mother very much. This thesis could not have been written withour Dr. Fred J. Hickernell who not only did serve as my advisor but also encouraged me, supported me with the greatest patience in the world. I could not have done this without his greatness. I thank them all.
+\par  This thesis is dedicated to my dearest father and late mother. I want to express my appreciation for their support. I miss my mother very much. This thesis could not have been written without Dr. Fred J. Hickernell, who not only did serve as my advisor but also encouraged me, supported me with the greatest patience in the world. I could not have done this without his greatness. I thank them all.
 % or \input{acknowledgement.tex} % you need a separate acknowledgement.tex file to include it.
 \end{acknowledgement}
 
@@ -102,7 +94,7 @@
 
 %%% Abstract %%%
 \begin{abstract}           % abstract environment, this is optional
-\par This thesis is motivated by solving the univariate integration problems using numerical methods, including trapezoidal rule and Simpson's rule. Most existing guaranteed algorithms are not adaptive and require too much information. Most existing adaptive algorithms do not valid justification of the results. The goal is to create adaptive algorithms utilizing the two mentioned methods with guarantees. The class of integrands studied in this thesis reside in two cone shaped function spaces with respect to two different methods. The algorithms are analytically proved to success if the input function lies in the cone. The algorithms are adaptive and automatically adjust the computational cost based on input function values. The lower and upper bounds on the computational cost for both algorithms are provided. The lower bounds on the complexity of any algorithms to the problem are provided. By comparing the upper bounds on computational cost and lower bounds on complexity, our algorithms are asymtotically optimal. Numerical experiments are implemented.
+\par This thesis investigates how to solve univariate integration problems using numerical methods, including the trapezoidal rule and Simpson's rule. Most existing guaranteed algorithms are not adaptive and require too much a priori information. Most existing adaptive algorithms do not have valid justification for their results. The goal is to create adaptive algorithms utilizing the two above-mentioned methods with guarantees. The classes of integrands studied in this thesis are cones. The algorithms are analytically proved to be a success if the integrand lies in the cone. The algorithms are adaptive and automatically adjust the computational cost based on the integrand values. The lower and upper bounds on the computational cost for both algorithms are derived. The lower bounds on the complexity of the problems are derived as well. By comparing the upper bounds on the computational cost and the lower bounds on complexity, our algorithms are shown to be asymptotically optimal. Numerical experiments are implemented.
 % Those algorithms will be firstly created based on the composite trapezoidal rule. It is the "simplest??"
 % or \input{abstract.tex}  %you need a separate abstract.tex file to include it.
 \end{abstract}
@@ -114,37 +106,37 @@
 \Chapter{Introduction}
 %\section{Numerical Integration and Applications}
 
-In numerical analysis, numerical integration plays an important role. An algorithm is used to calculate the numerical value of a definite integral. Numerical integration is used instead of analytical methods because sometimes the problem is lack of analytical solution, or the integrand is only known at certain points by sampling. This thesis focus on the univariate integration problem
+In numerical analysis, numerical integration plays an important role. An algorithm is used to calculate the numerical value of a definite integral. Numerical integration is used instead of analytical methods because sometimes the problem is lack of analytical solution, or the integrand is only known at certain points by sampling. This thesis focuses on solving the univariate integration problem
 \begin{equation}\label{integral}
-    \text{INT}(f)=\int_{a}^{b}f(x)\,\textup{d}x\in\reals.
+    \int_{a}^{b}f(x)\,\textup{d}x.
 \end{equation}
-Two adaptive automatic algorithms, $\text{integral}\_\text{t}$, and $\text{integral}\_\text{s}$ are provided. They use trapezoidal rule and Simpson's rule respectively, and are guaranteed to provide numerical approximations no differ from the true integral by a specified error tolerance $\varepsilon$, i.e.
+Two adaptive automatic algorithms, {\tt integral\_t}, and {\tt integral\_s} are derived. They use trapezoidal rule and Simpson's rule respectively, and are guaranteed to provide numerical approximations no differ from the true integral by a specified error tolerance $\varepsilon$, i.e.
 \begin{align}\label{approx}
-      \left|\int_{a}^{b}f(x)\,\textup{d}x-\text{integral}\_\text{t}(f,\varepsilon)\right|\leq \varepsilon,& \\
-      \left|\int_{a}^{b}f(x)\,\textup{d}x-\text{integral}\_\text{s}(f,\varepsilon)\right|\leq \varepsilon,&
+      \left|\int_{a}^{b}f(x)\,\textup{d}x-{\tt integral\_t}(f,\varepsilon)\right|\leq \varepsilon,& \\
+      \left|\int_{a}^{b}f(x)\,\textup{d}x-{\tt integral\_s}(f,\varepsilon)\right|\leq \varepsilon,&
 \end{align}
 assuming that $\forall f \in \cc^{p}, a,b\in\reals, a<b, \varepsilon>0$, where $a$ and $b$ are finite, and $\cc^{p}$ is some set of integrands defined in later in the thesis.
 
 %adaptively determine the computational cost required to obtain a result of the integral. The required inputs are both an error tolerance, $\varepsilon$, %and the integrand $f$. The output will be guaranteed to not differ from the true answer by more than $\varepsilon$.
-Our algorithms are adaptive. "Adaptive" means that the algorithms automatically expend the right amount of computational effort needed to provide an approximate solution within the error tolerance. Our algorithms are also guaranteed to satisfy the error tolerance. Other existing guaranteed algorithms are usually not adaptive. They cannot adjust their effort based on the property of the input function. Details about those algorithms are discussed in section \ref{secgua}.
+Our algorithms are adaptive. Adaptive algorithms automatically expend the right amount of computational effort needed and provide an approximate solution within the error tolerance. Our algorithms are also guaranteed to satisfy the error tolerance. Other existing guaranteed algorithms are usually not adaptive. They cannot adjust their effort based on the property of the integrand. Details about those algorithms are discussed in section \ref{secgua}.
 
 The essence of every adaptive algorithm is a bound on the error of the numerical approximation based on the computations already performed. The error estimates of existing adaptive algorithms either require too much information from the user or they are based on heuristics and not guaranteed. Details about such algorithms are discussed in section \ref{secada}.
 
-\Section{Fixed-Cost Algorithms for Balls of Input Functions}\label{secgua}
+\Section{Fixed-Cost Algorithms for Balls of Integrands}\label{secgua}
 
-Fixed-cost algorithms with guarantees usually require input functions to lie in a ball-shaped function space. Traditional trapezoidal rule and Simpson's rule in calculus courses are two typical examples of fixed-cost algorithms. They have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand:
+Fixed-cost algorithms with guarantees usually require integrands to lie in a ball-shaped function space. Traditional trapezoidal rule and Simpson's rule in calculus courses are two typical examples of fixed-cost algorithms. They have upper bounds on approximation error in terms of the total variation of a particular derivative of integrand:
 \begin{align}\label{errorsimple}
     \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),
 \end{align}
-for trapezoidal rule, $p=1$; for Simpson's rule, $p=3$. In order to make sure of the success of the algorithms, users need to obtain information about the total variation of the integrand. So the algorithms only provide guarantees when the total variation has an upper bound, namely $\Var(f^{p})<\sigma$. The computational cost $n=C^{-1}(\varepsilon/\sigma)$. Fixed-cost algorithms such as trapezoidal rule and Simpson's rule are automatic because the computational effort required is depended on the error tolerance. With a determined error tolerance, the computational cost is automatically decided by the algorithms.
+for trapezoidal rule, $p=1$; for Simpson's rule, $p=3$. In order to make sure of the success of the algorithms, users need to obtain information about the total variation of the integrand. So the algorithms only provide guarantees when the total variation has an upper bound, namely $\Var(f^{(p)})<\sigma$. The computational cost $n=C^{-1}(\varepsilon/\sigma)$. Fixed-cost algorithms such as trapezoidal rule and Simpson's rule are automatic because the computational effort required is depended on the error tolerance. With a determined error tolerance, the computational cost is automatically decided by the algorithms.
 
-Fixed-cost algorithms have drawbacks. Firstly, users may not obtain properties of the input function. If a moderate $\sigma$ is selected. The algorithms may work for easy functions but not for functions with sharp peaks. Functions with sharp peaks may has derivatives that change rapidly in a small interval. The variation of the derivative could be high enough to exceed the radius $\sigma$ of the ball. Secondly, if the algorithms work for $f$, it may not work for $cf$, where $c$ is a constant and $c>1$ since $cf$ may fall out of the ball. It is such a pity considering that the integration of $cf$ can be easily calculated as $c\text{INT}(f)$. Moreover, those algorithms have the computational cost depending on $\sigma$, which does not depend on function values. Therefore, the algorithms cannot adjust the computational cost according to the input function. Namely, fixed-cost functions are not adaptive.
+Fixed-cost algorithms have drawbacks. Firstly, users may not obtain properties of the integrand. If a moderate $\sigma$ is selected. The algorithms may work for easy functions but not for functions with sharp peaks. Functions with sharp peaks may has derivatives that change rapidly in a small interval. The variation of the derivative could be high enough to exceed the radius $\sigma$ of the ball. Secondly, if the algorithms work for $f$, it may not work for $cf$, where $c$ is a constant and $c>1$, since $cf$ may fall out of the ball. It is such a pity considering that the integral of $cf$ can be easily calculated as $c$ times the integral of $f$. Moreover, those algorithms have the computational cost depending on $\sigma$, which does not depend on function values. Therefore, the algorithms cannot adjust the computational cost according to the integrand. Namely, fixed-cost functions are not adaptive.
 
 \Section{Adaptive Algorithms with No Guarantees}\label{secada}
 
 Adaptive, automatic algorithms are commonly used in numerical software packages. MATLAB's integral and Chebfun are two well-known examples. These methods do not require a value of $\sigma$. Instead, they estimate the error using only function values and then determine the sample size accordingly. These algorithms work well in many cases. However, they do not have rigorous justification. Namely, one cannot tell whether the answer provided by the algorithm is true or not. Therefore, the asymptotic error estimates from these algorithms are heuristics and do not hold for all cases. Users can always fool these methods by giving them a peak-shaped function with the width less than the mesh size. In this case, the algorithms cannot detect the peak and return zero as an answer.
 
-In fact, the challenge of spiky integrands applies to algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the space of the input function as a cone, not a ball. In a cone space, linear multiplications of a function remains in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The bound on error estimates is also defined and approximated using only function values (to make the algorithms adaptive). In contrast to fixed-cost algorithms, our methods are adaptive and succeed for a cone of integrands. In contrast to the adaptive algorithms, our methods have rigorous proof of how spiky an integrand can be to stay inside the cone.
+In fact, the challenge of spiky integrands applies to algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the space of the integrand as a cone, not a ball. In a cone space, linear multiplications of a function remains in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The bound on error estimates is also defined and approximated using only function values (to make the algorithms adaptive). In contrast to fixed-cost algorithms, our methods are adaptive and succeed for a cone of integrands. In contrast to the adaptive algorithms, our methods have rigorous proof of how spiky an integrand can be to stay inside the cone.
 
 
 
@@ -206,7 +198,7 @@ Then the total variation can be defined as the upper of bound on $\widehat{V}(f,
 
 To ensure a finite error bound, our algorithms are defined for function spaces with finite total variations of the respective derivatives:
 \begin{equation}\label{defspace}
- \cv^{p}:=\{f\in C^{(p)}[a,b]: \Var(f^{(p)}) < \infty \},
+ \cv^{p}:=\{f\in C^{p}[a,b]: \Var(f^{(p)}) < \infty \},
 \end{equation}
 where for trapezoidal rule, $p=1$, and for Simpson's rule, $p=3$.
 
@@ -269,13 +261,13 @@ Therefore by combining the deduction above together, the error bound on error es
 
 Lemma \ref{lemmaerrorboundtrap} gives the upper bound on the estimation error of composite trapezoidal rule.
 \begin{lem}\label{lemmaerrorboundtrap}
-    The approximation error of the composite trapezoidal rule is bounded in term of the function values of the input function as follows:
+    The approximation error of the composite trapezoidal rule is bounded in terms of the integrand values as follows:
     \begin{equation}\label{errortrapcone}
       \overline{\textup{err}}_{\textup{t}}(f,n)\leq \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.
     \end{equation}
 \end{lem}
 
-This upper bound can be used as the factor of determining whether the output of our trapezoidal rule algorithm meets the error tolerance. Since $\mathfrak{C}(\cdot)$ is a non-decreasing function, $a$, $b$ is fixed, as the value of $n$ going up, $\mathfrak{C}(2(b-a)/n)$ is non-increasing. According to the definition of $\Var(f')$ in \eqref{defvar} and the definition of $\widetilde{V}_1(f,n)$ in \eqref{vtilde1}, $\widetilde{V}_1(f,n)$ is always less than the variation of the first derivative of the input function. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$. Therefore, the error bound \eqref{errortrapcone} of our algorithm using only function values provides guarantees that it will succeed.
+This upper bound can be used as the factor of determining whether the output of our trapezoidal rule algorithm meets the error tolerance. Since $\mathfrak{C}(\cdot)$ is a non-decreasing function, $a$, $b$ is fixed, as the value of $n$ going up, $\mathfrak{C}(2(b-a)/n)$ is non-increasing. According to the definition of $\Var(f')$ in \eqref{defvar} and the definition of $\widetilde{V}_1(f,n)$ in \eqref{vtilde1}, $\widetilde{V}_1(f,n)$ is always less than the variation of the first derivative of the integrand. With a user provided tolerance $\varepsilon$, as long as $n$ is big enough, the approximation error will eventually decrease below $\varepsilon$. Therefore, the error bound \eqref{errortrapcone} of our algorithm using only function values provides guarantees that it will succeed.
 
 \Section{Simpson's Rule}
 
@@ -286,7 +278,7 @@ Similar to the trapezoidal rule, the third order backward finite difference is u
   f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},&\text{ for } j=2, \cdots, 6n,\\
   f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, &\text{ for } j=3, \cdots, 6n.
 \end{align*}
-%From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of input functions so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
+%From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of integrands so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
 % may be say more
 % Since $$\frac{216n^3}{(b-a)^3}\left|f(t_{i-3})-3f(t_{i-2})+3f(t_{i-1})-f(t_{i})\right|=f'''(x_{i-1}),???$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
 According to Mean Value Theorem for divided differences, for all $j=1,2,\cdots,2n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that
@@ -315,7 +307,7 @@ Therefore by combining the relative equations together, the error bound on error
 
 Lemma \ref{lemmaerrorboundsim} describes the upper bound on the estimation error of Simpson's rule.
 \begin{lem}\label{lemmaerrorboundsim}
-    The approximation error of the composite Simpson's rule is bounded in terms of the function values of the input function as follows:
+    The approximation error of the composite Simpson's rule is bounded in terms of the integrand values as follows:
     \begin{equation}\label{errorsimcone}
       \overline{\textup{err}}_{\text{s}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
     \end{equation}
@@ -340,31 +332,31 @@ As mentioned earlier, the error bounds \eqref{errortrapcone} and \eqref{errorsim
 \Chapter{Adaptive, Automatic Algorithms with Guarantees and their Computational Cost}
 
 
-In the previous Chapter, the stopping criterion of our trapezoidal rule and Simpson's rule algorithms using input function values are derived. In the Chapter, the two algorithms are discussed in detail. Our algorithms require the inputs of function values and error tolerance. The algorithms give out an answer adaptively by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. For practical reasons, the algorithms set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms quit and provide a best possible output. In order to save the computation time, embedded input points are used to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again.
+In the previous Chapter, the stopping criterion of our trapezoidal rule and Simpson's rule algorithms using the integrand values are derived. In the Chapter, the two algorithms are discussed in detail. Our algorithms require the inputs of function values and error tolerance. The algorithms give out an answer adaptively by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. For practical reasons, the algorithms set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms quit and provide a best possible output. In order to save the computation time, embedded input points are used to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again.
 
 \Section{Trapezoidal Rule}
 
 Our algorithm is guaranteed to work for functions lying in the cone-shaped function space. However, one may not be able to check the sufficient condition such that a particular integrand is in the cone. In order to decide whether one integrand is in the cone or not, it is important to find out a necessary condition for which $f\in\cc^1$. This condition can be used as a threshold for the algorithm to rule out all the functions such that $f\notin\cc^1$. For those functions not in the cone, the author proposes a method later in this section. This method tries to make the cone function space a more inclusive new one so that it contains more functions than before.
 
-Firstly, the derivation of finding a necessary condition for which $f\in\cc^1$ starts from the definition of the variation and the cone space. From \eqref{defvar}, the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'})$, i.e. $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})\leq \Var({f'})$ for all $n \ge 2$. From the definition of the cone \eqref{defcone}, the variation of the first derivative of the input function has an upper bound in terms of the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ for all $n \ge 2$.
+Firstly, the derivation of finding a necessary condition for which $f\in\cc^1$ starts from the definition of the variation and the cone space. From \eqref{defvar}, the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'})$, i.e. $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})\leq \Var({f'})$ for all $n \ge 2$. From the definition of the cone \eqref{defcone}, the variation of the first derivative of the integrand has an upper bound in terms of the approximation $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, i.e. $\Var({f'})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ for all $n \ge 2$.
 % The necessary condition for $f\in\cc^1$ thus can be set as $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$.
 In the inequality above, the size of the partition is unknown. From the definition of the cut-off value in \eqref{cutoff1}, $\text{size}(\{x_j\}_{j=0}^{n+1})<2(b-a)/n$. Since that $\mathfrak{C}(\cdot)$ is non-decreasing, $\mathfrak{C}(2(b-a)/n)\leq \mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$. From \eqref{vtilde1}, $\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$ can be approximated by $\widetilde{V}_1(f,n)$ using only function values. The nodes used in the algorithm are nested, for $\widetilde{V}_1(f,n_k)=\widehat{V}({f'},\{x_j\}_{j=0}^{n+1})$. And $\widetilde{V}_1(f,n_k)$ is non-decreasing as $n_k$ multiplies. But $\mathfrak{C}(2(b-a)/n)$ decreases since it is a non-decreasing function. Therefore, the largest lower bound on $\Var(f')$ is always the one at the current $k$th loop. The smallest upper bound is not always the case. In the algorithm, the lower and upper bounds are updated as the number of nodes multiplies.
-Thus, in order to make two sides of the inequality hold, namely, for an input function being in the cone function space $\cc^1$, the function must satisfy the following condition:
+Thus, in order to make two sides of the inequality hold, namely, for an integrand lying in the cone function space $\cc^1$, the following condition must be satisfied:
 \begin{equation}\label{neccontrap}
     \widetilde{V}_1(f,n_k)\leq\mathfrak{C}(2(b-a)/n_{j})\widetilde{V}_1(f,n_j), \quad \text{ for all } j \leq k.
 \end{equation}
 %\mathfrak{C}(\text{size}(\{x_i\}_{j=0}^{n+1})) and the fact that $\mathfrak{C}(\cdot)$ is non-decreasing,
 
-Secondly, if the input function does not meet \eqref{neccontrap} and falls out of the cone,the cut-off value $\mathfrak{h}$ is halved to make the cone function space more inclusive. The reason is that the inflation factor defined in \eqref{definflationfactor} is decreasing with respect to $\mathfrak{h}$. Thus by halving $\mathfrak{h}$, the inflation factor becomes larger. Intuitively, the cone of function space is more inclusive.
+Secondly, if \eqref{neccontrap} does not meet, the cut-off value $\mathfrak{h}$ is halved to make the cone function space more inclusive. The reason is that the inflation factor defined in \eqref{definflationfactor} is decreasing with respect to $\mathfrak{h}$. Thus by halving $\mathfrak{h}$, the inflation factor becomes larger. The cone space is more inclusive. Integrands have a higher chance of lying in the new cone than the old one, thus a higher chance to be accurately calculated.
 
 \Subsection{Trapezoidal Rule Algorithm}
-Following the settings of how to check whether the input function is in the cone, and how to revise the cone if needed, the author now provides the guaranteed automatic integration algorithm using trapezoidal rule.
-\begin{algo}[Trapezoidal Rule Adaptive Algorithm] \label{multistagetrapalgo}
+Following the settings of how to check whether the integrand is in the cone, and how to revise the cone if needed, the author now provides the guaranteed automatic integration algorithm using the trapezoidal rule.
+\begin{algo}[Trapezoidal Rule Adaptive Algorithm {\tt integral\_t}] \label{multistagetrapalgo}
 Let the sequence of algorithms $\{T_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_1(\cdot,\cdot)$ be as described above.
-Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$,. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
+Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$. For any integrand $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 \begin{description}
-\item[Step 1. Set upper bound on $\Var(f')$; increase number of nodes.] Let $\quad$ $\qquad$ $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
+\item[Step 1. (Re)set the upper bound on $\Var(f')$; increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil2(b-a)/(\mathfrak{h}n_{k})\right\rceil$.
 
 \item[Step 2. Compute the largest lower bound on {$\Var(f')$}.] Let $k=k+1$. Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.% and $T_{n_k}(f)$ in \eqref{traprule}.
 
@@ -379,8 +371,8 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$,. For any input function $f$ a
 \item[Step 4. Check the necessary condition for $f \in \cc^1$.] If $\widetilde{V}_1(f,n_k) \le \eta_{k}$, then go to Step 5.
   Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.
     \begin{enumerate}[label=\alph*)]
-      \item Let $\mathfrak{J}=\{j=1, \cdots, k: n_{j}\ge 2(b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
-      \item Otherwise, recompute the upper bound on $\Var(f')$, for $n_{j}$, such that $j \in \mathfrak{J}$ by the following:
+      \item Let $\mathfrak{J}=\{j\in\{1, \cdots, k\}: n_{j}\ge 2(b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
+      \item Otherwise, recompute the upper bound on $\Var(f')$, for all $n_{j}$, with $j \in \mathfrak{J}$ as follows:
       \begin{align*}
         &\text{For } j'=\min\mathfrak{J}, \text{ let } \eta_{j'}=\mathfrak{C}(2(b-a)/n_{j'})\widetilde{V}_1(f,n_{j'}), \\
         &\text{Compute } \eta_{j}=\min\{\eta_{j-1},\mathfrak{C}(2(b-a)/n_{j})\widetilde{V}_1(f,n_{j})\}, \text{ for } j=j'+1, \cdots, k.
@@ -397,16 +389,16 @@ Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $n_{k}=1$,. For any input function $f$ a
 %        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2\mathfrak{C}(2(b-a)/n_k)}.
 %    \end{equation*}
     \begin{equation*}
-        \eta_{k} \le \frac{8\varepsilon n_k^2}{(b-a)^2}.
+         n_k^2 \ge \frac{8\varepsilon }{\eta_{k}(b-a)^2}.
     \end{equation*}
 
     \begin{enumerate}[label=\alph*)]
-      \item If this is true, return $T_{n_k}(f)$ in \eqref{traprule} and terminate the algorithm.
+      \item If this is true, return {\tt integral\_t}$(f,\varepsilon)=T_{n_k}(f)$ and terminate the algorithm.
       \item Otherwise, go the Step 6.
     \end{enumerate}
 
 
-\item[Step 6. Increase number of nodes and loop again.] Choose
+\item[Step 6. Increase the number of nodes and loop again.] Choose
 $$
 n_{k+1}=n_k\times\max\left(\left\lceil\frac{(b-a)}{n_{k}}\sqrt{\frac{\widetilde{V}_1(f,n_k)}{8\varepsilon}}\right\rceil,2\right).
 $$
@@ -414,23 +406,24 @@ Go to Step 2.
 \end{description}
 \end{algo}
 
-Step 1 in Algorithm \ref{multistagetrapalgo} firstly sets the memory of the upper bound on $\Var(f')$ as infinity. Then the number of inputs is updated for the case where the input function is out of the cone, and the interval width of nodes is larger than the new cuff-off value $\mathfrak{h}$. In step 2, the lower bound on the variation $\Var(f')$ is calculated.The number of loops is increased by 1. In step 3, the upper bound on $\Var(f')$ is updated by comparing the new $\mathfrak{C}(2(b-a)/n_{k})\widetilde{V}_1(f,n_k)$ to the previously largest one. Step 4 checks whether the input function fits into the cone. If true, the algorithm goes to step 5. Otherwise the cut-off value $\mathfrak{h}$ is halved to make the cone more inclusive as described earlier in this section. Note that after $\mathfrak{h}$ is halved, the mesh size in previous loops may not be fine enough to provide an answer. In this case, the algorithm goes back to step 1 and start over. Even if the mesh is fine enough, the function may still not lie in the new cone. And the upper bounds on $\Var(f')$ are changed with the new $\mathfrak{h}$. Thus, $\eta_{k}$ is recalculated in 4.b). And the algorithm goes to the beginning of step 4 to check the necessary condition again. Step 5 checks whether the error estimates is small enough to meet the tolerance according to \eqref{errortrapcone} in Lemma \ref{lemmaerrorboundtrap}. If the error is small enough, the algorithm calculates the integrand according to \eqref{traprule} and terminates. Otherwise the algorithm goes to step 6 to multiply the number of nodes and start over.
-Algorithm \ref{multistagetrapalgo} always succeeds if the input function is in the cone and the number of nodes is large enough.
+Step 1 in Algorithm \ref{multistagetrapalgo} sets the memory of the upper bound on $\Var(f')$ as infinity. Then the number of inputs is updated for the case where the integrand is out of the cone, and the interval width of nodes is larger than the new cuff-off value $\mathfrak{h}$. In step 2, the lower bound on the variation $\Var(f')$ is calculated.The number of loops is increased by 1. In step 3, the upper bound on $\Var(f')$ is updated by comparing the new $\mathfrak{C}(2(b-a)/n_{k})\widetilde{V}_1(f,n_k)$ to the previously largest one. Step 4 checks whether the integrand fits into the cone. If true, the algorithm goes to step 5. Otherwise the cut-off value $\mathfrak{h}$ is halved to make the cone more inclusive as described earlier in this section. Note that after $\mathfrak{h}$ is halved, the mesh size in previous loops may not be fine enough to provide an answer. In this case, the algorithm goes back to step 1 and start over. Even if the mesh is fine enough, the function may still not lie in the new cone. And the upper bounds on $\Var(f')$ are changed with the new $\mathfrak{h}$. Thus, $\eta_{k}$ is recalculated in 4.b). And the algorithm goes to the beginning of step 4 to check the necessary condition again. Step 5 checks whether the error estimates is small enough to meet the tolerance according to \eqref{errortrapcone} in Lemma \ref{lemmaerrorboundtrap}. If the error is small enough, the algorithm calculates the integrand according to \eqref{traprule} and terminates. Otherwise the algorithm goes to step 6 to multiply the number of nodes and start over.
+
+Algorithm \ref{multistagetrapalgo} always succeeds if the integrand is in the cone $\cc^1$ and the number of nodes is large enough.
 \begin{theorem}\label{thmTrap}
-    Algorithm \ref{multistagetrapalgo} is successful, i.e.,
+    For $f \in \cc^1$, {\tt integral\_t} is successful, i.e.,
     \begin{equation*}
-      \left|\int_{a}^{b}f(x)dx-\textup{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^1.
+      \left|\int_{a}^{b}f(x)dx-{\tt integral\_t}(f,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^1.
     \end{equation*}
 \end{theorem}
 \begin{proof}
-  From Lemma \ref{lemmaerrorboundtrap} and the description below it, Algorithm \ref{multistagetrapalgo} is guaranteed to provide an approximation of the integral \eqref{integral} with the approximation error less than the tolerance.
+  From Lemma \ref{lemmaerrorboundtrap} and the description below it, {\tt integral\_t} is guaranteed to provide an approximation of the integral \eqref{integral} with the approximation error less than the tolerance.
 \end{proof}
 
 
 \Subsection{Computational Cost of Trapezoidal Algorithm}
 Having created the multistage adaptive algorithm using trapezoidal rule, the author continues to find the computational cost of the algorithm. The computational cost of trapezoidal has upper and lower bounds as described in the following theorem.
 \begin{theorem}\label{uppbndcosttrap}
-    Let $N(f,\varepsilon)$ denote the final number $n_k$ in Step 5 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
+    Let $N(f,\varepsilon)$ denote the final number $n_k$ in Step 5 when Algorithm \ref{multistagetrapalgo} terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
     \begin{multline}\label{uppbndcosttrapineq}
         \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor\right),\zeta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}\right),
     \end{multline}
@@ -504,7 +497,7 @@ Having created the multistage adaptive algorithm using trapezoidal rule, the aut
 
 \Section{Simpson's rule}
 
-Similar to the trapezoidal algorithm, firstly the author provides the necessary condition for the input function lying in the cone. From \eqref{defvar}, the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'''})$, i.e. $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})\leq \Var({f'''})$ for all $n \ge 6$. From the definition of the cone in \eqref{defcone}, the variation of the third derivative can be bounded by the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, namely $\Var({f'''})\leq$$\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$, for all $n \ge 6$. After similar derivation as the trapezoidal case, the necessary condition for an input function being in the cone function space $\cc^3$ at the $k$th loop is:
+Similar to the trapezoidal algorithm, firstly the author provides the necessary condition for the integrand lying in the cone. From \eqref{defvar}, the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'''})$, i.e. $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})\leq \Var({f'''})$ for all $n \ge 6$. From the definition of the cone in \eqref{defcone}, the variation of the third derivative can be bounded by the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, namely $\Var({f'''})\leq$$\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$, for all $n \ge 6$. After similar derivation as the trapezoidal case, the necessary condition for an integrand being in the cone function space $\cc^3$ at the $k$th loop is:
 \begin{equation}\label{necconsim}
     \widetilde{V}_3(f,n_k)\leq\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n_j), \quad \text{ for all } j \leq k.
 \end{equation}
@@ -516,7 +509,7 @@ Same mechanism, namely halving the cuf-off value $\mathfrak{h}$ is implemented t
 %\begin{algo}[Trapezoidal Rule Adaptive Algorithm] \label{multistagetrapalgo}
 %Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 %and $\widetilde{V}_1(\cdot,\cdot)$ be as described above.
-%Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $\eta_{0}=\infty$. Let $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
+%Let $\mathfrak{h}\le (b-a)$. Set $k=0$, $\eta_{0}=\infty$. Let $n_1=\lceil2(b-a)/\mathfrak{h}\rceil$. For any integrand $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 %\begin{description}
 %\item[Step 1. Compute a lower bound on {$\Var(f')$}.] Let $k=k+1$. Compute  $\widetilde{V}_1(f,n_k)$ in \eqref{vtilde1}.% and $T_{n_k}(f)$ in \eqref{traprule}.
 %
@@ -556,12 +549,12 @@ Same mechanism, namely halving the cuf-off value $\mathfrak{h}$ is implemented t
 %\end{description}
 %\end{algo}
 Now the author provides the guaranteed automatic integration algorithm using Simpson's rule.
-\begin{algo} [Simpson's Rule Adaptive Algorithm] \label{multistageintegalgosimpson}
+\begin{algo} [Simpson's Rule Adaptive Algorithm {\tt integral\_s}] \label{multistageintegalgosimpson}
 Let the sequence of algorithms $\{S_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
 and $\widetilde{V}_3(\cdot,\cdot)$ be as described above.
-Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=0$. For any input function $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
+Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=0$. For any integrand $f$ and error tolerance $\varepsilon$, do the following: %$\eta_{0}=\infty$,
 \begin{description}
-\item[Step 1. Reset upper bound and increase number of nodes.] Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil(b-a)/\mathfrak{h}n_{k}\right\rceil$.
+\item[Step 1. (Re)set the upper bound on $\Var(f''')$; increase the number of nodes.] $\quad$ Let $\eta_{k}=\infty$ and $n_{k+1}=n_k\times\left\lceil(b-a)/\mathfrak{h}n_{k}\right\rceil$.
 
 \item[Step 2. Compute the largest lower bound on {$\Var(f''')$}.] Let $k=k+1$. Compute  $\widetilde{V}_3(f,n_k)$ in \eqref{vtilde3}.% and $T_{n_k}(f)$ in \eqref{traprule}.
 
@@ -573,11 +566,11 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=0$. For any input function $f$ 
 %        \eta_{k}=\min_{j<k}\left(\mathfrak{C}(2(b-a)/n_{j})\widetilde{V}_1(f,n_j)\right).
 %    \end{align*}
 
-\item[Step 4. Check the necessary condition for $f \in \cc^3$.] If $\widetilde{V}_3(f,n_k) \le \eta_{k}$, then go to Step 5.
+\item[Step 4. Check the necessary condition for $f \in \cc^3$.] If $\widetilde{V}_3(f,n_k) \le \eta_{k}$, go to Step 5.
   Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.
     \begin{enumerate}[label=\alph*)]
-      \item Let $\mathfrak{J}=\{j=1, \cdots, k: n_{j}\ge (b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
-      \item Otherwise, recompute the upper bound on $\Var(f''')$ for $n_{j}$, such that $j \in \mathfrak{J}$ by the following:
+      \item Let $\mathfrak{J}=\{j\in\{1, \cdots, k: n_{j}\}\ge (b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
+      \item Otherwise, recompute the upper bound on $\Var(f''')$ for all $n_{j}$, with $j \in \mathfrak{J}$ as follows:
       \begin{align*}
         &\text{For } j'=\min\mathfrak{J}, \text{ let } \eta_{j'}=\mathfrak{C}((b-a)/n_{j'})\widetilde{V}_3(f,n_{j'}), \\
         &\text{Compute } \eta_{j}=\min\{\eta_{j-1},\mathfrak{C}((b-a)/n_{j})\widetilde{V}_3(f,n_{j})\}, \text{ for } j=j'+1, \cdots, k.
@@ -594,16 +587,16 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=0$. For any input function $f$ 
 %        \widetilde{V}_1(f,n_k) \le \frac{8\varepsilon n_k^2}{(b-a)^2\mathfrak{C}(2(b-a)/n_k)}.
 %    \end{equation*}
     \begin{equation*}
-        \eta_{k} \le \frac{5832\varepsilon n_k^4}{(b-a)^4}.
+          n_k^4 \ge \frac{5832\varepsilon}{\eta_{k}(b-a)^4}.
     \end{equation*}
 
     \begin{enumerate}[label=\alph*)]
-      \item If true, return $S_{n_k}(f)$ in \eqref{traprule} and terminate the algorithm.
+      \item If true, return {\tt integral\_s}$(f,\varepsilon)=S_{n_k}(f)$ and terminate the algorithm.
       \item Otherwise, go the Step 6.
     \end{enumerate}
 
 
-\item[Step 6. Increase number of nodes and loop again.] Choose
+\item[Step 6. Increase the number of nodes and loop again.] Choose
 $$
 n_{k+1}=n_k\times\max\left(\left\lceil\frac{(b-a)}{3n_{k}}\left(\frac{\widetilde{V}_3(f,n_k)}{72\varepsilon}\right)^{1/4}\right\rceil,2\right).
 $$
@@ -611,23 +604,23 @@ Go to Step 2.
 \end{description}
 \end{algo}
 
-The process of Algorithm \ref{multistageintegalgosimpson} is similar to Algorithm \ref{multistagetrapalgo}. Algorithm \ref{multistageintegalgosimpson} always succeeds if the input function is in the cone $\cc^3$ and the number of nodes is large enough.
+The process of Algorithm \ref{multistageintegalgosimpson} is similar to Algorithm \ref{multistagetrapalgo}. Algorithm \ref{multistageintegalgosimpson} always succeeds if the integrand is in the cone $\cc^3$ and the number of nodes is large enough.
 \begin{theorem}\label{thmSimpson}
-    Algorithm \ref{multistageintegalgosimpson} is successful, i.e.,
+    For integrands in $\cc^3$, {\tt integral\_s} is successful, i.e.,
     \begin{equation*}
-      \left|\int_{a}^{b}f(x)dx-\textup{integral}(f,a,b,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^3.
+      \left|\int_{a}^{b}f(x)dx-{\tt integral\_s}(f,\varepsilon)\right|\le\varepsilon, \qquad \forall f\in \cc^3.
     \end{equation*}
 \end{theorem}
 \begin{proof}
- From Lemma \ref{lemmaerrorboundsim} and the description below it, Algorithm \ref{multistageintegalgosimpson} is guaranteed to provide an approximation of the integral \eqref{integral} with the approximation error less than the tolerance using Simpson's rule.
+ From Lemma \ref{lemmaerrorboundsim} and the description below it, {\tt integral\_s} is guaranteed to provide an approximation of integral \eqref{integral} with the approximation error less than the tolerance using Simpson's rule.
 \end{proof}
 
 
 \Subsection{Computational Cost of Simpson's Algorithm}
 Having created the multistage adaptive algorithm using Simpson's rule, we now continue to find the computational cost of the algorithm. The computational cost of Simpson's algorithm can be bounded by the following theorem.
 \begin{theorem}\label{uppbndcostSimp}
-    Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 5 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
-    \begin{multline}\label{uppbndcostineq}
+    Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 5 when Algorithm \ref{multistageintegalgosimpson} terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
+    \begin{multline}\label{uppbndcostineqsim}
         \max\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor\right),\zeta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}\right),
     \end{multline}
     where $\zeta(n)=(b-a)^4\mathfrak{C}((b-a)/n)/(5832n^4)$. The number of function values, namely the computational cost, required by the algorithm is $6N(f,\varepsilon)+1$.
@@ -658,11 +651,11 @@ Having obtained the upper bound on the computational cost, it is important to di
 
 \Chapter{Lower Bound of Complexity}
 
-In the previous Chapter, the author discusses the algorithms and their computational cost. In this Chapter, the lower bound of complexity steps into the spotlight. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up \cite[p.\ 11--12]{TraWer98}. That is, to build a fooling function to show that no matter how good an algorithms is, it can always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, any algorithm fails. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. The derivation starts from defining $\textup{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem.  Two fooling functions are built for trapezoidal rule and Simpson's rule respectively following by discussion of how to find the lowest number of nodes required to solve the problem.
+In the previous Chapter, the author discusses the algorithms and their computational cost. In this Chapter, the lower bound of complexity steps into the spotlight. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up by \cite[p.\ 11--12]{TraWer98}. That is, to build a fooling function to show that no matter how good an algorithms is, it can always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, any algorithm fails. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. The derivation starts from defining $\texttt{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem.  Two fooling functions are built for trapezoidal rule and Simpson's rule respectively following by discussion of how to find the lowest number of nodes required to solve the problem.
 
 \Section{Trapezoidal rule}
 
-The construction of fooling function for the trapezoidal rule starts from creating a triangle shaped function $\text{peak}(x,t,\delta)$ on $(a,b)$ that starts at point $t$, with the width of $2\delta$ and zero value elsewhere than $t, t+2\delta$. Considering the B-Spline to the first order:
+The construction of fooling function for the trapezoidal rule starts from creating a triangle shaped function $\text{peak}(x;t,\delta)$ on $(a,b)$ that starts at point $t$, with the width of $2\delta$ and zero value elsewhere than $t, t+2\delta$. Considering the B-Spline to the first order:
 \begin{align*}
   \text{b}_{j,0}(x):= \begin{cases} \displaystyle 1, & t_{j} \le x < t_{j+1},\\[1ex]
 \displaystyle  0, & \text{otherwise}.
@@ -676,13 +669,13 @@ The construction of fooling function for the trapezoidal rule starts from creati
 \end{align*}
 The function $\text{b}_{j,1}(x)$ is a triangle shaped function that starts at point $t_j$, with the width of $t_{j+2}-t_{j}$ and zero value elsewhere than $(t_{j}, t_{j+2})$. Assuming that $\{t_{j}\}_{j=1}^{n}$ is equally space between $(a,b)$, $t_{j+1}-t_{j}=\delta$, and $t=t_{j}$. Our peak function can be defined as
 \begin{equation}\label{peakfunction}
-  peak(x:t,\delta)=\delta \text{b}_{j,1}=x\begin{cases} \displaystyle x-t, & t \le x < t+\delta,\\[1ex]
+  \text{peak}(x;t,\delta)=\delta \text{b}_{j,1}=\begin{cases} \displaystyle x-t, & t \le x < t+\delta,\\[1ex]
 \displaystyle t+2\delta-x, & t+\delta \le x < t+2\delta,\\[1ex]
 \displaystyle  0, & \text{otherwise}.
 \end{cases}.
 \end{equation}
 Picture \ref{fig:peakfunction} shows the shape of the function.
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{peak.eps}
 \caption{A peak function where $a=0$, $b=1$, $t=0.2$, $\delta=0.1$. \label{fig:peakfunction}}
@@ -695,10 +688,10 @@ Other properties of the peak function are displayed below:
 \displaystyle  0, & \text{otherwise},
 \end{cases}, \\
 \Var(\text{peak}'(\cdot;t,\delta))\le 4 \text{ with equality if } a<t<t+2\delta<b, \\
-\int_{a}^{b}\text{peak}(x;t,h)dx=h^2.
+\int_{a}^{b}\text{peak}(x;t,\delta)dx=\delta^2.
 \end{gather*}
 The peak function above is continuous and with finite variation of the first derivative of the function, namely $\text{peak}(x;t,\delta)\in\cv^1$. The picture of the peak function is shown in \ref{fig:peakp1}:
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{peakp1.eps}
 \caption{First derivative of peak function \ref{peakfunction}. \label{fig:peakp1}}
@@ -713,7 +706,7 @@ Starting from this peak function $\text{peak}(x;t,\delta)$, the following double
     \end{equation}
 \end{subequations}
 Picture \ref{fig:twopkfunction} shows the shape of the double-peak function $\text{twopk}(x;t,\delta,+)$.
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{twopk.eps}
 \caption{A fooling function that can fool the trapezoidal rule algorithms, where $a=0$, $b=1$, $t=0.5$, $\delta=0.05$ and $\mathfrak{h}=0.1$. \label{fig:twopkfunction}}
@@ -729,7 +722,7 @@ From the definition of the peak function, it follows that
 \end{align*}
 The functions $\text{twopk}(x;t,\delta,\pm)$ have two peaks. The first always starts from the left end, $a$, and has the width of $2\mathfrak{h}$. The second starts from any point $t$ that is at least one interval right to the first peak and have a smaller width of $2\delta$. Although $\text{twopk}(x;t,\delta,\pm)$ may have a bump with arbitrarily small width $2\delta$, the height is small enough for $\text{twopk}(x;t,\delta,\pm)$ to lie in the cone. These two functions can be used as our fooling functions.
 
-The fooling functions leads to the lower bound of complexity of the trapezoidal algorithm. The key to the proof is to find one appropriate $\delta$.  This $\delta$ makes the smaller peak resides within one interval of data sites. Thus the small peak cannot be detected by the algorithm. Therefore, the algorithm cannot distinguish between $\text{peak}'(x;t,\delta)$ and $\text{twopk}(x;t,\delta,\pm)$. Assume that the algorithm $\textup{int}(\cdot,\varepsilon)$ uses $n$ equally spaced nodes to successfully return and answer. Moreover, assume that $\{x_{j}\}_{j=0}^{m}$, $m<n$, is a subinterval of $\{x_{j}\}_{j=0}^{n}$ where the smaller peak resides. Notice that average width of intervals is $(x_{m+1}-x_{0})(m+1)$ and $x_{m+1}-x_{0}=b-a-3\mathfrak{h}-\delta$. Choosing one interval such that the width is less than $2\delta$, the width of small bump can make the fooling functions fool the algorithm. In order to do that, one can choose interval wider than average and $2\delta$ narrower than average.
+The fooling functions leads to the lower bound of complexity of the trapezoidal algorithm. The key to the proof is to find one appropriate $\delta$.  This $\delta$ makes the smaller peak resides within one interval of data sites. Thus the small peak cannot be detected by the algorithm. Therefore, the algorithm cannot distinguish between $\text{peak}(x;t,\delta)$ and $\text{twopk}(x;t,\delta,\pm)$. Assume that the algorithm $\texttt{int}(\cdot,\varepsilon)$ uses $n$ equally spaced nodes to successfully return and answer. Moreover, assume that $\{x_{j}\}_{j=0}^{m}$, $m<n$, is a subinterval of $\{x_{j}\}_{j=0}^{n}$ where the smaller peak resides. Notice that average width of intervals is $(x_{m+1}-x_{0})(m+1)$ and $x_{m+1}-x_{0}=b-a-3\mathfrak{h}-\delta$. Choosing one interval such that the width is less than $2\delta$, the width of small bump can make the fooling functions fool the algorithm. In order to do that, one can choose interval wider than average and $2\delta$ narrower than average.
 
   \begin{align*}
     \frac{x_{j+1}-x_{j}}{2}&\ge\frac{x_{m+1}-x_{0}}{2(m+1)}\ge\frac{x_{m+1}-x_{0}}{2(n+1)}=\frac{b-a-3\mathfrak{h}-\delta}{2n+2}=\delta,\\
@@ -738,30 +731,30 @@ The fooling functions leads to the lower bound of complexity of the trapezoidal 
 
 Therefore, the lower bound of the complexity for the integration problem using trapezoidal rule can be represented as:
 \begin{theorem} \label{comptrap}
-Let $\textup{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc^1$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f')$, there will be some $f\in \cc^1$ for which $\textup{int}(\cdot,\varepsilon)$ must use at least
+Let $\texttt{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc^1$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f')$, there will be some $f\in \cc^1$ for which $\texttt{int}(\cdot,\varepsilon)$ must use at least
     \begin{equation}\label{complowbdtrap}
         -\frac{3}{2}+\frac{b-a-3\mathfrak{h}}{8}\sqrt{\left[\frac{[\mathfrak{C}(0)-1]\Var( f')}{\varepsilon}\right]}
     \end{equation}
     function values. As $\Var(f')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of Algorithm \ref{multistagetrapalgo}. The adaptive trapezoidal Algorithm \ref{multistagetrapalgo} has optimal order for integration of functions in $\cc^1$.
 \end{theorem}
 \begin{proof}
-  For any positive $\alpha$, suppose that $\textup{int}(\cdot,\varepsilon)$ evaluates integrand $\alpha\text{peak}'(\cdot;t,\delta)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\texttt{int}(\cdot,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+2\mathfrak{h}$, $x_{m+1}:=b-\delta$ and $\delta:=(b-a-3\mathfrak{h})/(2n+3)$. There must exit at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
+  For any positive $\alpha$, suppose that $\texttt{int}(\cdot,\varepsilon)$ evaluates integrand $\alpha\text{peak}'(\cdot;t,\delta)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\texttt{int}(\cdot,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+2\mathfrak{h}$, $x_{m+1}:=b-\delta$ and $\delta:=(b-a-3\mathfrak{h})/(2n+3)$. There must exit at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
   \begin{align*}
     \frac{x_{j+1}-x_{j}}{2}\ge\frac{x_{m+1}-x_{0}}{2(m+1)}\ge\frac{x_{m+1}-x_{0}}{2(n+1)}=\frac{b-a-3\mathfrak{h}-\delta}{2n+2}=\delta.
   \end{align*}
-  Choose one such $x_{j}$ and call it $t$. The choice of $t$ and $\delta$ ensures that $\textup{int}(\cdot,\varepsilon)$ cannot distinguish between $\alpha\textup{peak}(\cdot;t,\delta)$ and $\alpha\textup{twopk}(\cdot;t,\delta,\pm)$. Thus
+  Choose one such $x_{j}$ and call it $t$. The choice of $t$ and $\delta$ ensures that $\texttt{int}(\cdot,\varepsilon)$ cannot distinguish between $\alpha\textup{peak}(\cdot;t,\delta)$ and $\alpha\textup{twopk}(\cdot;t,\delta,\pm)$. Thus
   \begin{align*}
-    \textup{int}(\alpha\text{twopk}(\cdot;t,\delta,\pm),\varepsilon)=\textup{int}(\alpha\text{peak}(\cdot;t,\delta),\varepsilon)
+    \texttt{int}(\alpha\text{twopk}(\cdot;t,\delta,\pm),\varepsilon)=\texttt{int}(\alpha\text{peak}(\cdot;t,\delta),\varepsilon)
   \end{align*}
-  Moreover, $\alpha\text{peak}(\cdot;t,\delta)$ and $\alpha\text{twopk}(\cdot;t,\delta,\pm)$ are all in the cone $\cc^1$. This means that $\textup{int}(\cdot,\varepsilon)$ is successful for all of the functions.
+  Moreover, $\alpha\text{peak}(\cdot;t,\delta)$ and $\alpha\text{twopk}(\cdot;t,\delta,\pm)$ are all in the cone $\cc^1$. This means that $\texttt{int}(\cdot,\varepsilon)$ is successful for all of the functions.
   \begin{subequations}
   \begin{multline*}
-    \varepsilon\ge\frac{1}{2}\left[\right.\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,-)dx-\textup{int}(\alpha\textup{twopk}(\cdot;t,\delta,-),\varepsilon)\right|\\
-    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,+)dx-\textup{int}(\alpha\textup{twopk}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
+    \varepsilon\ge\frac{1}{2}\left[\right.\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,-)dx-\texttt{int}(\alpha\textup{twopk}(\cdot;t,\delta,-),\varepsilon)\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,+)dx-\texttt{int}(\alpha\textup{twopk}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
   \end{multline*}
   \begin{multline*}
-    \ge\frac{1}{2}\left[\right.\left|\textup{int}(\alpha\textup{peak}(\cdot;t,\delta,-),\varepsilon)-\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,-)dx\right|\\
-    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,+)dx-\textup{int}(\alpha\textup{peak}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
+    \ge\frac{1}{2}\left[\right.\left|\texttt{int}(\alpha\textup{peak}(\cdot;t,\delta,-),\varepsilon)-\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,-)dx\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,+)dx-\texttt{int}(\alpha\textup{peak}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
   \end{multline*}
   \begin{align*}
      &\ge\frac{1}{2}\left|\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,+)dx-\int_{a}^{b}\alpha\textup{twopk}(x;t,\delta,-)dx\right|\\
@@ -777,7 +770,7 @@ Let $\textup{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that 
     \end{align*}
     Since $\alpha$ is an arbitrary positive number, the value of $\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))$ is arbitrary.
 
-    Finally, comparing the upper bound on the computational cost of $\textup{integral}$ in \eqref{uppbndcostineq} with the lower bound on the computational cost of the best algorithm in \eqref{comptrap}, both of them increase as $\mathcal{O}((\Var(f')/\varepsilon))^{1/2}$ as $(\Var(f')/\varepsilon)^{1/2}\rightarrow \infty$. Thus $\textup{integral}$ is optimal.
+    Finally, comparing the upper bound on the computational cost of {\tt integral\_t} in \eqref{uppbndcosttrapineq} with the lower bound on the computational cost of the best algorithm in \eqref{complowbdtrap}, both of them increase as $\mathcal{O}((\Var(f')/\varepsilon))^{1/2}$ as $(\Var(f')/\varepsilon)^{1/2}\rightarrow \infty$. Thus {\tt integral\_t} is optimal.
 \end{proof}
 
 \Section{Simpson's rule}
@@ -850,7 +843,7 @@ The function $\text{b}_{j,3}(x)$ is a bump shaped function that starts at point 
 \end{cases}
 \end{align}
 Picture \ref{fig:bumpfunction} shows the shape of the bump function. The bump function is continuous.
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{bump.eps}
 \caption{A bump function, where $a=0$, $b=1$, $t=0.2$, $\delta=0.1$ and $\mathfrak{h}=0.1$. \label{fig:bumpfunction}}
@@ -881,20 +874,20 @@ Other properties of the bump function are displayed below.
 \int_{a}^{b}\text{bump}(x;t,\delta)dx=\delta^4.
 \end{gather}
 \end{subequations}
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{bumpp1.eps}
-\caption{First derivative of bump function. \label{fig:bumpp1}}
+\caption{First derivative of bump function \ref{fig:bumpfunction}. \label{fig:bumpp1}}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{bumpp2.eps}
-\caption{Second derivative of bump function. \label{fig:bumpp2}}
+\caption{Second derivative of bump function \ref{fig:bumpfunction}. \label{fig:bumpp2}}
 \end{figure}
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{bumpp3.eps}
-\caption{Third derivative of bump function. \label{fig:bumpp3}}
+\caption{Third derivative of bump function \ref{fig:bumpfunction}. \label{fig:bumpp3}}
 \end{figure}
 The bump function above is continuous to the third derivative with finite variation of the third derivatives. Note that the following double-bump function that is always in $\cc^3$:
 \begin{subequations}
@@ -906,7 +899,7 @@ The bump function above is continuous to the third derivative with finite variat
     \end{equation}
 \end{subequations}
 Picture \ref{fig:twobpfunction} shows the shape of the double-peak function.
-\begin{figure}[h]
+\begin{figure}[ht]
 \centering
 \includegraphics[width=5.5cm]{twobp.eps}
 \caption{A fooling function that can fool the Simpson's rule algorithms, where $a=0$, $b=1$, $t=0.5$, $\delta=0.05$ and $\mathfrak{h}=0.1$. \label{fig:twobpfunction}}
@@ -930,30 +923,30 @@ Similar to the trapezoidal case, the average width of intervals is $(x_{m+1}-x_{
 
 With the fooling functions, the lower bound of complexity of the Simpson's algorithms can be expressed as follow.
 \begin{theorem}\label{compsim}
-    Let $\textup{int}$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f''')$, there will be some $f\in \cc$ for which $\textup{int}$ must use at least
+    Let $\texttt{int}$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f''')$, there will be some $f\in \cc$ for which $\texttt{int}$ must use at least
     \begin{equation}\label{complowbdsim}
         -\frac{5}{4}+\frac{b-a-5\mathfrak{h}}{8}\left[\frac{[\mathfrak{C}(0)-1]\Var( f''')}{\varepsilon}\right]^{1/4}
     \end{equation}
     function values. As $\Var(f''')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of Algorithm \ref{multistageintegalgosimpson}. The adaptive Simpson's Algorithm \ref{multistageintegalgosimpson} has optimal order for integration of functions in $\cc^3$.
 \end{theorem}
 \begin{proof}
-  For any positive $\alpha$, suppose that $\texttt{int}(\cdot,\varepsilon)$ evaluates integrand $\alpha\text{bump}'''(\cdot;t,\delta)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\textup{int}(\cdot,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+3\mathfrak{h}$, $x_{m+1}:=b-\delta$ and $\delta:=(b-a-5\mathfrak{h})/(4n+5)$. There must exits at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
+  For any positive $\alpha$, suppose that $\texttt{int}(\cdot,\varepsilon)$ evaluates integrand $\alpha\text{bump}'''(\cdot;t,\delta)$ at $n$ nodes before returning to an answer. Let $\{x_j\}_{j=1}^{m})$ be the $m<n$ ordered nodes used by $\texttt{int}(\cdot,\varepsilon)$ that fall in the interval $(x_{0},x_{m+1})$ where $x_{0}:=a+3\mathfrak{h}$, $x_{m+1}:=b-\delta$ and $\delta:=(b-a-5\mathfrak{h})/(4n+5)$. There must exits at least one of these $x_{j}$ with $i=0,\cdots,m$ for which
   \begin{align*}
     \frac{x_{j+1}-x_{j}}{4}\ge\frac{x_{m+1}-x_{0}}{4(m+1)}\ge\frac{x_{m+1}-x_{0}}{4(n+1)}=\frac{b-a-5\mathfrak{h}-\delta}{4n+4}=\delta.
   \end{align*}
-  Choose one such $x_{j}$ and call it $t$. The choice of $t$ and $\delta$ ensures that $\textup{int}(\cdot,\varepsilon)$ cannot distinguish between $\alpha\text{bump}(\cdot;t,\delta)$ and $\alpha\text{twobp}(\cdot;t,\delta,\pm)$. Thus
+  Choose one such $x_{j}$ and call it $t$. The choice of $t$ and $\delta$ ensures that $\texttt{int}(\cdot,\varepsilon)$ cannot distinguish between $\alpha\text{bump}(\cdot;t,\delta)$ and $\alpha\text{twobp}(\cdot;t,\delta,\pm)$. Thus
   \begin{align*}
-    \textup{int}(\alpha\text{twobp}(\cdot;t,\delta,\pm),\varepsilon)=\textup{int}(\alpha\text{bump}(\cdot;t,\delta),\varepsilon)
+    \texttt{int}(\alpha\text{twobp}(\cdot;t,\delta,\pm),\varepsilon)=\texttt{int}(\alpha\text{bump}(\cdot;t,\delta),\varepsilon)
   \end{align*}
-  Moreover, $\alpha\textup{bump}(\cdot;t,\delta)$ and $\alpha\textup{twobp}(\cdot;t,\delta,\pm)$ are all in the cone $\cc^3$. This means that $\textup{int}(\cdot,\varepsilon)$ is successful for all of the functions.
+  Moreover, $\alpha\textup{bump}(\cdot;t,\delta)$ and $\alpha\textup{twobp}(\cdot;t,\delta,\pm)$ are all in the cone $\cc^3$. This means that $\texttt{int}(\cdot,\varepsilon)$ is successful for all of the functions.
   \begin{subequations}
   \begin{multline*}
-    \varepsilon\ge\frac{1}{2}\left[\right.\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,-)dx-\textup{int}(\alpha\textup{twobp}(\cdot;t,\delta,-),\varepsilon)\right|\\
-    +\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,+)dx-\textup{int}(\alpha\textup{twobp}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
+    \varepsilon\ge\frac{1}{2}\left[\right.\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,-)dx-\texttt{int}(\alpha\textup{twobp}(\cdot;t,\delta,-),\varepsilon)\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,+)dx-\texttt{int}(\alpha\textup{twobp}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
   \end{multline*}
   \begin{multline*}
-    \ge\frac{1}{2}\left[\right.\left|\textup{int}(\alpha\textup{bump}(\cdot;t,\delta,-),\varepsilon)-\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,-)dx\right|\\
-    +\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,+)dx-\textup{int}(\alpha\textup{bump}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
+    \ge\frac{1}{2}\left[\right.\left|\texttt{int}(\alpha\textup{bump}(\cdot;t,\delta,-),\varepsilon)-\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,-)dx\right|\\
+    +\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,+)dx-\texttt{int}(\alpha\textup{bump}(\cdot;t,\delta,+),\varepsilon)\right|\left.\right]
   \end{multline*}
   \begin{align*}
      &\ge\frac{1}{2}\left|\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,+)dx-\int_{a}^{b}\alpha\textup{twobp}(x;t,\delta,-)dx\right|\\
@@ -969,7 +962,7 @@ With the fooling functions, the lower bound of complexity of the Simpson's algor
     \end{align*}
     Since $\alpha$ is an arbitrary positive number, the value of $\Var(\alpha \texttt{bump}'''(\cdot;a,\mathfrak{h}))$ is arbitrary.
 
-    Finally, comparing the upper bound on the computational cost of $\texttt{integral}$ in \eqref{uppbndcostineq} with the lower bound on the computational cost of the best algorithm in \eqref{compsim}, both of them increase as $\mathcal{O}((\Var(f''')/\varepsilon))^{1/4}$ as $(\Var(f''')/\varepsilon)^{1/4}\rightarrow \infty$. Thus $\texttt{integral}$ is optimal.
+    Finally, comparing the upper bound on the computational cost of {\tt integral\_s} in \eqref{uppbndcostineqsim} with the lower bound on the computational cost of the best algorithm in \eqref{complowbdsim}, both of them increase as $\mathcal{O}((\Var(f''')/\varepsilon))^{1/4}$ as $(\Var(f''')/\varepsilon)^{1/4}\rightarrow \infty$. Thus {\tt integral\_s} is optimal.
 \end{proof}
 
 Having proved that our algorithms using trapezoidal rule and Simpson's rule are optimal, the author continuous to test the performance of the two algorithms. In the next chapter, the numerical results from Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} are discussed.
@@ -1002,25 +995,28 @@ As an experiment, we chose $10000$ random test functions and applied Algorithm \
 %\end{tabular}
 %\caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
 %\end{table}
-\begin{table}[h]\label{integresultstable}
+\begin{table}[ht]
+\caption{The success rates of {\tt integral\_t} and {\tt integral\_s} plus the success rates of other common quadrature algorithms.}
 \centering
 \begin{tabular}{cccc}
+\hline\hline
 & $\mathfrak{h}$ & Success & Failure \\
-\toprule
+\hline
 &$0.1$  & $5\%$ &  $95\%$  \\
-Algorithm \ref{multistagetrapalgo}
+{\tt integral\_t}
  &$0.01$  & $26\%$ & $74\%$ \\
 &$0.001$ & $48\%$ &$52\%$ \\
-\midrule
+\hline
 &$0.1$  & $33\%$ &  $67\%$  \\
-Algorithm \ref{multistageintegalgosimpson}
+{\tt integral\_s}
  &$0.01$  & $60\%$ & $40\%$ \\
 &$0.001$ & $77\%$ &$23\%$ \\
-\midrule
+\hline
 {\tt integral} & & 15 \% & $85\%$\\
 {\tt chebfun} & &29\% & $71\%$\\
+\hline
 \end{tabular}
-\caption{The success rate of Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} plus the success rates of other common quadrature algorithms.}
+\label{integresultstable}
 \end{table}
 
 Some commonly available numerical algorithms in MATLAB are {\tt integral} \cite{MAT8.1} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these two routines to the random family of test functions as well.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  %They do not give warnings of possible failure.
@@ -1037,15 +1033,15 @@ The test results in Table \ref{integresultstable} shows that both Algorithm \ref
 In this thesis, we study the algorithms for univariate integration problems. Both algorithms using trapezoidal rule and Simpson's rule are constructed. The approximation error for them are analyzed in terms of function values. The computational cost of the algorithms is studied in the sense of lower and upper bound of function value required for a specific error tolerance. The complexity of any algorithms using trapezoidal rule and Simpson's rule are derived. This chapter summarizes the main results and brings out the future work to be pursued.
 
 
-\section{Summary}
+\Section{Summary}
 
-Numerical approximation motivated by univariate integration problems can be categorized into two typical types. The first category is fixed-cost algorithms with guarantees. These algorithms are automatic but not adaptive since the computational cost does not depend on the input function. The second category is adaptive, automatic algorithms such as MATLAB's integral and Chebfun. These algorithms do not have rigorous justification. The user does not know whether the returned results from the algorithm is true or not. This thesis proposed two algorithms, using trapezoidal rule and Simpson's rule respectively, where the input functions lie in a cone shaped function subspace of $\cv^1$ and $\cv^3$. For trapezoidal rule, $\cv^{1}:=\{f\in C^{(1)}[a,b]: \Var(f') < \infty \}$ and the function space is 
+Numerical approximation motivated by univariate integration problems can be categorized into two typical types. The first category is fixed-cost algorithms with guarantees. These algorithms are automatic but not adaptive since the computational cost does not depend on the integrand. The second category is adaptive, automatic algorithms such as MATLAB's integral and Chebfun. These algorithms do not have rigorous justification. The user does not know whether the returned results from the algorithm is true or not. This thesis proposed two algorithms, using trapezoidal rule and Simpson's rule respectively, where the integrands lie in cone shaped function subspaces $\cv^1$ and $\cv^3$. For trapezoidal rule, $\cv^{1}:=\{f\in C^{1}[a,b]: \Var(f') < \infty \}$ and the function space is
 \begin{multline*}
-\cc^{p}:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
+\cc^{1}:=\left\{f\in \cv^{1}, \Var(f')\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f',\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
 \end{multline*}
- For Simpson's rule, $\cv^{3}:=\{f\in C^{(3)}[a,b]: \Var(f''') < \infty \}$ and the function space is 
+ For Simpson's rule, $\cv^{3}:=\{f\in C^{3}[a,b]: \Var(f''') < \infty \}$ and the function space is
  \begin{multline*}
-\cc^{p}:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
+\cc^{3}:=\left\{f\in \cv^{3}, \Var(f''')\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f''',\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
 \end{multline*}
   Using backward finite difference, the error estimate of trapezoidal rule, $\overline{\textup{err}}_{\textup{t}}(f,n)$, can be bounded as follows using function values.
  \begin{equation*}
@@ -1056,7 +1052,7 @@ The error estimate of Simpson's rule, $\overline{\textup{err}}_{\textup{s}}(f,n)
   \overline{\textup{err}}_{\text{s}}(f,n)\leq \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.
 \end{equation*}
 
-Detailed processes of the two new algorithms are provided. The two algorithm are proved to be successful if the input function lies into the appropriate cone shaped function space. The computational cost of trapezoidal rule has lower and upper bound as
+Detailed processes of the two new algorithms are provided. The two algorithm are proven to be successful if the integrand lies into the appropriate cone shaped function space. The computational cost of trapezoidal rule has lower and upper bound as
 \begin{multline*}\\
         \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor,\left\lceil2(b-a)\sqrt{\frac{\Var(f')}{8\varepsilon}}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor\right),\zeta(n)\Var(f')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor\right),(b-a)\sqrt{\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f')}{8\varepsilon}}\right),
     \end{multline*}
@@ -1079,8 +1075,8 @@ The upper bounds of algorithms using trapezoidal rule and Simpson's rule is asym
 
 Results from numerical experiments of testing a family of bump functions in $\cv^3$ show that Simpson's rule algorithm has better success rate than trapezoidal rule algorithm. Both algorithms has better success rate than MATLAB's {\tt integral} and Chebfun.
 
-\section{Future Work}
-Our new algorithms are designed to solve the univariate integration problems. The algorithms use trapezoidal rule and Simpson's rule and are globally adaptive. For future work, new methods can be proposed to solve multivariate integration problems. The input points can be locally adaptive, where additional points are only added to the necessary locations according to the shape of the input function. Making the algorithms locally adaptive may significantly save the computational cost. The convergence rates of trapezoidal rule and Simpson's rule are not fast enough. New algorithms can be created using methods with faster convergence rate.
+\Section{Future Work}
+Our new algorithms are designed to solve the univariate integration problems. The algorithms use trapezoidal rule and Simpson's rule and are globally adaptive. For future work, new methods can be proposed to solve multivariate integration problems. The input points can be locally adaptive, where additional points are only added to the necessary locations according to the shape of the integrand. Making the algorithms locally adaptive may significantly save the computational cost. The convergence rates of trapezoidal rule and Simpson's rule are not fast enough. New algorithms can be created using methods with faster convergence rate.
 
 
 
