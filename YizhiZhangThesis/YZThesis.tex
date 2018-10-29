@@ -49,7 +49,7 @@
 \begin{document}
 
 %%% Declarations for Title Page %%%
-\title{Guaranteed, Adaptive, Automatic Algorithms for Univariate Integration: Methods, Cost, and Implementations}
+\title{Guaranteed, Adaptive, Automatic Algorithms for Univariate Integration: Methods, Cost and Implementations}
 \author{Yizhi Zhang}
 \degree{Doctor of Philosophy}
 \dept{Applied Mathematics}
@@ -143,7 +143,7 @@ In fact, the challenge of spiky integrands applies to algorithm that depends on 
 
 
 
-\Section{Motivation and Outline}
+\Section{Outline}
 
 In Chapter 2, the definitions and assumptions used in the thesis are introduced. Chapter 3 focuses on finding upper bound on approximation error and rigorous theoretical proof of success. Guaranteed algorithms are presented in Chapter 4 with the lower and upper bound of the computational cost. Chapter 5 studies the lower bound of complexity. In Chapter 6, the results from numerical experiences will be discussed.  The guaranteed algorithms derived here are based on trapezoidal rule and Simpson's rule. The former is simple but has a lower order of convergence rate The latter has a higher convergence rate but the derivation is more complicated. The derivation of the two algorithms is done in parallel in Chapters 3 to 5 for the trapezoidal rule and Simpson's rule.
 
@@ -221,9 +221,9 @@ With the cone space defined, we can start constructing our adaptive trapezoidal 
 
 
 
-\Chapter{Data-Driven Error Bound}
+\Chapter{Data-Driven Error Bounds}
 
-In this chapter, the author derives upper bounds on the approximation errors in terms of function values. By \eqref{errorbound} in Chapter 2, we know that the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation of the appropriate derivatives. The definition of the cone suggests a way of bounding $\Var(f^{(p)})$ in terms of $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, our algorithms are based on function values and $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ is defined in terms of derivative values. Thus finite differences are used to express derivative values in terms of function values.
+In this chapter, the author derives upper bounds on the approximation errors in terms of function values. By \eqref{errorbound} in Chapter 2, the approximation errors of trapezoidal rule and Simpson's rule have an upper bound in terms of the total variation of the appropriate derivatives. The definition of the cone suggests a way of bounding $\Var(f^{(p)})$ in terms of $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$. However, our algorithms are based on function values and $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ is defined in terms of derivative values. Thus finite differences are used to express derivative values in terms of function values.
 
 \Section{Trapezoidal Rule}
 
@@ -232,7 +232,7 @@ The backward finite difference are used to approximate $f'$. Let the width of th
   f[u_{j}]&=f(u_{j}), \text{ for } j=0,\cdots, n,\\
   f[u_{j},u_{j-1}]&=\frac{f(u_{j})-f(u_{j-1})}{h},\text{ for } j=1, \cdots, n.
 \end{align*}
-According to Mean Value Theorem for finite differences, , for all $j=1,2,\cdots,n$, there exists $x_j\in (u_{j-1},u_{j})$ such that
+According to Mean Value Theorem for finite differences, for all $j=1,2,\cdots,n$, there exists $x_j\in (u_{j-1},u_{j})$ such that
 \begin{equation*}
    f'(x_j)= f[u_{j},u_{j-1}],
 \end{equation*}
@@ -281,7 +281,7 @@ Similar to the trapezoidal rule, the third order backward finite difference is u
 %From \eqref{errorbound} in Chapter 2, we know that the error bound of approximations using Simpson's rule can be bounded by the variation of the third derivatives of the function. We do not have the variation of the third derivatives of the function. In order to find the error bound, we introduced the cone space of integrands so that the approximation error of functions within the space can be bounded by $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$. However, we cannot use $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$ to approximate $\Var{(f''')}$ because it depends on values of $f'''$, not values of $f$. In this case, we consider the following approximation to $\Var(f''')$ which is closely related to $\widehat{V}(f''',\{x_i\}_{i=0}^{n+1})$:
 % may be say more
 % Since $$\frac{216n^3}{(b-a)^3}\left|f(t_{i-3})-3f(t_{i-2})+3f(t_{i-1})-f(t_{i})\right|=f'''(x_{i-1}),???$$ for some $x_{i-1} \in [t_{3i-3},t_{3i}]$,
-According to Mean Value Theorem for divided differences, for all $j=1,2,\cdots,2n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that
+According to Mean Value Theorem for finite differences, for all $j=1,2,\cdots,2n$, there exists $x_j\in (v_{3j-3},v_{3j})$ such that
 \begin{equation*}
     \frac{f'''(x_j)}{6}=f[v_{3j},v_{3j-1},v_{3j-2},v_{3j-3}],
 \end{equation*}
@@ -295,7 +295,7 @@ for some $x_j\in (v_{3j-3},v_{3j})$. Let $\{a=x_{0}, x_{1},\cdots,x_{n},x_{2n+1}
 \end{equation}
 Since \eqref{defvhat} is true for all partition $\{x_i\}_{i=0}^{2n+1}$, it is true for \eqref{ftriprime} with $\{x_j\}_{i=0}^{2n+1}$. Then the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ using only function values can be written as follow:
 \begin{multline}\label{vtilde3}
-\widetilde{V}_3(f,n)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
+\widetilde{V}_3(f,n)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|.
 \end{multline}
 Therefore by combining the relative equations together, the error bound on error estimate for our Simpson's rule algorithm using only function values is obtained as:
 \begin{align*}
@@ -329,7 +329,7 @@ As mentioned earlier, the error bounds \eqref{errortrapcone} and \eqref{errorsim
 
 
 
-\Chapter{Adaptive, Automatic Algorithms with Guarantees and their Computational Cost}
+\Chapter{Adaptive, Automatic Algorithms with Guarantees and Computational Cost}
 
 
 In the previous Chapter, the stopping criterion of our trapezoidal rule and Simpson's rule algorithms using the integrand values are derived. In the Chapter, the two algorithms are discussed in detail. Our algorithms require the inputs of function values and error tolerance. The algorithms give out an answer adaptively by deciding the number of functions value used, the location of the points, and the shape of the cone by themselves. For practical reasons, the algorithms set a max number of iterations and a max number of input points. If the either of the max number is reached, the algorithms quit and provide a best possible output. In order to save the computation time, embedded input points are used to compute function values. This means that if the algorithms enter the next iteration, the number of input points used will be multiplied by an integer and the function values from the last iteration will be saved and used again.
@@ -347,9 +347,9 @@ Thus, in order to make two sides of the inequality hold, namely, for an integran
 \end{equation}
 %\mathfrak{C}(\text{size}(\{x_i\}_{j=0}^{n+1})) and the fact that $\mathfrak{C}(\cdot)$ is non-decreasing,
 
-Secondly, if \eqref{neccontrap} does not meet, the cut-off value $\mathfrak{h}$ is halved to make the cone function space more inclusive. The reason is that the inflation factor defined in \eqref{definflationfactor} is decreasing with respect to $\mathfrak{h}$. Thus by halving $\mathfrak{h}$, the inflation factor becomes larger. The cone space is more inclusive. Integrands have a higher chance of lying in the new cone than the old one, thus a higher chance to be accurately calculated.
+Secondly, if \eqref{neccontrap} does not meet, the cut-off value $\mathfrak{h}$ is halved to make the cone function space more inclusive. The reason is that the inflation factor defined in \eqref{definflationfactor} is decreasing with respect to $\mathfrak{h}$. By halving $\mathfrak{h}$, the inflation factor becomes larger. Intuitively the cone space is more inclusive. Integrands have higher chances of lying in the new cone than the old one, thus have higher chancec to be accurately calculated.
 
-\Subsection{Trapezoidal Rule Algorithm}
+\Subsection{Trapezoidal rule algorithm}
 Following the settings of how to check whether the integrand is in the cone, and how to revise the cone if needed, the author now provides the guaranteed automatic integration algorithm using the trapezoidal rule.
 \begin{algo}[Trapezoidal Rule Adaptive Algorithm {\tt integral\_t}] \label{multistagetrapalgo}
 Let the sequence of algorithms $\{T_n\}_{n\in \mathbb{N}}$, %$ \widehat{V}(f,\{x_i\}_{i=0}^{n+1})$,
@@ -420,7 +420,7 @@ Algorithm \ref{multistagetrapalgo} always succeeds if the integrand is in the co
 \end{proof}
 
 
-\Subsection{Computational Cost of Trapezoidal Algorithm}
+\Subsection{Computational cost of {\tt integral\_t}}
 Having created the multistage adaptive algorithm using trapezoidal rule, the author continues to find the computational cost of the algorithm. The computational cost of trapezoidal has upper and lower bounds as described in the following theorem.
 \begin{theorem}\label{uppbndcosttrap}
     Let $N(f,\varepsilon)$ denote the final number $n_k$ in Step 5 when Algorithm \ref{multistagetrapalgo} terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f')$.
@@ -495,7 +495,7 @@ Having created the multistage adaptive algorithm using trapezoidal rule, the aut
 %    \end{equation*}
 %\end{theorem}
 
-\Section{Simpson's rule}
+\Section{Simpson's Rule}
 
 Similar to the trapezoidal algorithm, firstly the author provides the necessary condition for the integrand lying in the cone. From \eqref{defvar}, the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ is a lower bound on $\Var({f'''})$, i.e. $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})\leq \Var({f'''})$ for all $n \ge 6$. From the definition of the cone in \eqref{defcone}, the variation of the third derivative can be bounded by the approximation $\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$ times an appropriate inflation factor $\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))$, namely $\Var({f'''})\leq$$\mathfrak{C}(\text{size}(\{x_j\}_{j=0}^{n+1}))\widehat{V}({f'''},\{x_j\}_{j=0}^{n+1})$, for all $n \ge 6$. After similar derivation as the trapezoidal case, the necessary condition for an integrand being in the cone function space $\cc^3$ at the $k$th loop is:
 \begin{equation}\label{necconsim}
@@ -503,7 +503,7 @@ Similar to the trapezoidal algorithm, firstly the author provides the necessary 
 \end{equation}
 Same mechanism, namely halving the cuf-off value $\mathfrak{h}$ is implemented to make the cone function space more inclusive in the Simpson's rule case.
 
-\Subsection{Simpson's Rule Algorithm}
+\Subsection{Simpson's rule algorithm}
 %
 %
 %\begin{algo}[Trapezoidal Rule Adaptive Algorithm] \label{multistagetrapalgo}
@@ -616,7 +616,7 @@ The process of Algorithm \ref{multistageintegalgosimpson} is similar to Algorith
 \end{proof}
 
 
-\Subsection{Computational Cost of Simpson's Algorithm}
+\Subsection{Computational cost of {\tt integral\_s}}
 Having created the multistage adaptive algorithm using Simpson's rule, we now continue to find the computational cost of the algorithm. The computational cost of Simpson's algorithm can be bounded by the following theorem.
 \begin{theorem}\label{uppbndcostSimp}
     Let $N(f,\varepsilon)$ denote the final number of $n_k$ in Step 5 when Algorithm \ref{multistageintegalgosimpson} terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
@@ -649,11 +649,11 @@ Having created the multistage adaptive algorithm using Simpson's rule, we now co
 
 Having obtained the upper bound on the computational cost, it is important to discover a lower bound of complexity for univariate integration problems. By studying the lower bound on the complexity, one can decide whether the cost of our algorithms are optimal among all possible algorithms using function values for the same problem. In the next chapter, the complexity of the problem is discussed.
 
-\Chapter{Lower Bound of Complexity}
+\Chapter{Lower Bounds on Complexity}
 
 In the previous Chapter, the author discusses the algorithms and their computational cost. In this Chapter, the lower bound of complexity steps into the spotlight. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up by \cite[p.\ 11--12]{TraWer98}. That is, to build a fooling function to show that no matter how good an algorithms is, it can always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, any algorithm fails. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. The derivation starts from defining $\texttt{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem.  Two fooling functions are built for trapezoidal rule and Simpson's rule respectively following by discussion of how to find the lowest number of nodes required to solve the problem.
 
-\Section{Trapezoidal rule}
+\Section{Trapezoidal Rule Complexity}
 
 The construction of fooling function for the trapezoidal rule starts from creating a triangle shaped function $\text{peak}(x;t,\delta)$ on $(a,b)$ that starts at point $t$, with the width of $2\delta$ and zero value elsewhere than $t, t+2\delta$. Considering the B-Spline to the first order:
 \begin{align*}
@@ -773,7 +773,7 @@ Let $\texttt{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that 
     Finally, comparing the upper bound on the computational cost of {\tt integral\_t} in \eqref{uppbndcosttrapineq} with the lower bound on the computational cost of the best algorithm in \eqref{complowbdtrap}, both of them increase as $\mathcal{O}((\Var(f')/\varepsilon))^{1/2}$ as $(\Var(f')/\varepsilon)^{1/2}\rightarrow \infty$. Thus {\tt integral\_t} is optimal.
 \end{proof}
 
-\Section{Simpson's rule}
+\Section{Simpson's Rule Complexity}
 
 To build the fooling functions for Simpson's rule, the B-Spline expansion in the previous section continuous as follows:
 

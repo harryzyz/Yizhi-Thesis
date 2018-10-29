@@ -1,0 +1,601 @@
+\documentclass[mathserif,10pt]{beamer}
+\usepackage{amsfonts}
+\usepackage{amsfonts}
+\usepackage{amsfonts}
+\usepackage{amsmath,amssymb,amsthm,delarray,natbib,graphicx}
+\usepackage{amsmath,amssymb,amsthm,natbib,mathtools,graphicx}
+\usetheme{Madrid}
+\usepackage{beamerthemesplit}
+\input FJHDef.tex
+\setlength{\parskip}{2ex}
+\setlength{\arraycolsep}{0.5ex}
+\usepackage{amsmath,amssymb,amsthm,mathtools,bbm,booktabs,array,tikz,pifont,comment,multirow,url,graphicx}
+
+\DeclareMathOperator{\Var}{Var}
+\DeclareMathOperator{\INT}{INT}
+\DeclareMathOperator{\APP}{APP}
+\DeclareMathOperator{\lin}{lin}
+\DeclareMathOperator{\up}{up}
+\DeclareMathOperator{\lo}{lo}
+\DeclareMathOperator{\fix}{fix}
+\DeclareMathOperator{\err}{err}
+\DeclareMathOperator{\maxcost}{maxcost}
+\DeclareMathOperator{\mincost}{mincost}
+\newcommand{\herr}{\widehat{\err}}
+\newcommand{\Fnorm}[1]{\abs{#1}_{\cf}}
+\newcommand{\Ftnorm}[1]{\abs{#1}_{\tcf}}
+\newcommand{\Gnorm}[1]{\norm[\cg]{#1}}
+\newcommand{\flin}{f_{\text{\rm{lin}}}}
+
+\begin{document}
+
+\newcommand{\R}{\mathbb{R}}
+\newtheorem{theo}{Theorem}
+\newtheorem{prop}[theorem]{Proposition}
+\newtheorem{lem}{Lemma}
+\theoremstyle{definition}
+\newtheorem{algo}{Algorithm}
+\newtheorem{condit}{Condition}
+%\newtheorem{assump}{Assumption}
+\theoremstyle{remark}
+\newtheorem{rem}{Remark}
+
+\newcommand{\sphere}{\mathbb{S}}
+%\newcommand{\cc}{\mathcal{C}}
+\newcommand{\cq}{\mathcal{Q}}
+\newcommand{\bbW}{\mathbb{W}}
+%\newcommand{\tP}{\widetilde{P}}
+\newcommand{\bg}{{\bf g}}
+\newcommand{\bu}{{\bf u}}
+\newcommand{\bbu}{\bar{\bf u}}
+\newcommand{\bv}{{\bf v}}
+\newcommand{\bbv}{\bar{\bf v}}
+\newcommand{\bw}{{\bf w}}
+\newcommand{\bbw}{\bar{\bf w}}
+%\newcommand{\hv}{\hat{v}}
+
+
+
+\setlength{\parskip}{2ex}
+
+\beamersetuncovermixins{\opaqueness<1->{0}}{\opaqueness<1->{60}}
+
+
+\title{Guaranteed, Adaptive, Automatic Algorithms for Univariate Integration: Methods, Cost and Implementation}
+\author{Yizhi Zhang}
+
+\institute{Department of Applied Mathematics, Illinois Institute of
+Technology }%\\ Chicago, Illinois, USA\\}
+\date{ \today}
+
+
+\frame{\titlepage}
+
+
+\section{Introduction}
+
+
+
+\frame{\frametitle{Motivation}
+
+\begin{itemize}
+
+  \item $\int_{a}^{b}f(x)\text{d}x$
+
+  \item Simple functions such as $\int_{a}^{b}x^2 \text{d}x=x^3/3|_{a}^{b}$. Use pen and paper.
+
+  \item Functions with no analytical solutions such as the standard normal p.d.f $\int_{a}^{b}e^{-x^2/2}/\sqrt{2\pi}\text{d}x$. Use numerical methods.
+
+\end{itemize}
+
+ }
+
+
+ \frame{\frametitle{Fixed-cost algorithms}
+
+\begin{itemize}
+\item Traditional trapezoidal rule and Simpson's rule are typical two examples.
+
+\item   \begin{align}\label{errorsimple}
+            \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),
+        \end{align}
+
+\item The algorithms provide guarantees when $\Var(f^{(p)})<\sigma$.
+
+\item The algorithms are automatic. Cost $n=C^{-1}(\varepsilon/\sigma)$.
+
+\item The algorithms are not adaptive. The upper bound on variation, $\sigma$ is unknown to users.
+
+\item A constant $c\cdot f$ may not work.
+\end{itemize}
+ }
+
+ \frame{\frametitle{Adaptive algorithms with no guarantees}
+\begin{itemize}
+\item MATLAB's {\tt integral} and Chebfun toolbox are typical two examples.
+
+\item The algorithms are adaptive. No $\sigma$ required.
+
+\item The algorithms provide no guarantees.
+
+\item The algorithms can always be fooled by spiky functions.
+
+\end{itemize}
+
+ }
+
+
+ \frame{\frametitle{What do we think of the problem}
+
+\begin{itemize}
+
+  \item The goal is to construct adaptive, automatic algorithms with guarantees of success.
+
+  \item Define the space of integrands in the cone, not ball.
+
+  \item Error bound \eqref{errorsimple} is approximated using only function values.
+
+  \item To fixed-cost algorithms: adaptive, succeed in the cone.
+
+  \item To adaptive algorithms: rigorous proof of how spiky $f$ can be.
+
+\end{itemize}
+
+ }
+
+\frame{\frametitle{Contents}
+
+
+\begin{itemize}
+
+\item Introduction.
+
+\item Problem Statement.
+
+\item Data-Driven Error Bounds
+
+\item Adaptive, Automatic Algorithms with Guarantees
+
+\item Lower and Upper Bound of Computational Cost
+
+\item Lower Bound of Complexity
+
+\item Numerical Example
+
+\item Future Work
+
+\end{itemize}
+}
+
+\section{Problem Statement and Assumptions}
+
+
+\frame{\frametitle{Trapezoidal rule and Simpson's rule}
+
+The composite trapezoidal rule can be defined as:
+\begin{equation}\label{traprule}
+  T(f,n)=\frac{b-a}{2n}\sum_{j=0}^{n}(f(u_{j})+f(u_{j+1})),
+\end{equation}
+where
+\begin{equation}\label{upts}
+u_j=a+\frac{j(b-a)}{n}, \qquad j=0, \ldots, n, \qquad n\in\mathbb{N}.
+\end{equation}
+
+The composite Simpson's rule can be defined as:
+\begin{equation}\label{simrule}
+  S(f,n)=\frac{b-a}{18n}\sum_{j=0}^{3n-1}(f(v_{2j})+4f(v_{2j+1})+f(v_{2j+2})),
+\end{equation}
+where
+\begin{equation}\label{vpts}
+v_j=a+\frac{j(b-a)}{6n}, \qquad j=0, \ldots, 6n, \qquad n\in \naturals.
+\end{equation}
+}
+
+
+\frame{\frametitle{Error of two methods}
+
+To better define \eqref{errorsimple}:
+
+\begin{align}\label{errorbound}
+    \text{err}(f,n)\le\overline{\text{err}}(f,n):=&C(n)\Var(f^{(p)}),\\
+    \nonumber&C(n)=
+    \begin{cases*}
+           \frac{(b-a)^2}{8n^2}, p=1,  & \mbox{trapezoidal rule},\\%\cite[(7.15)]{BraPet11a}, \\
+           \frac{(b-a)^4}{5832n^4}, p=3, & \mbox{Simpson's rule}.%\cite[(p.231)]{BraPet11a}.
+    \end{cases*}
+\end{align}
+The error bounds contains the total variation, which is unknown to the users.
+
+}
+
+\frame{\frametitle{Variation and function spaces}
+\begin{equation}\label{defvar}
+  \Var(f) := \sup \left\{\widehat{V}(f,\{x_i\}_{i=0}^{n+1}), \quad \text{for any }n \in \naturals, \text{ and } \{x_i\}_{i=0}^{n+1}\right\},
+\end{equation}
+where
+\begin{equation}\label{defvhat}
+    \widehat{V}(f,\{x_i\}_{i=0}^{n+1})=\sum_{i=1}^{n-1}|f(x_{i+1})-f(x_{i})|.
+\end{equation}
+
+To ensure a finite error bound, our algorithms are defined for function spaces with finite total variations of the respective derivatives:
+\begin{equation}\label{defspace}
+ \cv^{p}:=\{f\in C^{p}[a,b]: \Var(f^{(p)}) < \infty \},
+\end{equation}
+where for trapezoidal rule, $p=1$, and for Simpson's rule, $p=3$.
+}
+
+\frame{\frametitle{Spaces and subspaces (cones)}
+
+
+Our algorithms will not work for all $f \in \cv^{p}$. Will work for integrands in cones:
+
+\begin{multline}\label{defcone}
+\cc^{p}:=\left\{f\in \cv^{p}, \Var(f^{(p)})\leq \mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1}),\right.\\ \left.\text{for all choices of } n\in \mathbb{N}, \text{and }\{x_i\}_{i=0}^{n+1} \text{ with }\text{size}(\{x_i\}_{i=0}^{n+1})<\mathfrak{h}\right\}.
+\end{multline}
+
+\begin{equation}\label{defsize}
+  \text{size}(\{x_i\}_{i=0}^{n+1}):=\max_{i=0,\cdots, n} x_{i+1}-x_{i}.
+\end{equation}
+
+\begin{equation}\label{definflationfactor}
+  \mathfrak{C}(h):=\frac{\mathfrak{C}(0)}{1-h/\mathfrak{h}}; \quad \mathfrak{C}(0)>1
+\end{equation}
+
+}
+
+\frame{\frametitle{How to find error bounds}
+
+\begin{itemize}
+  \item The definition of the cone suggests a way of bounding $\Var(f^{(p)})$ in terms of $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$.
+  \item Our algorithms are based on function values and $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ is defined in terms of derivative values.
+  \item Find a way to express derivative values in terms of function values.
+\end{itemize}
+
+}
+
+\section{Data-Driven Error Bound}
+\frame{\frametitle{Trapezoidal rule}
+The backward finite difference are used to approximate $f'$. Let the width of the interval $h=u_{j+1}-u_{j}=(b-a)/n$ and
+\begin{align*}
+  f[u_{j}]&=f(u_{j}), \text{ for } j=0,\cdots, n,\\
+  f[u_{j},u_{j-1}]&=\frac{f(u_{j})-f(u_{j-1})}{h},\text{ for } j=1, \cdots, n.
+\end{align*}
+According to Mean Value Theorem for finite differences,
+\begin{equation}\label{fprime}
+  f'(x_j)=\frac{f(u_{j})-f(u_{j-1})}{h}=\frac{n}{b-a}[f(u_{j})-f(u_{j-1})],
+\end{equation}
+for some $x_j\in (u_{j-1},u_{j})$.
+\begin{equation}\label{cutoff1}
+  \text{size}(\{x_j\}_{j=0}^{n+1})\leq 2h=2(b-a)/n<\mathfrak{h}.
+\end{equation}
+}
+
+\frame{\frametitle{Trapezoidal rule, continued}
+
+Thus the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(1)},\{x_j\}_{i=0}^{n+1})$ using only function values is defined as:
+\begin{align}\label{vtilde1}
+\nonumber    \widehat{V}(f',\{x_j\}_{j=0}^{n+1})&= \sum_{j=1}^{n-1}\left|f'(x_{j+1})-f'(x_{j})\right|,\\
+\nonumber    &=\sum_{j=1}^{n-1}\left|\frac{n}{b-a}[f(u_{j+1})-f(u_{j})-f(u_{j})+f(u_{j-1})]\right|\\
+    &=\frac{n}{b-a}\sum_{j=1}^{n-1}\left|f(u_{j+1})-2f(u_{j})+f(u_{j-1})\right|=:\widetilde{V}_1(f,n).
+\end{align}
+}
+
+\frame{\frametitle{Trapezoidal rule, error bound}
+\begin{align*}
+\overline{\text{err}}_{\text{t}}(f,n):=&C(n)\Var(f'),\qquad &\text{ (by \eqref{errorbound})}\\
+\leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{n+1}))\widehat{V}(f',\{x_i\}_{i=0}^{n+1}), \qquad &\text{ (by \eqref{defcone})}\\
+=& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{n+1}))\widetilde{V}_1(f,n), \qquad &\text{ (by \eqref{vtilde1})}\\
+  \leq & \frac{(b-a)^2\mathfrak{C}(2(b-a)/n)\widetilde{V}_1(f,n)}{8n^2}.\qquad &\text{ (by \eqref{cutoff1})}
+\end{align*}
+
+
+}
+
+\frame{\frametitle{Simpson's rule}
+the third order backward finite difference is used to approximate $f'''$. Let $h=v_{j+1}-v_{j}=(b-a)/6n$ be the width of the interval and
+\small
+\begin{align*}
+  f[v_{j}]&=f(v_{j}), &\text{ for } j=0,\cdots, 6n,\\
+  f[v_{j},v_{j-1}]&=\frac{f(v_{j})-f(v_{j-1})}{h},&\text{ for } j=1, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2}]&=\frac{f(v_{j})-2f(v_{j-1})+f(v_{j-2})}{2h^2},&\text{ for } j=2, \cdots, 6n,\\
+  f[v_{j},v_{j-1},v_{j-2},v_{j-3}]&=\frac{f(v_{j})-3f(v_{j-1})+3f(v_{j-2})-f(v_{j-3})}{6h^3}, &\text{ for } j=3, \cdots, 6n.
+\end{align*}
+According to Mean Value Theorem for finite differences,
+\begin{align}\label{ftriprime}
+  f'''(x_j)==\frac{216n^3}{(b-a)^3}[f(v_{3j})-3f(v_{3j-1})+3f(v_{3j-2})-f(v_{3j-3})].
+\end{align}
+for some $x_j\in (v_{3j-3},v_{3j})$.
+\begin{equation}\label{cutoff3}
+    \text{size}(\{x_j\}_{i=0}^{2n+1})\leq 6h=(b-a)/n<\mathfrak{h}.
+\end{equation}
+}
+
+
+\frame{\frametitle{Simpson's rule, continued}
+Then the approximation $\widetilde{V}_1(f,n)$ to $\widehat{V}(f^{(p)},\{x_i\}_{i=0}^{n+1})$ using only function values can be written as follow:
+\begin{multline}\label{vtilde3}
+\widetilde{V}_3(f,n)=\frac{216n^3}{(b-a)^3}\sum_{j=1}^{2n-1}\left|f(v_{3j+3})-3f(v_{3j+2})+3f(v_{3j+1})\right.\\\left.-2f(v_{3j})+3f(v_{3j-1})-3f(v_{3j-2})+f(v_{3j-3})\right|,
+\end{multline}
+}
+
+\frame{\frametitle{Simpson's rule, error bound}
+
+Therefore the error bound on error estimate for our Simpson's rule algorithm using only function values is obtained as:
+\begin{align*}
+\overline{\text{err}}_{\text{s}}(f,n):=&C(n)\Var(f'''),\qquad &\text{ (by \eqref{errorbound})}\\
+\leq & C(n)\mathfrak{C}(\text{size}(\{x_i\}_{i=0}^{2n+1}))\widehat{V}(f''',\{x_i\}_{i=0}^{2n+1}), \qquad &\text{ (by \eqref{defcone})}\\
+=& C(n)\mathfrak{C}(\text{size}(\{x_j\}_{i=0}^{2n+1}))\widetilde{V}_3(f,n), \qquad &\text{ (by \eqref{vtilde3})}\\
+  \leq & \frac{(b-a)^4\mathfrak{C}((b-a)/n)\widetilde{V}_3(f,n)}{5832n^4}.\qquad &\text{ (by \eqref{cutoff3})}
+\end{align*}
+}
+
+\section{Adaptive, Automatic Algorithms with Guarantees}
+
+
+
+
+\frame{\frametitle{Upper Bound of Computational Cost}
+\begin{theorem}\label{uppbndcost}
+    Let $N(f,\varepsilon)$ denote the final number of $n_l$ in Stage 2 when the algorithm terminates. Then this number is bounded below and above in terms of the true, yet unknown, $\Var(f''')$.
+    \begin{multline}\label{uppbndcostineq}
+        \max\left(\left\lfloor\frac{2(b-a)}{\mathfrak{h}}\right\rfloor+1,\left\lceil(b-a)\left(\frac{\Var(f''')}{5832\varepsilon}\right)^{1/4}\right\rceil\right)\leq N(f,\varepsilon)\\ \leq 2\min\left\{n\in\mathbb{N}:n\geq2\left(\left\lfloor\frac{(b-a)}{\mathfrak{h}}\right\rfloor+1\right),\eta(n)\Var(f''')\leq\varepsilon\right\}\\ \leq 2\min_{0<\alpha\leq1}\max\left(2\left(\left\lfloor\frac{(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1\right),(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right).
+    \end{multline}
+    The number of function values required by the algorithm is $N(f,\varepsilon)+1$.
+\end{theorem}
+
+
+}
+
+\frame{\frametitle{Upper Bound of Computational Cost}
+\begin{proof}
+  %No matter what inputs $f$ and $\varepsilon$ are provided, the number of intervals must be at least $n_1=\lfloor2(b-a)/\mathfrak{h}\rfloor+1$ in order to comply with both Simpson's rule and divided differences method. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
+  No matter what inputs $f$ and $\varepsilon$ are provided, $N(f,\varepsilon)\ge n_1=2(\lfloor (b-a)/\mathfrak{h}\rfloor+1)$. Then the number of intervals increases until $\widetilde{\text{err}}(f,n)\le\varepsilon$, which by \eqref{errorboundcone} implies that $\overline{\text{err}}(f,n)\le\varepsilon$. This implies the lower bound on $N(f,\varepsilon)$.
+
+  Let $L$ be the value of $l$ for which Algorithm \ref{multistageintegalgosimpson} terminates. Since $n_1$ satisfies the upper bound, we may assume that $L \ge 2$. Let $m$ be the integer found in Step 3, and let $m^*=\max(2,m)$. Note that $\eta((m^*-1)n_{L-1})\Var(f''')>\varepsilon$. For $m^*=2$, this is true because $\eta(n_{L-1})\Var(f''')\ge\eta(n_{L-1})\widetilde{V}_{n_{L-1}}(f)=\widetilde{\text{err}}(f,n_{L-1})>\varepsilon$. For $m^*=m>2$ it is true because of the definition of $m$. Since $\eta$ is a decreasing function, it follows that
+  \small$$(m^*-1)n_{L-1}<n^*:=\min\left\{n\in\mathbb{N}:n\ge\left\lfloor\frac{2(b-a)}{n}\right\rfloor+1,\eta(n)\Var(f''')\le\varepsilon\right\}.$$
+
+  \end{proof}
+}
+
+\frame{\frametitle{Upper Bound of Computational Cost}
+\begin{proof}
+  Therefore $n_L=m^*n_{L-1}<m^*\frac{n^*}{m^*-1}=\frac{m^*}{m^*-1}n^*\le2n^*$.
+  To prove the latter part of the upper bound, we need to prove that
+ \small $$n^*\leq\max\left(\left\lfloor\frac{2(b-a)}{\alpha\mathfrak{h}}\right\rfloor+1,(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}+1\right),\quad 0<\alpha<1.$$
+    \end{proof}
+}
+
+\frame{\frametitle{Upper Bound of Computational Cost}
+\begin{proof}
+  For fixed $\alpha\in(0,1]$, we only need to consider that case where $n^*>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor+1$. This implies that $n^*-1>\left\lfloor2(b-a)/(\alpha\mathfrak{h})\right\rfloor\ge 2(b-a)/(\alpha\mathfrak{h})$ thus $\alpha\mathfrak{h}\ge2(b-a)/(n^*-1)$. Also by the definition of $n^*$, $\eta$, and $\mathfrak{C}$ is non-decreasing:
+  \small\begin{align*}
+    &\eta(n^*-1)\Var(f''')>\varepsilon, \\
+    \Rightarrow 1&<\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    \Rightarrow n^*-1&<n^*-1\left(\frac{\eta(n^*-1)\Var(f''')}{\varepsilon}\right)^{1/4},\\
+    &=n^*-1\left(\frac{(b-a)^4\mathfrak{C}(2(b-a)/(n^*-1))\Var(f''')}{5832(n^*-1)^4\varepsilon}\right)^{1/4},\\
+    &\le(b-a)\left(\frac{\mathfrak{C}(\alpha\mathfrak{h})\Var(f''')}{5832\varepsilon}\right)^{1/4}.
+  \end{align*}
+  This completes the prove of latter part of the upper bound.
+\end{proof}
+
+
+}
+
+
+\frame{\frametitle{Lower Bound of Computational Cost}
+
+Building fooling function:
+\small\begin{subequations} \label{bumpfunction}
+%\begin{gather}
+%bump(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
+%\displaystyle [(x-t)^2(t+2h-x)+(x-t)(t+3h-x)(x-t-h)+(t+4h-x)(x-t-h)^2]/6, & t+h \le x < t+2h,\\[1ex]
+%\displaystyle [(x-t)(t+3h-x)^2+(t+4h-x)(x-t-h)(t+3h-x)+(t+4h-x)^2(x-t-2h)]/6, & t+2h \le x < t+3h,\\[1ex]
+%\displaystyle (t+4h-x)^3/6, & t+3h \le x < t+4h,\\[1ex]
+%\displaystyle  0, & \text{otherwise},
+%\end{cases}
+%\\
+\small
+\begin{gather}
+\text{bump}(x;t,h):= \begin{cases} \displaystyle (x-t)^3/6, & t \le x < t+h,\\[1ex]
+\displaystyle [-3(x-t)^3+12h(x-t)^2-12h^2(x-t)+4h^3]/6, & t+h \le x < t+2h,\\[1ex]
+\displaystyle [3(x-t)^3-24h(x-t)^2+60h^2(x-t)-44h^3]/6, & t+2h \le x < t+3h,\\[1ex]
+\displaystyle (t+4h-x)^3/6, & t+3h \le x < t+4h,\\[1ex]
+\displaystyle  0, & \text{otherwise},
+\end{cases}
+\\
+\Var(\text{bump}'''(\cdot;t,h))\le 16 \text{ with equality if } a<t<t+4h<b, \\
+\int_{a}^{b}\text{peak}(x;t,h)dx=h^4.
+\end{gather}
+\end{subequations}
+
+}
+
+\frame{\frametitle{Lower Bound of Computational Cost}
+
+\begin{theorem}\label{lowbndcost}
+    Let $int$ be any (possibly adaptive) algorithm that succeeds for all integrands in $\cc$, and only uses function values. For any error tolerance $\varepsilon > 0$ and any arbitrary value of $\Var(f''')$, there will be some $f\in \cc$ for which $int$ must use at least
+    \begin{equation}\label{lowbndcostineq}
+        -\frac{5}{4}+\frac{b-a-5\mathfrak{h}}{8}\left[\frac{[\mathfrak{C}(0)-1]\Var( f''')}{\varepsilon}\right]^{1/4}
+    \end{equation}
+    function values. As $\Var(f''')/\varepsilon \rightarrow \infty$ the asymptotic rate of increase is the same as the computational cost of \texttt{integral}.
+\end{theorem}
+
+}
+
+
+
+%
+%\frame{\frametitle{Multi-step Automatic Algorithms}
+%\small
+%\begin{algo}[Adaptive Univariate Integration] \label{multistageintegalgo}
+%Let the sequence of algorithms $\{T_n\}_{n\in \mathcal{I}}$, $\{\tF_n\}_{n\in \mathcal{I}}$, and $\{F_n\}_{n\in \mathcal{I}}$ be as described above.
+%Let $\tau\ge2$ be the cone constant. Set $i=1$. Let $n_1=\lceil(\tau+1)/2\rceil+1$. For any error tolerance $\varepsilon$ and input function $f$, do the following:
+%\small
+%\begin{description}
+%\item[Stage 1.\ Estimate {$\|f'-f(1)+f(0)\|_{1}$} and bound {$\Var(f')$}.] Compute $F_{n_i}(f)$ and $\tilde{F}_{n_i}(f)$.
+%
+%\item[Stage 2. Check the necessary condition for $f \in \cc_{\tau}$.] Compute
+%    \begin{align*}
+%     \tau_{\min,n_i} =  \frac{F_{n_i}(f)}{\tF_{n_i}(f)+F_{n_i}(f)/(2n_i-2)}.
+%    \end{align*}
+%If $\tau \ge \tau_{\min,n_i}$, then go to stage 3.  Otherwise, set $\tau = 2\tau_{\min,n_i}$.  If $n_i \ge (\tau+1)/2$, then go to stage 3.  Otherwise, choose
+%$$
+%n_{i+1}=1+ (n_i-1)\left\lceil\frac{\tau+1}{2n_i-2}\right\rceil. \text{ Go to Stage 1.}
+%$$
+%\end{description}
+%\end{algo}
+%}
+%
+%
+%
+%
+%\frame{\frametitle{Multi-step Automatic Algorithms, continued}
+%\begin{algo}
+%\begin{description}
+%
+%\item[Stage 3. Check for convergence.] Check whether $n_i$ is large enough to satisfy the error tolerance, i.e.
+%    \begin{equation*}
+%     \tF_{n_i}(f) \le \frac{4\varepsilon(n_i-1)(2n_i-2 - \tau)}{\tau}.
+%    \end{equation*}
+%If this is true, then return $T_{n_i}(f)$ and terminate the algorithm.   If this is not true, choose
+%$$
+%n_{i+1}=1+ (n_i-1)\max\left\{2,\left\lceil\frac{1}{(n_i-1)}\sqrt{\frac{\tau \tF_{n_i}(f)}{8\varepsilon}}\right\rceil\right\}.
+%$$
+%Go to Stage 1.
+%\end{description}
+%\end{algo}
+%}
+
+
+
+
+\frame{\frametitle{Numerical Example}
+aaa
+}
+
+\frame{\frametitle{Experiment Setup}
+
+
+As an experiment, we chose $10000$ random test functions and applied Algorithm \ref{multistageintegalgo} with an error tolerance of  $\varepsilon = 10^{-8}$ and initial $\tau$ values of $10, 100, 1000$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals agree to within $\varepsilon$. The success and failure rates are given in Table \ref{integresultstable}. Our algorithm imposes a cost budget of $N_{\max}=10^7$. The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$, for which there was no warning.  It was also successful for a small percentage of functions lying outside the cone.
+}
+
+\frame{\frametitle{Results}
+\begin{table}[h]\label{integresultstable}
+\centering
+\begin{tabular}{cccccc}
+&&&Success & Success & Failure \\
+& $\tau$ &  $\Prob(f \in \cc_{\tau}) $ & No Warning & Warning & No Warning \\
+\toprule
+&$10$ & $0\% \rightarrow  25\% $ & $25\%$ & $<1\%$ & $75\%$  \\
+Algorithm \ref{multistageintegalgo}
+ &$100$ & $23 \% \rightarrow 58\% $ & $56\%$ & $2\%$ & $42\%$ \\
+&$1000$ & $57\% \rightarrow 88\% $& $68\%$ & $20\%$ &$12\%$ \\
+\midrule
+{\tt quad} & & & 8\% & & $92\%$\\
+{\tt integral} & & & 19\% & & $81\%$\\
+{\tt chebfun} & & &29\% & & $71\%$\\
+\end{tabular}
+\caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistageintegalgo} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
+\end{table}
+}
+
+\frame{\frametitle{Guaranteed Automatic Integration Library (GAIL)}
+
+The ideas presented here are being implemented in MATLAB code (code.google.com$\backslash$p$\backslash$gail), which also include:
+ \begin{itemize}
+
+   \item Automatic univariate function recovery via linear splines.
+
+   \item Guaranteed automatic Monte Carlo algorithm for multidimensional integration.
+
+   \item Guaranteed automatic quasi-Monte Carlo algorithm for multidimensional integration.
+
+   \item And more.
+ \end{itemize}
+}
+
+%\frame{\frametitle{Summary}
+% \begin{itemize}
+%   \item  Most popular algorithms are not automatic. Those that are automatic are not guaranteed. We need to request them or build them.
+%
+%
+%   \item Think cones, not balls.
+% \end{itemize}
+%
+%}
+
+\section{Future Work}
+\frame{\frametitle{Future Work}
+ \begin{itemize}
+
+%   \item Extend the integral from $[0,1]$ to $[a,b]$.
+
+   \item Guaranteed automatic algorithms with higher order convergence rate.
+
+   \item Locally adaptive algorithms.
+
+   \item Relative Error.
+
+ \end{itemize}
+}
+
+
+\frame{\frametitle{References 1}
+
+Clancy N, Ding Y, Hamilton C, Hickernell FJ, Zhang Y (2013) The complexity of guaranteed automatic algorithms: Cones, not balls. Submitted for publication, arXiv.org:1303.2412 [math.NA]
+}
+
+
+\frame{\frametitle{Lower Bound of Computational Cost}
+ aaa
+
+}
+
+\frame{\frametitle{Lower Bound of Computational Cost, continued}
+ For any $n \in \cj:=\natzero$, suppose that the one has the data $L_i(f)=f(\xi_i)$, $i=1, \ldots, n$ for arbitrary $\xi_i$, where $0=\xi_0 \le \xi_1 < \cdots < \xi_n \le \xi_{n+1} = 1$.  There must be some $j=0, \ldots, n$ such that $\xi_{j+1} - \xi_j \ge 1/(n+1)$.  The function $f_{1}$ is defined as a triangle function on the interval $[\xi_j, \xi_{j+1}]$:
+$$
+f_{1}(x):=\begin{cases} \displaystyle
+\frac{\xi_{j+1}-\xi_{j}-\abs{\xi_{j+1}+\xi_{j}-2x}}{8} & \xi_{j} \le x \leq \xi_{j+1},\\
+0 & \text{otherwise}.
+\end{cases}
+$$
+}
+
+\frame{\frametitle{Lower Bound of Computational Cost, continued}
+aaa
+
+}
+
+
+\end{document}
+(code.google.com$\backslash$p$\backslash$gail)
+\frame{\frametitle{Estimate the First Derivative}
+ Define the estimation of the first derivative of the function as $G_{n}(f)$. Suppose that the data sites $x_0,x_1,\cdots, x_{n-1}$ and the corresponding function values. One may estimate $\|f'\|_1$ in the following way: $$G_n(f)=\sum_{i=0}^{n-1}\left|f(x_{i+1})-f(x_{i})\right|.$$
+
+}
+
+
+\frame{\frametitle{Estimate the First Derivative}
+Any nonadaptive algorithm $G_n$ with cost $n=\cost(G_n)$ yields an approximation to the $\cg$-semi-norm of functions in the cone $\mathcal{C}_{\tau}$ with the following upper and lower error bounds:
+\begin{equation*}
+\frac{G_n(f)}{\mathfrak{c}_n} \le \|f\|_{\cg} \le \mathfrak{C}_n G_n(f) \qquad \forall f \in \mathcal{C}_{\tau}.
+\end{equation*}
+In this case, the deflation factor, $\mathfrak{c}_n$, and the inflation factor, $\mathfrak{C}_n$ are defined as follows:
+\begin{gather*}
+\mathfrak{c}_n =1 \\%+ \tau \text{err}_{-}(G_n,\cf,\R_+,\|\cdot\|_{\cg})  \ge 1 \\
+\mathfrak{C}_n =\frac{1}{1 - \tau (n-1)} \ge 1.
+\end{gather*}
+
+ }
+
+\frame{\frametitle{Estimate the Error}
+ The upper bound implies that $\tau < n-1.$ Thus it is shown that in the specific case, the worst error in $W^{2,1}$ will be always smaller than the one in $W^{1,1}$, namely, $\tau \tildeh(n)\leq h(n)$. Then we obtain $$\left|\int_{0}^{1}f(x)dx-A_n(f)\right|\leq \frac{\tau\|f'\|_{1}}{8(n-1)^2}\leq \frac{\tau\mathfrak{C}_n G_n(f)}{8(n-1)^2}\leq\varepsilon.$$
+}
+
+\frame{\frametitle{Estimate the Error}
+ \begin{theo}
+   Let $\varepsilon$, $\mathfrak{C}_n$, and $\tau$ be given. Let $\mathcal{C}_{\tau}$ be the cone of functions defined above. The cost of the algorithm is bounded above in terms of $\|f'\|_{1}$ of the input function as follows:
+   $$\text{cost}(A,\varepsilon,\sigma)\leq\min\left\{n\in\mathcal{I}:n\geq\left(\frac{\sigma\tau}{8\varepsilon(1-\tau/(n-1))}\right)\right\}.$$
+   where $\sigma=\|f'\|_{1}.$
+ \end{theo}
+}
