@@ -982,7 +982,7 @@ f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}
 \end{equation}
 with  $t \sim \cu[0,1-4\delta]$, $\log_{10}(\delta) \sim \cu[-4,-1]$. The integration $\int_{0}^{1}f(x,t,\delta)\text{d}x=1$. Input $t$ controls the starting position of the bump. The starting point is randomly chosen between $0$ and $1-4\delta$. Input $\delta$ controls the quarter width of the bump. The random quarter width expands from $0.0001$ to $0.1$.
 %It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
-As an experiment, we chose $10000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. The success rates are given in Table \ref{integresultstable}. %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
+As an experiment, we chose $10000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. Both algorithms impose a cost budget of $N_{\max}=10^7$. If either of the proposed $n_{k+1}$ in Step 1 or Step 6 of {\tt integral\_t} or {\tt integral\_s} exceeds $N_{\max}$, then the algorithms return with a warning and fall back to the largest possible $n_{k+1}$ which does not exceed $N_{\max}$ and is a multiple of $n_{k}$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. Table \ref{integresultstable} shows the test results . %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
 %If the proposed $n_{i+1}$ in Stages 2 or 3 exceeds $N_{\max}$, then our algorithm returns a warning and falls back to the largest possible $n_{i+1}$ not exceeding $N_{\max}$ for which $n_{i+1}-1$ is a multiple of $n_i-1$.  The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$ and for which no attempt was made to exceed the cost budget.
 
 %\begin{table}[h]
@@ -1003,21 +1003,21 @@ As an experiment, we chose $10000$ random test functions and applied {\tt integr
 %\caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
 %\end{table}
 \begin{table}[ht]
-\caption{The success rates of {\tt integral\_t} and {\tt integral\_s} plus the success rates of other common quadrature algorithms.}
+\caption{The success rates, average costs and average time of {\tt integral\_t} and {\tt integral\_s} plus the success rates of other common quadrature algorithms.}
 \centering
 \begin{tabular}{cccccc}
 \hline\hline
 & $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
 \hline
-&$0.1$  & $24.76\%$ &  $9.43\%$  & $x$ & $x$ seconds\\
+&$0.1$  & $24.76\%$ &  $9.43\%$  & $397425$ & $0.0775$ seconds\\
 {\tt integral\_t}
- &$0.01$  & $57.36\%$ & $3.70\%$ & $x$ & $x$ seconds\\
-&$0.001$ & $87.38\%$ &$0.81\%$ & $x$ & $x$ seconds\\
+ &$0.01$  & $57.36\%$ & $3.70\%$ & $2202134$ & $0.433$ seconds\\
+&$0.001$ & $87.38\%$ &$0.81\%$ & $5156884$ & $0.967$ seconds\\
 \hline
-&$0.1$  & $25.94\%$ &  $14.28\%$  & $x$ & $x$ seconds\\
+&$0.1$  & $25.94\%$ &  $14.28\%$  & $2759$ & $0.00117$ seconds\\
 {\tt integral\_s}
- &$0.01$  & $57.63\%$ & $4.45\%$ & $x$ & $x$ seconds\\
-&$0.001$ & $94.09\%$ &$0.87\%$ & $x$ & $x$ seconds\\
+ &$0.01$  & $57.63\%$ & $4.45\%$ & $44458$ & $0.0445$ seconds\\
+&$0.001$ & $94.09\%$ &$0.87\%$ & $583474$ & $0.583$ seconds\\
 \hline
 {\tt integral} &  & 29.68 \% & & &\\
 {\tt chebfun} &  &18.91\% & & &\\
