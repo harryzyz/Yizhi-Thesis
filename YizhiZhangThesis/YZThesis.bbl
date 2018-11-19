@@ -1,5 +1,5 @@
-\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}
-\begin{thebibliography}{1}
+\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\def\Ignore#1{}\def\notesupp#1{}\providecommand{\HickernellFJ}{Hickernell\xspace}
+\begin{thebibliography}{10}
 
 \bibitem{BraPet11a}
 H.~Brass and K.~Petras.
@@ -7,14 +7,89 @@ H.~Brass and K.~Petras.
   compact interval}.
 \newblock American Mathematical Society, Rhode Island, first edition, 2011.
 
+\bibitem{ChoEtal17b}
+S.-C.~T. Choi, Y.~Ding, F.~J. Hickernell, L.~Jiang, {\relax Ll}.~A. {Jim\'enez
+  Rugama}, D.~Li, R.~Jagadeeswaran, X.~Tong, K.~Zhang, Y.~Zhang, and X.~Zhou.
+\newblock {GAIL}: {G}uaranteed {A}utomatic {I}ntegration {L}ibrary (versions
+  1.0--2.2).
+\newblock MATLAB software, {2013--2017}.
+
+\bibitem{ChoEtal17a}
+S.-C.~T. Choi, Y.~Ding, F.~J. Hickernell, and X.~Tong.
+\newblock Local adaption for approximation and minimization of univariate
+  functions.
+\newblock {\em J. Complexity}, 40:17--33, 2017.
+
+\bibitem{Gail_ug}
+Sou-Cheng~T. Choi, Yuhan Ding, Fred~J. Hickernell, Lan Jiang, {\relax Ll}.~A.
+  {Jim\'enez Rugama}, Xin Tong, Yizhi Zhang, and Xuan Zhou.
+\newblock {GAIL---Guaranteed Automatic Integration Library in MATLAB}:
+  {D}ocumentation for version 2.1.
+\newblock {\em arXiv:1503.06544}, 2015.
+
+\bibitem{HicEtal14b}
+N.~Clancy, Y.~Ding, C.~Hamilton, F.~J. Hickernell, and Y.~Zhang.
+\newblock The cost of deterministic, adaptive, automatic algorithms: Cones, not
+  balls.
+\newblock {\em J. Complexity}, 30:21--45, 2014.
+
+\bibitem{CooNuy16a}
+R.~Cools and D.~Nuyens, editors.
+\newblock {\em {M}onte {C}arlo and Quasi-{M}onte {C}arlo Methods: {MCQMC},
+  {L}euven, {B}elgium, {A}pril 2014}, volume 163 of {\em Springer Proceedings
+  in Mathematics and Statistics}. Springer-Verlag, Berlin, 2016.
+
+\bibitem{DinHicWoz17a}
+Y.~Ding, F.~J. Hickernell, and H.~Wo\'zniakowski.
+\newblock Adaptive piecewise polynomial function recovery, 2016+.
+\newblock in preparation.
+
 \bibitem{TrefEtal12}
 N.~Hale, L.~N. Trefethen, and T.~A. Driscoll.
 \newblock {\em Chebfun Version 4}, 2012.
 
-\bibitem{MAT8.1}
+\bibitem{HicEtal14a}
+F.~J. Hickernell, L.~Jiang, Y.~Liu, and A.~B. Owen.
+\newblock Guaranteed conservative fixed width confidence intervals via {M}onte
+  {C}arlo sampling.
+\newblock In J.~Dick, F.~Y. Kuo, G.~W. Peters, and I.~H. Sloan, editors, {\em
+  {M}onte {C}arlo and Quasi-{M}onte {C}arlo Methods 2012}, volume~65 of {\em
+  Springer Proceedings in Mathematics and Statistics}, pages 105--128.
+  Springer-Verlag, Berlin, 2013.
+
+\bibitem{HicJim16a}
+F.~J. Hickernell and {\relax Ll}.~A. {Jim\'enez Rugama}.
+\newblock Reliable adaptive cubature using digital sequences.
+\newblock In Cools and Nuyens \cite{CooNuy16a}, pages 367--383.
+\newblock arXiv:1410.8615 [math.NA].
+
+\bibitem{HicRazYun15a}
+F.~J. Hickernell, M.~Razo, and S.~Yun.
+\newblock Reliable adaptive numerical integration, 2015+.
+\newblock submitted for publication.
+
+\bibitem{JiaHic16a}
+L.~Jiang and F.~J. Hickernell.
+\newblock Guaranteed conservative confidence intervals for means of {B}ernoulli
+  random variables.
+\newblock arXiv:1411.1151, 2014.
+\newblock submitted for publication.
+
+\bibitem{JimHic16a}
+{\relax Ll}.~A. {Jim\'enez Rugama} and F.~J. Hickernell.
+\newblock Adaptive multidimensional integration based on rank-1 lattices.
+\newblock In Cools and Nuyens \cite{CooNuy16a}, pages 407--422.
+\newblock arXiv:1411.1966.
+
+\bibitem{Lyn83}
+J.~N. Lyness.
+\newblock When not to use an automatic quadrature routine.
+\newblock {\em SIAM Rev.}, 25:63--87, 1983.
+
+\bibitem{MAT9.3}
 {The MathWorks, Inc.}
-\newblock {\em {MATLAB} 8.1}.
-\newblock Natick, MA, 2013.
+\newblock {\em {MATLAB} 9.3}.
+\newblock Natick, MA, 2017.
 
 \bibitem{TraWer98}
 J.~F. Traub and A.~G. Werschulz.

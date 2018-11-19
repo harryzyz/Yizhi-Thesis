@@ -1,9 +1,9 @@
-\contentsline {figure}{\numberline {5.1}{\ignorespaces A peak function where $a=0$, $b=1$, $t=0.2$, $\delta =0.1$. }}{24}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces First derivative of peak function 5.1\hbox {}. }}{25}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces A fooling function that can fool the trapezoidal rule algorithms, where $a=0$, $b=1$, $t=0.5$, $\delta =0.05$ and $\mathfrak {h}=0.1$. }}{26}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces A bump function, where $a=0$, $b=1$, $t=0.2$, $\delta =0.1$ and $\mathfrak {h}=0.1$. }}{31}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces First derivative of bump function 5.4\hbox {}. }}{33}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Second derivative of bump function 5.4\hbox {}. }}{33}
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Third derivative of bump function 5.4\hbox {}. }}{34}
-\contentsline {figure}{\numberline {5.8}{\ignorespaces A fooling function that can fool the Simpson's rule algorithm, where $a=0$, $b=1$, $t=0.5$, $\delta =0.05$ and $\mathfrak {h}=0.1$. }}{34}
-\contentsline {figure}{\numberline {6.1}{\ignorespaces The convergence curves for {\tt integral\_t} and {\tt integral\_s}. }}{39}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces A peak function where $a=0$, $b=1$, $t=0.2$, $\delta =0.1$. }}{25}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces First derivative of peak function 5.1\hbox {}. }}{26}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces A fooling function that can fool the trapezoidal rule algorithms, where $a=0$, $b=1$, $t=0.5$, $\delta =0.05$ and $\mathfrak {h}=0.1$. }}{27}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces A bump function, where $a=0$, $b=1$, $t=0.2$, $\delta =0.1$ and $\mathfrak {h}=0.1$. }}{32}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces First derivative of bump function 5.4\hbox {}. }}{34}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Second derivative of bump function 5.4\hbox {}. }}{34}
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Third derivative of bump function 5.4\hbox {}. }}{35}
+\contentsline {figure}{\numberline {5.8}{\ignorespaces A fooling function that can fool the Simpson's rule algorithm, where $a=0$, $b=1$, $t=0.5$, $\delta =0.05$ and $\mathfrak {h}=0.1$. }}{35}
+\contentsline {figure}{\numberline {6.1}{\ignorespaces The convergence curves for {\tt integral\_t} and {\tt integral\_s}. }}{43}

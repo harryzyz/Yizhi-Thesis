@@ -130,22 +130,26 @@ Fixed-cost algorithms with guarantees usually require integrands to lie in a bal
 \end{align}
 for some $C(n)$, where for the trapezoidal rule, $p=1$; for the Simpson's rule, $p=3$. To make sure the algorithms work, users need to obtain information about the total variation of the integrand. So the algorithms only provide guarantees when the total variation has an upper bound, namely $\Var(f^{(p)})<\sigma$. The computational cost is $n=C^{-1}(\varepsilon/\sigma)$. Fixed-cost algorithms such as the trapezoidal rule and Simpson's rule are automatic because the computational effort required depends on the error tolerance. With a determined error tolerance, the computational cost is automatically decided by the algorithms.
 
-Fixed-cost algorithms have drawbacks. Firstly, users may not know enough about the integrand. If a moderate $\sigma$ is selected, the algorithms may work for easy functions but not for functions with large peaks. Functions with large peaks may have derivatives which change rapidly in a small interval. The variation of the derivative could be high enough to exceed the radius $\sigma$ of the ball. Secondly, even if the algorithms work for $f$, they may not work for $cf$, where $c$ is a constant and $c>1$, since $cf$ may fall out of the ball. It is such a pity considering that the integral of $cf$ can be easily calculated as $c$ times the integral of $f$. Moreover, those algorithms have the computational cost depending on $\sigma$, but which does not depend on the integrand values. Therefore, the algorithms cannot adjust the computational cost according to the integrand. Namely, fixed-cost functions are not adaptive.
+Fixed-cost algorithms have drawbacks. Firstly, users may not know enough about the integrand. If a moderate $\sigma$ is selected, the algorithms may work for easy functions but not for functions with large peaks. Functions with large peaks may have derivatives which change rapidly in a small interval. The variation of the derivative could be high enough to exceed the radius $\sigma$ of the ball. Secondly, even if the algorithms work for $f$, they may not work for $cf$, where $c$ is a constant and $c>1$, since $cf$ may fall out of the ball. It is such a pity considering that the integral of $cf$ can be easily calculated as $c$ times the integral of $f$. An example is created in \cite[(10)]{HicRazYun15a} such that fixed-cost algorithms fail for large integrand. Moreover, fixed-cost algorithms have the computational cost depending on $\sigma$, but which does not depend on the integrand values. Therefore, the algorithms cannot adjust the computational cost according to the integrand. Namely, fixed-cost functions are not adaptive.
 
 \Section{Adaptive Algorithms with No Guarantees}\label{secada}
 
-Adaptive, automatic algorithms are commonly used in numerical software packages. MATLAB's {\tt integral} and Chebfun toolbox are two well-known examples. These methods do not require a value of $\sigma$. Instead, they estimate the error using only function values and then determine the sample size accordingly. These algorithms work well in many cases. However, they do not have rigorous justification. Namely, one cannot tell whether the answer provided by the algorithm is true or not. Therefore, the asymptotic error estimates from these algorithms are heuristics and do not hold for all cases. Users can always fool these methods by giving them a peak-shaped function with the width less than the mesh size. In this case, the algorithms cannot detect the peak and return zero as an answer.
+Adaptive, automatic algorithms are commonly used in numerical software packages. MATLAB's {\tt integral} and Chebfun toolbox are two well-known examples. These methods do not require a value of $\sigma$. Instead, they estimate the error using only function values and then determine the sample size accordingly. Since these algorithms are adaptive, they work well in many cases including big functions aforementioned in \ref{secgua}. However, these algorithms do not have rigorous justification. Namely, one cannot tell whether the answer provided by the algorithm is true or not. Therefore, the asymptotic error estimates from these algorithms are heuristics and do not hold for all cases. Moreover, for another example defined in \cite[(13)]{HicRazYun15a}, a fluky function which resembles the big function, these algorithms can be totally fooled. Not to mention that the fixed-cost algorithms can be fooled by the fluky functions as well.
 
-In fact, the challenge of spiky integrands applies to any algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the set of integrands as a cone, not a ball. Linear multiplications of a function remain in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The error bounds are also defined and approximated using only integrand values (to make the algorithms adaptive). In contrast to fixed-cost algorithms, our methods are adaptive and succeed for cones of integrands. In contrast to typical adaptive algorithms, our methods have rigorous proofs of how spiky an integrand can be to stay inside the cone.
+Not only can these adaptive algorithms be fooled by the fluky integrands, according to \cite{Lyn83}, users can always fool these methods by giving them a peak-shaped function with the width less than the mesh size. In this case, the algorithms cannot detect the peak and return zero as an answer.
 
+\Section{Guaranteed Algorithms for Integrands in Cones}
 
+Our algorithms can correct compute the integration for the fluky integrands. However, the challenge of spiky integrands applies to any algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the set of integrands as a cone, not a ball. The idea of defining integrands in a cone instead of a ball is originally introduced in \cite{HicEtal14b}. Linear multiplications of a function remain in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The error bounds are also defined and approximated using only integrand values (to make the algorithms adaptive). Based on the idea of the cone, we have created a MATLAB library named GAIL (Guaranteed Automatic Integration Library)\cite{ChoEtal17b} with co-workers. Details about this software can be found in \cite{Gail_ug}. Different problems are investigated in the cone settings, including integration (see \cite{HicJim16a} and \cite{JimHic16a}), function recovery (see \cite{DinHicWoz17a} and \cite{ChoEtal17a}), optimization (see \cite{ChoEtal17a}), Monte-Carlo sampling (see \cite{HicEtal14a} and \cite{JiaHic16a}) and etc.. For univariate integration problems, in contrast to fixed-cost algorithms, our methods are adaptive and succeed for cones of integrands. In contrast to typical adaptive algorithms, our methods have rigorous proofs of how spiky an integrand can be to stay inside the cone.
+
+In the original cone paper \cite{HicEtal14b}, a cone different from the cone in this thesis is defined. Rigorous proof of guarantees and an automatic algorithm using the trapezoidal rule for univariate integration are provided based on this cone. Study of the upper bound on the computational cost and the lower bound on the complexity shows that the algorithm is asymptotically optimal. Unfortunately, bounds on the error estimates of Simpson's rule algorithms are too complicated to derive in this cone. Therefore, we introduce a new cone which is the one discussed in this thesis in order to derive the Simpson's rule algorithm. The trapezoidal rule algorithms in the new cone are also studied. The theoretical results from the new cone are better than the ones from the old cone. We put the results from the new cone for the trapezoidal rule algorithm in the thesis for the reason that they are better and more uniform with the Simpson's rule results. Readers can refer to \cite[Algo 4, Thm 7, Thm 8]{HicEtal14b} for the original results.
 
 
 
 
 \Section{Outline}
 
-In Chapter 2, the definitions and assumptions used in the thesis are introduced. Chapter 3 focuses on finding upper bounds on the approximation error and rigorous theoretical proofs of success. Guaranteed algorithms are presented in Chapter 4 with lower and upper bounds on the computational costs. Chapter 5 studies the lower bound of complexity. In Chapter 6, the results from numerical experiences are discussed.  The guaranteed algorithms derived here are based on the trapezoidal rule and Simpson's rule. The former is simple but has a lower order of convergence rate The latter has a higher convergence rate but the derivation is more complicated. The derivation of the two algorithms is done in parallel in Chapters 3 to 5 for the trapezoidal rule and Simpson's rule.
+In Chapter 2, the definitions and assumptions used in the thesis are introduced. Chapter 3 focuses on finding upper bounds on the approximation error and rigorous theoretical proofs of success. Guaranteed algorithms are presented in Chapter 4 with lower and upper bounds on the computational costs. Chapter 5 studies the lower bound of complexity. In Chapter 6, the results from numerical experiences are discussed. The guaranteed algorithms derived here are based on the trapezoidal rule and Simpson's rule. The former is simple but has a lower order of convergence rate The latter has a higher convergence rate but the derivation is more complicated. The derivation of the two algorithms is done in parallel in Chapters 3 to 5 for the trapezoidal rule and Simpson's rule.
 
 \clearpage
 
@@ -658,7 +662,7 @@ Having obtained the upper bound on the computational cost, it is important to di
 
 \Chapter{Lower Bounds on Complexity}
 
-In the previous Chapter, we discuss the algorithms and their computational cost. In this Chapter, the lower bound of complexity steps into the spotlight. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up by \cite[p.\ 11--12]{TraWer98}. That is, to build a fooling function to show that no matter how good an algorithms is, it can always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, any algorithm fails. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. The derivation starts from defining $\texttt{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem.  Two fooling functions are built for the trapezoidal rule and Simpson's rule respectively following by discussion of how to find the lowest number of nodes required to solve the problem.
+In the previous Chapter, we discuss the algorithms and their computational cost. In this Chapter, the lower bound of complexity steps into the spotlight. The computational complexity of a certain problem is the lowest cost required by any possible algorithm for this problem, including unknown algorithms. If the upper bound of the computational cost of our algorithm is asymptotically the same order to the lower bound on the complexity, then our algorithm asymptotically optimal. The technique of finding the lower bound of complexity was brought up by Traub and Werschulz in \cite[p.\ 11--12]{TraWer98}. That is, to build a fooling function to show that no matter how good an algorithms is, it can always be fooled by the function and provide a wrong answer, if the mesh is not fine enough. In this case, when the number of nodes is less than a certain number $n$, any algorithm fails. This means that in order for any algorithm to be successful, the number of nodes should not be less than this certain $n$, namely, a lower bound on the complexity. The derivation starts from defining $\texttt{int}(\cdot,\varepsilon)$ as any algorithm that solves univariate integration problem.  Two fooling functions are built for the trapezoidal rule and Simpson's rule respectively following by discussion of how to find the lowest number of nodes required to solve the problem.
 
 \Section{The Trapezoidal Rule Complexity}
 
@@ -710,7 +714,7 @@ Starting from this peak function $\text{peak}(x;t,\delta)$, the following double
     \end{multline}
     \begin{equation}
         \Var(\text{twopk}'(x;t,\delta,\pm))=3+4\frac{3[\mathfrak{C}(\delta)-1]}{4}=3\mathfrak{C}(\delta).
-    \end{equation}X
+    \end{equation}
 \end{subequations}
 Picture \ref{fig:twopkfunction} shows the shape of the double-peak function $\text{twopk}(x;t,\delta,+)$.
 \begin{figure}[ht]
@@ -773,7 +777,7 @@ Let $\texttt{int}(\cdot,\varepsilon)$ be any (possibly adaptive) algorithm that 
   Substituting $\delta$  in terms of $n$:
       \begin{align*}
         2n+3=\frac{b-a-3\mathfrak{h}}{\delta}&\ge(b-a-3\mathfrak{h})\left[\frac{[\mathfrak{C}(\delta)-1]\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h})))}{4\varepsilon}\right]^{1/2},\\
-        &\ge\frac{b-a-3\mathfrak{h}}{4}\left[\frac{[\mathfrak{C}(0)-1]\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))}{\varepsilon}\right]^{1/2}.
+        &\ge\frac{b-a-3\mathfrak{h}}{2}\left[\frac{[\mathfrak{C}(0)-1]\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))}{\varepsilon}\right]^{1/2}.
     \end{align*}
     Since $\alpha$ is an arbitrary positive number, the value of $\Var(\alpha \textup{peak}'(\cdot;a,\mathfrak{h}))$ is arbitrary.
 
@@ -965,14 +969,14 @@ With the fooling functions, the lower bound of complexity of the Simpson's algor
   Substituting $\delta$  in terms of $n$:
       \begin{align*}
         4n+5=\frac{b-a-5\mathfrak{h}}{\delta}&\ge(b-a-5\mathfrak{h})\left[\frac{[\mathfrak{C}(\delta)-1]\Var(\alpha \textup{bump}'''(\cdot;a,\mathfrak{h})))}{16\varepsilon}\right]^{1/4},\\
-        &\ge-\frac{5}{4}+\frac{b-a-5\mathfrak{h}}{8}\left[\frac{[\mathfrak{C}(0)-1]\Var(\alpha \textup{bump}'''(\cdot;a,\mathfrak{h}))}{\varepsilon}\right]^{1/4}.
+        &\ge\frac{b-a-5\mathfrak{h}}{2}\left[\frac{[\mathfrak{C}(0)-1]\Var(\alpha \textup{bump}'''(\cdot;a,\mathfrak{h}))}{\varepsilon}\right]^{1/4}.
     \end{align*}
     Since $\alpha$ is an arbitrary positive number, the value of $\Var(\alpha \texttt{bump}'''(\cdot;a,\mathfrak{h}))$ is arbitrary.
 
     Finally, comparing the upper bound on the computational cost of {\tt integral\_s} in \eqref{uppbndcostineqsim} with the lower bound on the computational cost of the best algorithm in \eqref{complowbdsim}, both of them increase as $\mathcal{O}((\Var(f''')/\varepsilon))^{1/4}$ as $(\Var(f''')/\varepsilon)^{1/4}\rightarrow \infty$. Thus {\tt integral\_s} is optimal.
 \end{proof}
 
-Having proved that our algorithms using the trapezoidal rule and Simpson's rule are optimal, we continue to test the performance of the two algorithms. In the next chapter, the numerical results from {\tt integral\_t} and {\tt integral\_s} are discussed.
+Having proved that our algorithms using the trapezoidal rule and the Simpson's rule are optimal, we continue to test the performance of the two algorithms. In the next chapter, the numerical results from {\tt integral\_t} and {\tt integral\_s} are discussed.
 
 \Chapter{Numerical Experiments}
 
@@ -982,7 +986,7 @@ f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}
 \end{equation}
 with  $t \sim \cu[0,1-4\delta]$, $\log_{10}(\delta) \sim \cu[-4,-1]$. The integration $\int_{0}^{1}f(x,t,\delta)\text{d}x=1$. Input $t$ controls the starting position of the bump. The starting point is randomly chosen between $0$ and $1-4\delta$. Input $\delta$ controls the quarter width of the bump. The random quarter width expands from $0.0001$ to $0.1$.
 %It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
-As an experiment, we chose $10000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. Both algorithms impose a cost budget of $N_{\max}=10^7$. If either of the proposed $n_{k+1}$ in Step 1 or Step 6 of {\tt integral\_t} or {\tt integral\_s} exceeds $N_{\max}$, then the algorithms return with a warning and fall back to the largest possible $n_{k+1}$ which does not exceed $N_{\max}$ and is a multiple of $n_{k}$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. Table \ref{integresultstable} shows the test results . %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
+As an experiment, we chose $10000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. Both algorithms impose a cost budget of $N_{\max}=10^7$. If either of the proposed $n_{k+1}$ in Step 1 or Step 6 of {\tt integral\_t} or {\tt integral\_s} exceeds $N_{\max}$, then the algorithms return with a warning and fall back to the largest possible $n_{k+1}$ which does not exceed $N_{\max}$ and is a multiple of $n_{k}$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. Table \ref{integresultstable} shows the test results. The first column indicates different algorithms. The second column indicates the pre-determined cut-off values of {\tt integral\_t} and {\tt integral\_s}. Smaller cut-off value gives the algorithms larger number of starting points. The third column shows the total success rates of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}. The fourth column shows the success rates of {\tt integral\_t} and {\tt integral\_s} when the integrand is out of the original cone. The fifth column shows the average number of data sites used for each integrand of {\tt integral\_t} and {\tt integral\_s} with different $\mathfrak{h}$. The last column shows the average time elapsed in seconds for each integrand of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}.  %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
 %If the proposed $n_{i+1}$ in Stages 2 or 3 exceeds $N_{\max}$, then our algorithm returns a warning and falls back to the largest possible $n_{i+1}$ not exceeding $N_{\max}$ for which $n_{i+1}-1$ is a multiple of $n_i-1$.  The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$ and for which no attempt was made to exceed the cost budget.
 
 %\begin{table}[h]
@@ -1003,34 +1007,61 @@ As an experiment, we chose $10000$ random test functions and applied {\tt integr
 %\caption{The probability of the test function lying in the cone for the original and eventual values of $\tau$ and the empirical success rate of Algorithm \ref{multistagetrapalgo} and Algorithm \ref{multistageintegalgosimpson} plus the success rates of other common quadrature algorithms. \label{integresultstable}}
 %\end{table}
 \begin{table}[ht]
-\caption{The success rates, average costs and average time of {\tt integral\_t} and {\tt integral\_s} plus the success rates of other common quadrature algorithms.}
+\caption{The success rates, average costs and average time (sec) of {\tt integral\_t} and {\tt integral\_s} plus the success rates of other common quadrature algorithms.}
 \centering
 \begin{tabular}{cccccc}
 \hline\hline
 & $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
 \hline
-&$0.1$  & $24.76\%$ &  $9.43\%$  & $397425$ & $0.0775$ seconds\\
+&$0.1$  & $24.76\%$ &  $9.43\%$  & $397425$ & $0.0775$\\
 {\tt integral\_t}
- &$0.01$  & $57.36\%$ & $3.70\%$ & $2202134$ & $0.433$ seconds\\
-&$0.001$ & $87.38\%$ &$0.81\%$ & $5156884$ & $0.967$ seconds\\
+ &$0.01$  & $57.36\%$ & $3.70\%$ & $2202134$ & $0.433$\\
+&$0.001$ & $87.38\%$ &$0.81\%$ & $5156884$ & $0.967$\\
 \hline
-&$0.1$  & $25.94\%$ &  $14.28\%$  & $2759$ & $0.00117$ seconds\\
+&$0.1$  & $25.94\%$ &  $14.28\%$  & $2759$ & $0.00117$\\
 {\tt integral\_s}
- &$0.01$  & $57.63\%$ & $4.45\%$ & $44458$ & $0.0445$ seconds\\
-&$0.001$ & $94.09\%$ &$0.87\%$ & $583474$ & $0.583$ seconds\\
+ &$0.01$  & $57.63\%$ & $4.45\%$ & $44458$ & $0.0445$\\
+&$0.001$ & $94.09\%$ &$0.87\%$ & $583474$ & $0.583$\\
 \hline
-{\tt integral} &  & 29.68 \% & & &\\
-{\tt chebfun} &  &18.91\% & & &\\
+{\tt integral} &  & 29.68 \% & & &$0.0006990$\\
+{\tt chebfun} &  &18.91\% & & &$0.009456$\\
 \hline
 \end{tabular}
 \label{integresultstable}
 \end{table}
 
-Some commonly available numerical algorithms in MATLAB are {\tt integral} \cite{MAT8.1} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these two routines to the random family of test functions as well.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  They do not give warnings of possible failure.
+Some commonly available numerical algorithms in MATLAB are {\tt integral} \cite{MAT9.3} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these two routines to the random family of test functions as well.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  They do not give warnings of possible failure.
 
 %\Section{Simpson's Rule}
 %\textcolor{red}{I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.}
-The test results in Table \ref{integresultstable} shows that both {\tt integral\_t} and {\tt integral\_s} return higher success rates as the initial cut-off value $\mathfrak{h}$ being smaller. This makes sense because higher cut-off value provides more inclusive cones. The chance of a bump function lie in the cone is higher. Thus the algorithms can guarantee to solve spikier integrands.  Both {\tt integral\_t} and {\tt integral\_s} outperform {\tt integral} and Chebfun toolbox since the fact that the test functions are defined in order to fool the algorithm. Our algorithms has the mechanism of changing $\mathfrak{h}$ to enhance the success rate. The two comparing algorithms do not have similar settings.
+The test results in Table \ref{integresultstable} shows that both {\tt integral\_t} and {\tt integral\_s} return higher success rates as the initial cut-off value $\mathfrak{h}$ being smaller. This makes sense because higher cut-off value provides more inclusive cones. The chance of a bump function lie in the cone is higher. In a other word, smaller cut-off value provides finer mesh, so that the chances of detecting narrow peaks are higher. For the same reason, for both {\tt integral\_t} and {\tt integral\_s}, the success rates with cone change warning decreases as $\mathfrak{h}$ becoming smaller. Since when the cut-off value is high, there is not as many out-of-cone integrands as if the cut-off value is low. Both {\tt integral\_t} and {\tt integral\_s} outperform {\tt integral} and Chebfun toolbox since the fact that the test functions are defined in order to fool the algorithm. Our algorithms has the mechanism of changing $\mathfrak{h}$ to enhance the success rate. The two comparing algorithms do not have similar settings.
+
+When $\mathfrak{h}$ is low, the average data sites used and the average time elapsed becomes larger for both {\tt integral\_t} and {\tt integral\_s},. It is because both algorithms starts with more initial number of points and therefore require longer computational time. If we compare the average cost and average time between {\tt integral\_t} and {\tt integral\_s}, the performance of the latter is significantly better than the former because the Simpson's rule has higher convergence rate than the trapezoidal rule. Comparing the computational time of both algorithms with {\tt integral} and {\tt chebfun}, out algorithms spend more time to solve the problem. Future works of improving the method are discussed in the next chapter.
+
+Another test are implemented with a family of test functions similar to the first one. In this case, the test functions on interval $(0.1)$ are defined by \eqref{testfun} with  $t \sim \cu[0,1-4\delta]$ and $\log_{10}(\delta) \sim \cu[-3,-1]$. A total number of 1000 random functions are tested with the same $N_{\max}$ and error tolerance. The smallest width of the peak is $0.004$. For both {\tt integral\_t} and {\tt integral\_s}, when the cut-off value is set to be $0.001$, the mesh is always fine enough to detect the peak. Thus the algorithms is guaranteed to succeed for all test functions. When the cut-off value is either $0.1$ or $0.01$, the algorithms may not detect all possible peaks. The results shown in Table \ref{widerresultstable} support the theoretical results shown in the previous chapters that the algorithms are guaranteed to work for all the integrands in the cone.
+\begin{table}[ht]
+\caption{Another test for {\tt integral\_t} and {\tt integral\_s} with wider random peaks.}
+\centering
+\begin{tabular}{cccccc}
+\hline\hline
+& $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
+\hline
+&$0.1$  & $33.60\%$ &  $13.60\%$  & $489605$ & $0.09729$\\
+{\tt integral\_t}
+ &$0.01$  & $82.00\%$ & $3.60\%$ & $3110154$ & $0.6318$\\
+&$0.001$ & $100.00\%$ &$0.00\%$ & $4942823$ & $0.9657$\\
+\hline
+&$0.1$  & $35.60\%$ &  $23.20\%$  & $3961$ & $0.001501$\\
+{\tt integral\_s}
+ &$0.01$  & $86.20\%$ & $7.50\%$ & $56955$ & $0.01144$\\
+&$0.001$ & $100.00\%$ &$0.00\%$ & $110109$ & $0.02145$\\
+\hline
+{\tt integral} &  & 41.70 \% & & &$0.0008824$\\
+{\tt chebfun} &  &26.40\% & & &$0.01380$\\
+\hline
+\end{tabular}
+\label{widerresultstable}
+\end{table}
 
 Convergence rate for both algorithms are also important to study. We use the test function $f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}$ where $t=0.2$; $\delta=0.1$. Both {\tt integral\_t} and {\tt integral\_s} use $\mathfrak{h}=0.1$. The following picture shows the convergence rate for the two algorithms.
 \begin{figure}[ht]
@@ -1039,7 +1070,7 @@ Convergence rate for both algorithms are also important to study. We use the tes
 \caption{The convergence curves for {\tt integral\_t} and {\tt integral\_s}. \label{fig:convergencerate}}
 \end{figure}
 
-From the picture we can see that {\tt integral\_s} converges faster than {\tt integral\_t}. Moreover, {\tt integral\_t} converges at the rate of $-1/2$ to the logarithm. And {\tt integral\_s} converges at the rate of $-1/4$ to the logarithm. The results coincide with the results of the upper bound on the computational cost.
+From the picture we can see that {\tt integral\_s} converges faster than {\tt integral\_t}. Moreover, {\tt integral\_t} converges at the rate of $-1/2$ to the logarithm. And {\tt integral\_s} converges at the rate of $-1/4$ to the logarithm. The results support the results of the upper bound on the computational cost.
 
 
 \Chapter{CONCLUSION}
@@ -1080,7 +1111,7 @@ Detailed processes of the two new algorithms are provided. The two algorithm are
 
 The lower bounds on the complexity for any algorithms using the trapezoidal rule and Simpson's rule are studied by constructing fooling functions. For the trapezoidal rule, the complexity has a lower bound of
 $$
-     -\frac{3}{2}+\frac{b-a-3\mathfrak{h}}{8}\sqrt{\left[\frac{[\mathfrak{C}(0)-1]\Var( f')}{\varepsilon}\right]}.
+     -\frac{3}{2}+\frac{b-a-3\mathfrak{h}}{4}\sqrt{\left[\frac{[\mathfrak{C}(0)-1]\Var( f')}{\varepsilon}\right]}.
 $$
 For the Simpson's rule, the complexity has a lower bound of
 $$
@@ -1088,11 +1119,11 @@ $$
 $$
 The upper bounds of algorithms using the trapezoidal rule and Simpson's rule is asymptotically to the same order of the complexity of the problem, respectively. It is shown that our algorithms are optimal.
 
-Results from numerical experiments of testing a family of bump functions in $\cv^3$ show that the Simpson's rule algorithm has better success rate than the trapezoidal rule algorithm. Both algorithms has better success rate than MATLAB's {\tt integral} and Chebfun. Results also show that the Simpson's rule algorithm has faster convergence rate than the trapezoidal rule algorithm.
+Results from numerical experiments of testing a family of bump functions in $\cv^3$ show that finer mesh provides higher success rates for both {\tt integral\_t} and {\tt integral\_s}. Both algorithms has better success rate than MATLAB's {\tt integral} and Chebfun. The computational cost and time of the Simpson's rule are significantly better than the ones of the trapezoidal rule. When the mesh is fine enough, the test results supports the theoretical results that the algorithms are guaranteed to work. Results also show that the Simpson's rule algorithm has faster convergence rate than the trapezoidal rule algorithm.
 
 \Section{Future Work}
 
-Our new algorithms are designed to solve the univariate integration problems. The algorithms use the trapezoidal rule and Simpson's rule and are globally adaptive. For future work, new methods can be proposed to solve multivariate integration problems. The input points can be locally adaptive, where additional points are only added to the necessary locations according to the shape of the integrand. Making the algorithms locally adaptive may significantly save the computational cost. The error implemented in the derivations and algorithms is the absolute error. Relative error may provide more stable results when the integral is very small and be worthy to study. The convergence rates of the trapezoidal rule and Simpson's rule are not fast enough. New algorithms can be created using methods with faster convergence rate.
+Starting from our new algorithms which are designed to solve the univariate integration problems, there are more to explore. The algorithms use the trapezoidal rule and Simpson's rule and are globally adaptive. For future work, new methods can be proposed to solve multivariate integration problems. The input points can be locally adaptive for the trapezoidal rule, where additional points are only added to the necessary locations according to the shape of the integrand. Making the algorithms locally adaptive may significantly save the computational cost. The error implemented in the derivations and algorithms is the absolute error. Relative error may provide more stable results when the integral is very small and be worthy to study. The convergence rates of the trapezoidal rule and Simpson's rule are not fast enough. New algorithms can be created using methods with faster convergence rate. For integration problems, some of the aforementioned works are finished by the GAIL group. Some of them are undergoing. But more can be investigated to make the idea of the cone shine brighter.
 
 
 
