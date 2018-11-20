@@ -140,9 +140,11 @@ Not only can these adaptive algorithms be fooled by the fluky integrands, accord
 
 \Section{Guaranteed Algorithms for Integrands in Cones}
 
-Our algorithms can correct compute the integration for the fluky integrands. However, the challenge of spiky integrands applies to any algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the set of integrands as a cone, not a ball. The idea of defining integrands in a cone instead of a ball is originally introduced in \cite{HicEtal14b}. Linear multiplications of a function remain in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The error bounds are also defined and approximated using only integrand values (to make the algorithms adaptive). Based on the idea of the cone, we have created a MATLAB library named GAIL (Guaranteed Automatic Integration Library)\cite{ChoEtal17b} with co-workers. Details about this software can be found in \cite{Gail_ug}. Different problems are investigated in the cone settings, including integration (see \cite{HicJim16a} and \cite{JimHic16a}), function recovery (see \cite{DinHicWoz17a} and \cite{ChoEtal17a}), optimization (see \cite{ChoEtal17a}), Monte-Carlo sampling (see \cite{HicEtal14a} and \cite{JiaHic16a}) and etc.. For univariate integration problems, in contrast to fixed-cost algorithms, our methods are adaptive and succeed for cones of integrands. In contrast to typical adaptive algorithms, our methods have rigorous proofs of how spiky an integrand can be to stay inside the cone.
+Our algorithms can correct compute the integration for the fluky integrands. However, the challenge of spiky integrands applies to any algorithm that depends on function values, including ours. The goal of the thesis is to construct adaptive, automatic algorithms with guarantees of success. The way of achieving the goal is to define the set of integrands as a cone, not a ball. 
 
-In the original cone paper \cite{HicEtal14b}, a cone different from the cone in this thesis is defined. Rigorous proof of guarantees and an automatic algorithm using the trapezoidal rule for univariate integration are provided based on this cone. Study of the upper bound on the computational cost and the lower bound on the complexity shows that the algorithm is asymptotically optimal. Unfortunately, bounds on the error estimates of Simpson's rule algorithms are too complicated to derive in this cone. Therefore, we introduce a new cone which is the one discussed in this thesis in order to derive the Simpson's rule algorithm. The trapezoidal rule algorithms in the new cone are also studied. The theoretical results from the new cone are better than the ones from the old cone. We put the results from the new cone for the trapezoidal rule algorithm in the thesis for the reason that they are better and more uniform with the Simpson's rule results. Readers can refer to \cite[Algo 4, Thm 7, Thm 8]{HicEtal14b} for the original results.
+The idea of defining integrands in a cone instead of a ball is originally introduced in \cite{HicEtal14b}. Linear multiplications of a function remain in the cone. Moreover, the respective derivatives of the functions cannot change too much in a small interval. The error bounds are also defined and approximated using only integrand values (to make the algorithms adaptive). Based on the idea of the cone, we have created a MATLAB library named GAIL (Guaranteed Automatic Integration Library)\cite{ChoEtal17b} with co-workers. Details about this software can be found in \cite{Gail_ug}. Different problems are investigated in the cone settings, including integration (see \cite{HicJim16a}, \cite{HicRazYun15a}, \cite{Lu118a}, and \cite{JimHic16a}), function recovery (see \cite{DinHicWoz17a} and \cite{ChoEtal17a}), optimization (see \cite{ChoEtal17a}), Monte-Carlo sampling for evaluating the means of random variables (see \cite{HicEtal14a} and \cite{JiaHic16a}) etc. For univariate integration problems, in contrast to fixed-cost algorithms, our methods are adaptive and succeed for cones of integrands. In contrast to typical adaptive algorithms, our methods have rigorous proofs of how spiky an integrand can be to stay inside the cone.
+
+In the original cone paper \cite{HicEtal14b}, a cone different from the cone in this thesis is defined. Rigorous proof of guarantees and an automatic algorithm using the trapezoidal rule for univariate integration are provided based on this cone. Study of the upper bound on the computational cost and the lower bound on the complexity shows that the algorithm is asymptotically optimal. Unfortunately, the upper bound on the approximation error of Simpson's rule algorithm is too complicated to derive in this cone. Therefore, we introduce a new cone which is the one discussed in this thesis in order to derive the Simpson's rule algorithm. The trapezoidal rule algorithm in a new cone is also studied. For the trapezoidal rule, theoretical results from the new cone show smaller upper bound on the computational cost and larger lower bound on the complexity than the ones from the old cone. We put the results from the new cone for the trapezoidal rule algorithm in the thesis because they are better and the approach is more consistent with the Simpson's rule. Readers can refer to \cite[Algo 4, Thm 7, Thm 8]{HicEtal14b} for the original results.
 
 
 
@@ -580,7 +582,7 @@ Let $\mathfrak{h}\le (b-a)/6$. Set $k=0$, $n_{k}=1$. For any integrand $f$ and e
 \item[Step 4. Check the necessary condition for $f \in \cc^3$.] If $\widetilde{V}_3(f,n_k) \le \eta_{k}$, go to Step 5.
   Otherwise, set $\mathfrak{h} = \mathfrak{h}/2$.
     \begin{enumerate}[label=\alph*)]
-      \item Let $\mathfrak{J}=\{j\in\{1, \cdots, k: n_{j}\}> (b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
+      \item Let $\mathfrak{J}=\{j\in\{1,\cdots,k\}: n_{j}> (b-a)/\mathfrak{h}\}$. If $\mathfrak{J}$ is empty, go to Step 1.
       \item Otherwise, recompute the upper bound on $\Var(f''')$ for all $n_{j}$, with $j \in \mathfrak{J}$ as follows:
       \begin{align*}
         &\text{For } j'=\min\mathfrak{J}, \text{ let } \eta_{j'}=\mathfrak{C}((b-a)/n_{j'})\widetilde{V}_3(f,n_{j'}), \\
@@ -984,9 +986,9 @@ The bump function $\text{bump}(x;t,\delta)$ defined in \eqref{bumpfunction} is u
 \begin{equation}\label{testfun}
 f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}
 \end{equation}
-with  $t \sim \cu[0,1-4\delta]$, $\log_{10}(\delta) \sim \cu[-4,-1]$. The integration $\int_{0}^{1}f(x,t,\delta)\text{d}x=1$. Input $t$ controls the starting position of the bump. The starting point is randomly chosen between $0$ and $1-4\delta$. Input $\delta$ controls the quarter width of the bump. The random quarter width expands from $0.0001$ to $0.1$.
+with  $t \sim \cu[0,1-4\delta]$, $\log_{10}(\delta) \sim \cu[-3,-1]$. The integration $\int_{0}^{1}f(x,t,\delta)\text{d}x=1$. Input $t$ controls the starting position of the bump. The starting point is randomly chosen between $0$ and $1-4\delta$. Input $\delta$ controls the quarter width of the bump. The random quarter width expands from $0.001$ to $0.1$.
 %It follows that $\norm[1]{f'-f(1)+f(0)}=1/a$ and $\Var(f')=2/a^2$.  The probability that $f \in \cc_{\tau}$ is $\min\left(1,\max(0,\left(\log_{10}(\tau/2)-1\right)/3)\right).$
-As an experiment, we chose $10000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. Both algorithms impose a cost budget of $N_{\max}=10^7$. If either of the proposed $n_{k+1}$ in Step 1 or Step 6 of {\tt integral\_t} or {\tt integral\_s} exceeds $N_{\max}$, then the algorithms return with a warning and fall back to the largest possible $n_{k+1}$ which does not exceed $N_{\max}$ and is a multiple of $n_{k}$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. Table \ref{integresultstable} shows the test results. The first column indicates different algorithms. The second column indicates the pre-determined cut-off values of {\tt integral\_t} and {\tt integral\_s}. Smaller cut-off value gives the algorithms larger number of starting points. The third column shows the total success rates of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}. The fourth column shows the success rates of {\tt integral\_t} and {\tt integral\_s} when the integrand is out of the original cone. The fifth column shows the average number of data sites used for each integrand of {\tt integral\_t} and {\tt integral\_s} with different $\mathfrak{h}$. The last column shows the average time elapsed in seconds for each integrand of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}.  %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
+As an experiment, we chose $1000$ random test functions and applied {\tt integral\_t} and {\tt integral\_s} with an error tolerance of  $\varepsilon = 10^{-8}$. The initial values of $\mathfrak{h}$ are set as $0.1$, $0.01$, and $0.001$. Both algorithms impose a cost budget of $N_{\max}=10^7$. If either of the proposed $n_{k+1}$ in Step 1 or Step 6 of {\tt integral\_t} or {\tt integral\_s} exceeds $N_{\max}$, then the algorithms return with a warning and fall back to the largest possible $n_{k+1}$ which does not exceed $N_{\max}$ and is a multiple of $n_{k}$.  The algorithm is considered successful for a particular $f$ if the exact and approximate integrals have a difference no greater than $\varepsilon$. Our algorithms give warnings when the integrand is not in the original cone. Table \ref{integresultstable} shows the test results. The first column indicates different algorithms. The second column indicates the pre-determined cut-off values of {\tt integral\_t} and {\tt integral\_s}. Smaller cut-off value gives the algorithms larger number of starting points. The third column shows the total success rates of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}. The fourth column shows the success rates of {\tt integral\_t} and {\tt integral\_s} when the integrand is out of the original cone. The fifth column shows the average number of data sites used for each integrand of {\tt integral\_t} and {\tt integral\_s} with different $\mathfrak{h}$. The last column shows the average time elapsed in seconds for each integrand of {\tt integral\_t}, {\tt integral\_s}, {\tt integral} and {\tt chebfun}.  %Our algorithm imposes a cost budget of $N_{\max}=10^7$.
 %If the proposed $n_{i+1}$ in Stages 2 or 3 exceeds $N_{\max}$, then our algorithm returns a warning and falls back to the largest possible $n_{i+1}$ not exceeding $N_{\max}$ for which $n_{i+1}-1$ is a multiple of $n_i-1$.  The probability that $f$ initially lies in $\cc_{\tau}$ is the smaller number in the third column of Table \ref{integresultstable}, while the larger number is the empirical probability that $f$ eventually lies in $\cc_{\tau}$ after possible increases in $\tau$ made by Stage 2 of Algorithm \ref{multistageintegalgo}.  For this experiment Algorithm \ref{multistageintegalgo} was successful for all $f$ that finally lie inside $\cc_{\tau}$ and for which no attempt was made to exceed the cost budget.
 
 %\begin{table}[h]
@@ -1013,39 +1015,6 @@ As an experiment, we chose $10000$ random test functions and applied {\tt integr
 \hline\hline
 & $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
 \hline
-&$0.1$  & $24.76\%$ &  $9.43\%$  & $397425$ & $0.0775$\\
-{\tt integral\_t}
- &$0.01$  & $57.36\%$ & $3.70\%$ & $2202134$ & $0.433$\\
-&$0.001$ & $87.38\%$ &$0.81\%$ & $5156884$ & $0.967$\\
-\hline
-&$0.1$  & $25.94\%$ &  $14.28\%$  & $2759$ & $0.00117$\\
-{\tt integral\_s}
- &$0.01$  & $57.63\%$ & $4.45\%$ & $44458$ & $0.0445$\\
-&$0.001$ & $94.09\%$ &$0.87\%$ & $583474$ & $0.583$\\
-\hline
-{\tt integral} &  & 29.68 \% & & &$0.0006990$\\
-{\tt chebfun} &  &18.91\% & & &$0.009456$\\
-\hline
-\end{tabular}
-\label{integresultstable}
-\end{table}
-
-Some commonly available numerical algorithms in MATLAB are {\tt integral} \cite{MAT9.3} and the MATLAB Chebfun toolbox \cite{TrefEtal12}. We applied these two routines to the random family of test functions as well.  Their success and failure rates are also recorded in Table \ref{integresultstable}.  They do not give warnings of possible failure.
-
-%\Section{Simpson's Rule}
-%\textcolor{red}{I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.}
-The test results in Table \ref{integresultstable} shows that both {\tt integral\_t} and {\tt integral\_s} return higher success rates as the initial cut-off value $\mathfrak{h}$ being smaller. This makes sense because higher cut-off value provides more inclusive cones. The chance of a bump function lie in the cone is higher. In a other word, smaller cut-off value provides finer mesh, so that the chances of detecting narrow peaks are higher. For the same reason, for both {\tt integral\_t} and {\tt integral\_s}, the success rates with cone change warning decreases as $\mathfrak{h}$ becoming smaller. Since when the cut-off value is high, there is not as many out-of-cone integrands as if the cut-off value is low. Both {\tt integral\_t} and {\tt integral\_s} outperform {\tt integral} and Chebfun toolbox since the fact that the test functions are defined in order to fool the algorithm. Our algorithms has the mechanism of changing $\mathfrak{h}$ to enhance the success rate. The two comparing algorithms do not have similar settings.
-
-When $\mathfrak{h}$ is low, the average data sites used and the average time elapsed becomes larger for both {\tt integral\_t} and {\tt integral\_s},. It is because both algorithms starts with more initial number of points and therefore require longer computational time. If we compare the average cost and average time between {\tt integral\_t} and {\tt integral\_s}, the performance of the latter is significantly better than the former because the Simpson's rule has higher convergence rate than the trapezoidal rule. Comparing the computational time of both algorithms with {\tt integral} and {\tt chebfun}, out algorithms spend more time to solve the problem. Future works of improving the method are discussed in the next chapter.
-
-Another test are implemented with a family of test functions similar to the first one. In this case, the test functions on interval $(0.1)$ are defined by \eqref{testfun} with  $t \sim \cu[0,1-4\delta]$ and $\log_{10}(\delta) \sim \cu[-3,-1]$. A total number of 1000 random functions are tested with the same $N_{\max}$ and error tolerance. The smallest width of the peak is $0.004$. For both {\tt integral\_t} and {\tt integral\_s}, when the cut-off value is set to be $0.001$, the mesh is always fine enough to detect the peak. Thus the algorithms is guaranteed to succeed for all test functions. When the cut-off value is either $0.1$ or $0.01$, the algorithms may not detect all possible peaks. The results shown in Table \ref{widerresultstable} support the theoretical results shown in the previous chapters that the algorithms are guaranteed to work for all the integrands in the cone.
-\begin{table}[ht]
-\caption{Another test for {\tt integral\_t} and {\tt integral\_s} with wider random peaks.}
-\centering
-\begin{tabular}{cccccc}
-\hline\hline
-& $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
-\hline
 &$0.1$  & $33.60\%$ &  $13.60\%$  & $489605$ & $0.09729$\\
 {\tt integral\_t}
  &$0.01$  & $82.00\%$ & $3.60\%$ & $3110154$ & $0.6318$\\
@@ -1060,10 +1029,46 @@ Another test are implemented with a family of test functions similar to the firs
 {\tt chebfun} &  &26.40\% & & &$0.01380$\\
 \hline
 \end{tabular}
+\label{integresultstable}
+\end{table}
+
+Some commonly available numerical algorithms in MATLAB are {\tt integral} (see \cite{MAT9.3}) and the MATLAB Chebfun toolbox (see \cite{TrefEtal12}). We applied these two routines to the family of random test functions as well. Their success and failure rates are also recorded in Table \ref{integresultstable}. They do not give warnings of possible failure.
+
+%\Section{Simpson's Rule}
+%\textcolor{red}{I need to use a good example to run the tests. Then I will need to compare the results for both algorithms with other algorithms. After that, I need to compare trap and sim to get the conclusion such as sim has faster convergence rate than trap. This will require an sample function good to both trap and sim.}
+The test results in Table \ref{integresultstable} shows that both {\tt integral\_t} and {\tt integral\_s} return higher success rates as the initial cut-off value $\mathfrak{h}$ decreasing. This makes sense because smaller cut-off value provides more inclusive cones. The chance of a bump function to lie in the cone is higher. In a other word, smaller cut-off value provides finer mesh, so that the chances of detecting narrow peaks are higher. For the same reason, for both {\tt integral\_t} and {\tt integral\_s}, the success rates with cone change warning decrease as $\mathfrak{h}$ becoming smaller. Since when the cut-off value is small, there is not as many out-of-cone integrands as if the cut-off value is large. Both {\tt integral\_t} and {\tt integral\_s} outperform {\tt integral} and Chebfun toolbox since the fact that the test functions are defined in order to fool the algorithms. Our algorithms perform better for spiky functions. Moreover, our algorithms has the mechanism of changing $\mathfrak{h}$ to enhance the success rate. The two comparing algorithms do not have similar settings.
+
+When $\mathfrak{h}$ is small, the average data sites used and the average time elapsed becomes larger for both {\tt integral\_t} and {\tt integral\_s},. It is because both algorithms start with more number of points. For each additional loop, the number of points required is more as well. Therefore they require longer computational time. If we compare the average cost and average time between {\tt integral\_t} and {\tt integral\_s}, the performance of the latter is significantly better than the former because the Simpson's rule has higher convergence rate than the trapezoidal rule. Comparing the computational time of both algorithms with {\tt integral} and {\tt chebfun}, out algorithms spend more time to solve the problem. Future works of improving the method are discussed in the next chapter.
+
+In this experiment, the smallest possible width of the peak is $0.004$. For both {\tt integral\_t} and {\tt integral\_s}, when the cut-off value is set to be $0.001$, the mesh is always fine enough to detect the peak. Thus the algorithms is guaranteed to succeed for all test functions. When the cut-off value is either $0.1$ or $0.01$, the algorithms may not detect all peaks. The results shown in Table \ref{integresultstable} support the theoretical results shown in the previous chapters that the algorithms are guaranteed to work for all the integrands in the cone.
+
+As mentioned before, any algorithm can be fooled by a spiky function if the peak is narrow enough. Another test is implemented with a family of test functions similar to the first one. In this case, the test functions on interval $(0.1)$ are defined by \eqref{testfun} with  $t \sim \cu[0,1-4\delta]$ and $\log_{10}(\delta) \sim \cu[-4,-1]$. A total number of 10000 random functions are tested with the same $N_{\max}$ and error tolerance. In this case, the smallest possible width of the peak is $0.0004$, which is not detectable even when $\mathfrak{h}$ is set to be $0.001$. Since the peaks are harder to detect in this case, the success rates for all four algorithms are lower than before in Table \ref{widerresultstable}.
+
+\begin{table}[ht]
+\caption{Another test for {\tt integral\_t} and {\tt integral\_s} with narrower random peaks.}
+\centering
+\begin{tabular}{cccccc}
+\hline\hline
+& $\mathfrak{h}$ & Success & Success Warning & Average Cost & Average Time \\
+\hline
+&$0.1$  & $24.76\%$ &  $9.43\%$  & $397425$ & $0.0775$\\
+{\tt integral\_t}
+ &$0.01$  & $57.36\%$ & $3.70\%$ & $2202134$ & $0.433$\\
+&$0.001$ & $87.38\%$ &$0.81\%$ & $5156884$ & $0.967$\\
+\hline
+&$0.1$  & $25.94\%$ &  $14.28\%$  & $2759$ & $0.00117$\\
+{\tt integral\_s}
+ &$0.01$  & $57.63\%$ & $4.45\%$ & $44458$ & $0.0445$\\
+&$0.001$ & $94.09\%$ &$0.87\%$ & $583474$ & $0.583$\\
+\hline
+{\tt integral} &  & 29.68 \% & & &$0.0006990$\\
+{\tt chebfun} &  &18.91\% & & &$0.009456$\\
+\hline
+\end{tabular}
 \label{widerresultstable}
 \end{table}
 
-Convergence rate for both algorithms are also important to study. We use the test function $f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}$ where $t=0.2$; $\delta=0.1$. Both {\tt integral\_t} and {\tt integral\_s} use $\mathfrak{h}=0.1$. The following picture shows the convergence rate for the two algorithms.
+Convergence rate for both algorithms are also important to study. We use the test function $f(x,t,\delta)= \text{bump}(x;t,\delta)/\delta^{4}$ where $t=0.2$; $\delta=0.1$. Both {\tt integral\_t} and {\tt integral\_s} use $\mathfrak{h}=0.1$. Figure \ref{fig:convergencerate} shows the convergence rate for the two algorithms.
 \begin{figure}[ht]
 \centering
 \includegraphics[width=12.5cm]{converwithslope.eps}
